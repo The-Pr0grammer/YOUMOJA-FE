@@ -39,10 +39,7 @@ class BizPage extends Component {
 		});
 	}
 
-	updateComments = (newComment) => {
-		this.props.route.params.incComments(this.state.comments.length + 1);
-		this.setState({ comments: [newComment, ...this.state.comments] });
-	};
+	
 
 	render() {
 		// console.log("bizpage comms", this.state.comments.length);

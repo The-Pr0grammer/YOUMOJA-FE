@@ -10,8 +10,10 @@ import React from "react";
 import { vh, vw } from "react-native-expo-viewport-units";
 import { Icon } from "react-native-elements";
 import axios from "axios";
+import { connect } from "react-redux";
+import { postComment } from "../redux/actions/bizAction";
 
-export default class CommentInput extends React.Component {
+class NewComment extends React.Component {
 	state = {
 		text: "",
 	};
@@ -25,20 +27,12 @@ export default class CommentInput extends React.Component {
 		this.props.handleCancel();
 		this.props.handleSuccess();
 		this.props.handleClose();
-		const ud = this.props.updateComments;
-
-		axios
-			.post(`http://localhost:3000/comments`, {
-				user_id: 1,
-				business_id: this.props.bizId,
-				content: this.state.text,
-			})
-			.then(function (response) {
-				ud(response.data);
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
+		const data = {
+			user_id: 1,
+			business_id: this.props.bizId,
+			content: this.state.text,
+		};
+		this.props.postComment(data);
 	};
 
 	render() {
@@ -142,6 +136,8 @@ export default class CommentInput extends React.Component {
 	}
 }
 
+export default connect(mapStateToProps, { postComment })(NewComment);
+
 const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 10,
@@ -155,3 +151,7 @@ const styles = StyleSheet.create({
 	},
 	input: { height: vh(10) },
 });
+
+function mapStateToProps(state) {
+	return { bizs: state };
+}

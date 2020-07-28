@@ -11,23 +11,22 @@ import Comment from "./Comment.js";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { Icon } from "react-native-elements";
 import NewComment from "./NewComment.js";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { connect } from "react-redux";
+import { fetchComments } from "../redux/actions/bizAction";
 
-export default class CommentList extends React.Component {
+class CommentList extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			newCommentTogg: false,
 			successTogg: false,
 			expandTogg: false,
+			comments: [],
 		};
 	}
-
-	// renderComments = (props) => {
-	// 	return props.comments.map((comment) => (
-	// 		<Comment key={comment.id} comment={comment} />
-	// 	));
-	// };
+	componentDidMount() {
+		this.props.fetchComments(this.props.bizId);
+	}
 
 	handleCancel = () => {
 		this.setState({ newCommentTogg: false });
@@ -45,8 +44,13 @@ export default class CommentList extends React.Component {
 		}, 2400);
 	};
 
+	updateComments = (newComment) => {
+		console.log("thissa new comment");
+		this.setState({ comments: [newComment, ...this.state.comments] });
+	};
+
 	render() {
-		// console.log(this.props.comments.length);
+		// console.log(this.props.comments);
 		return (
 			<View style={styles.commList}>
 				<Text
@@ -110,7 +114,7 @@ export default class CommentList extends React.Component {
 							handleCancel={this.handleCancel}
 							handleSuccess={this.handleSuccess}
 							handleClose={this.handleClose}
-							updateComments={this.props.updateComments}
+							updateComments={this.updateComments}
 						/>
 					)}
 				</View>
@@ -146,15 +150,17 @@ export default class CommentList extends React.Component {
 					// contentContainerStyle={{ height: 1000 }}
 					// style={{ height: 100, flexGrow: 1 }}
 					style={{ marginTop: vh(0.5) }}
-					data={this.props.comments}
+					data={this.props.bizs.comments} //WTF ME NO KNOW Y THIS.STATE.COMMENTS NO WORK B4 REFRESH
 					renderItem={({ item }) => <Comment comment={item} />}
 					keyExtractor={(item) => item.id.toString()}
-					extraData={this.props.comments}
+					extraData={this.state.comments}
 				/>
 			</View>
 		);
 	}
 }
+
+export default connect(mapStateToProps, { fetchComments })(CommentList);
 
 const styles = StyleSheet.create({
 	commList: {
@@ -171,3 +177,7 @@ const styles = StyleSheet.create({
 		// backgroundColor: "pink",
 	},
 });
+
+function mapStateToProps(state) {
+	return { bizs: state };
+}

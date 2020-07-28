@@ -9,6 +9,7 @@ import {
 	ImageBackground,
 	TouchableOpacity,
 	Dimensions,
+	ActivityIndicator,
 } from "react-native";
 import { Card, SearchBar, Icon, Button } from "react-native-elements";
 import axios from "axios";
@@ -42,7 +43,7 @@ class Businesses extends Component {
 		this.willFocusSubscription = this.props.navigation.addListener(
 			"focus",
 			() => {
-				this.setState({ rf: !this.state.rf });
+				this.props.fetchBizs();
 			}
 		);
 	}
@@ -110,59 +111,77 @@ class Businesses extends Component {
 	};
 
 	render() {
-		console.log(this.state.rf);
+		// console.log(this.props.bizs);
+
 		return (
-			<View
-				style={{
-					width: "100%",
-					height: "100%",
-					flex: 1,
-					backgroundColor: "black",
-					justifyContent: "center",
-				}}
-			>
-				<View style={styles.searchDiv}>
-					<SearchBar
-						round
-						searchIcon={{ size: 18 }}
-						onChangeText={this.updateSearch}
-						onSubmitEditing={(e) => this.props.fetchBizs(this.state.page)}
-						placeholder={"Search by keyword or location"}
-						value={this.state.search}
-						inputContainerStyle={{
-							borderRadius: 16,
-							backgroundColor: "black",
-							marginHorizontal: 12,
-						}}
+			(this.props.bizs.isFetching && (
+				<View
+					style={{
+						flex: 1,
+						justifyContent: "center",
+						backgroundColor: "maroon",
+					}}
+				>
+					<ActivityIndicator
+						size="large"
+						color="#00ff00"
+						hidesWhenStopped={true}
 					/>
 				</View>
-				<ImageBackground
-					source={require("../images/Jarrell-Wadsworth-Revolutionary-Print-Lusenhop-Tate-Loan-Tiff.jpg")}
-					style={styles.bg}
-				></ImageBackground>
-
-				<FlatList
-					style={styles.list}
-					contentContainerStyle={{
-						backgroundColor: "rgba(0, 0, 0, 0)",
-						alignItems: "left",
-						justifyContent: "left",
+			)) ||
+			(!this.props.bizs.isFetching && (
+				<View
+					style={{
+						width: "100%",
+						height: "100%",
+						flex: 1,
+						backgroundColor: "black",
+						justifyContent: "center",
 					}}
-					data={this.props.bizs.businesses}
-					keyExtractor={(item) => item.id.toString()}
-					renderItem={({ item }) => (
-						<ListBiz
-							biz={item}
-							navigation={this.props.navigation}
-							incComments={this.props.incComments}
+				>
+					<View style={styles.searchDiv}>
+						<SearchBar
+							round
+							searchIcon={{ size: 18 }}
+							onChangeText={this.updateSearch}
+							onSubmitEditing={(e) => this.props.fetchBizs(this.state.page)}
+							placeholder={"Search by keyword or location"}
+							value={this.state.search}
+							inputContainerStyle={{
+								borderRadius: 16,
+								backgroundColor: "black",
+								marginHorizontal: 12,
+							}}
 						/>
-					)}
-					extraData={this.state.rf}
-					legacyImplementation={true}
-					// refreshing ={this.state.rf}
-					// onRefresh ={this.onRefresh}
-				/>
-			</View>
+					</View>
+					<ImageBackground
+						source={require("../images/Jarrell-Wadsworth-Revolutionary-Print-Lusenhop-Tate-Loan-Tiff.jpg")}
+						style={styles.bg}
+					></ImageBackground>
+
+					<FlatList
+						style={styles.list}
+						contentContainerStyle={{
+							backgroundColor: "rgba(0, 0, 0, 0)",
+							alignItems: "left",
+							justifyContent: "left",
+						}}
+						data={this.props.bizs.businesses}
+						keyExtractor={(item) => item.id.toString()}
+						renderItem={({ item }) => (
+							<ListBiz
+								biz={item}
+								navigation={this.props.navigation}
+								incComments={this.props.incComments}
+							/>
+						)}
+						extraData={this.state.rf}
+						legacyImplementation={true}
+						// refreshing ={this.state.rf}
+						// onRefresh ={this.onRefresh}
+					/>
+				</View>
+			))
 		);
 	}
 }
