@@ -13,6 +13,7 @@ import { Icon } from "react-native-elements";
 import NewComment from "./NewComment.js";
 import { connect } from "react-redux";
 import { fetchComments } from "../redux/actions/bizAction";
+import SuccessModal from "./SuccessModal.js";
 
 class CommentList extends React.Component {
 	constructor(props) {
@@ -21,7 +22,6 @@ class CommentList extends React.Component {
 			newCommentTogg: false,
 			successTogg: false,
 			expandTogg: false,
-			comments: [],
 		};
 	}
 	componentDidMount() {
@@ -35,13 +35,17 @@ class CommentList extends React.Component {
 	handleSuccess = () => {
 		setTimeout(() => {
 			this.setState({ successTogg: true });
-		}, 1000);
+		}, 750);
 	};
 
 	handleClose = () => {
 		setTimeout(() => {
 			this.setState({ successTogg: false });
 		}, 2400);
+	};
+
+	handleDismiss = () => {
+		this.setState({ successTogg: false });
 	};
 
 	updateComments = (newComment) => {
@@ -63,7 +67,7 @@ class CommentList extends React.Component {
 						alignSelf: "center",
 					}}
 				>
-					COMMENTS({this.props.comments.length})
+					COMMENTS({this.props.bizs.comments.length})
 				</Text>
 				{this.state.newCommentTogg == false && (
 					<TouchableOpacity
@@ -87,26 +91,28 @@ class CommentList extends React.Component {
 					</TouchableOpacity>
 				)}
 
-				<TouchableOpacity
-					style={{
-						position: "absolute",
-						alignSelf: "flex-end",
-						height: vh(37),
-						width: vw(12),
-						marginTop: vh(0.5),
-					}}
-					onPress={() => {
-						this.setState({ newCommentTogg: true });
-					}}
-				>
-					<Icon
-						name="arrows-expand"
-						type="foundation"
-						color="aqua"
-						size={30}
-						style={styles.add}
-					/>
-				</TouchableOpacity>
+				{this.state.successTogg == false && (
+					<TouchableOpacity
+						style={{
+							position: "absolute",
+							alignSelf: "flex-end",
+							height: vh(37),
+							width: vw(12),
+							marginTop: vh(0.5),
+						}}
+						onPress={() => {
+							this.setState({ newCommentTogg: true });
+						}}
+					>
+						<Icon
+							name="arrows-expand"
+							type="foundation"
+							color="aqua"
+							size={30}
+							style={styles.add}
+						/>
+					</TouchableOpacity>
+				)}
 				<View>
 					{this.state.newCommentTogg && (
 						<NewComment
@@ -119,41 +125,16 @@ class CommentList extends React.Component {
 					)}
 				</View>
 				{this.state.successTogg && (
-					<Modal
-						style={{
-							height: 100,
-							position: "relative",
-							backgroundColor: "purple",
-							flex: 1,
-						}}
-						animationType="fade"
-						transparent={true}
-						visible={true}
-						onRequestClose={() => {
-							Alert.alert("Modal has been closed.");
-						}}
-					>
-						<View style={{ backgroundColor: "orange", marginTop: vh(60) }}>
-							<Text
-								style={{
-									fontSize: 22,
-									alignSelf: "center",
-									textAlign: "center",
-								}}
-							>
-								Your Comment Was Posted✅
-							</Text>
-						</View>
-					</Modal>
+					<SuccessModal handleDismiss={this.handleDismiss} />
 				)}
 				<FlatList
 					// contentContainerStyle={{ height: 1000 }}
 					// style={{ height: 100, flexGrow: 1 }}
-					style={{ marginTop: vh(0.5) }}
-					data={this.props.bizs.comments} //WTF ME NO KNOW Y THIS.STATE.COMMENTS NO WORK B4 REFRESH
+					style={{ marginTop: vh(1.2) }}
+					data={this.props.bizs.comments}
 					renderItem={({ item }) => <Comment comment={item} />}
 					keyExtractor={(item) => item.id.toString()}
-					extraData={this.state.comments}
+					extraData={this.props.bizs.comments}
 				/>
 			</View>
 		);
@@ -167,7 +148,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: vw(100),
 		height: vh(100),
-		marginTop: vh(30),
+		marginTop: vh(36.5),
 		backgroundColor: "green",
 		flexDirection: "column",
 		position: "absolute",

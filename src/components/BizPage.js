@@ -8,8 +8,7 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	Dimensions,
-	KeyboardAvoidingView,
-	Keyboard,
+	Linking,
 } from "react-native";
 import { Card, SearchBar, Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
@@ -29,6 +28,7 @@ class BizPage extends Component {
 			page: 1,
 			error: null,
 			newCommentTogg: false,
+			hearts: 0,
 		};
 	}
 
@@ -39,16 +39,49 @@ class BizPage extends Component {
 		});
 	}
 
-	
+	incHearts = () => {
+		const axios = require("axios");
+		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
+		axios
+			.patch(
+				`http://localhost:3000/businesses/${this.props.route.params["biz"].business.id}`,
+				{
+					hearts: this.state.hearts + 1,
+				},
+				{ headers: { "Content-Type": "application/json" } }
+			)
+			.then(function (response) {
+				// console.log(response);
+			})
+			.catch((error) => {
+				console.log(error.response);
+			});
+		axios
+			.post(`http://localhost:3000/user_likes`, {
+				user_id: 1,
+				business_id: this.props.route.params["biz"].business.id,
+			})
+			.then(function (response) {
+				console.log(response);
+			});
+	};
 
 	render() {
 		// console.log("bizpage comms", this.state.comments.length);
 		// console.log(this.props.route.params.incComments);
+		// console.log(this.props.route.params["biz"].business);
 		return (
-			<KeyboardShift>
+			<KeyboardShift style={{ position: "absolute", zIndex: 0 }}>
 				{() => (
 					<View style={{ backgroundColor: "black" }}>
-						<View styles={{ width: vw(100), backgroundColor: "lime" }}>
+						<View
+							style={{
+								position: "relative",
+								width: vw(100),
+								height: vh(6.6),
+								backgroundColor: "black",
+							}}
+						>
 							<TextTicker
 								duration={Math.random * 18000}
 								loop
@@ -75,7 +108,8 @@ class BizPage extends Component {
 									height: vh(30),
 									alignSelf: "flex-end",
 									position: "absolute",
-									zIndex: 1,
+									zIndex: 10,
+									position: "absolute",
 								}}
 							>
 								<TouchableOpacity
@@ -116,9 +150,12 @@ class BizPage extends Component {
 										width: vw(13),
 										marginHorizontal: "2%",
 										marginVertical: "4%",
+										zIndex: 1,
 									}}
 									onPress={() => {
-										this.incHearts();
+										Linking.openURL(
+											this.props.route.params["biz"].business.twitter
+										);
 									}}
 								>
 									<Icon name="twitter" type="feather" color="red" size={35} />
@@ -134,7 +171,9 @@ class BizPage extends Component {
 										marginHorizontal: "2%",
 									}}
 									onPress={() => {
-										this.incHearts();
+										Linking.openURL(
+											this.props.route.params["biz"].business.phone
+										);
 									}}
 								>
 									<Icon
@@ -154,7 +193,9 @@ class BizPage extends Component {
 										marginVertical: "4%",
 									}}
 									onPress={() => {
-										this.incHearts();
+										Linking.openURL(
+											this.props.route.params["biz"].business.facebook
+										);
 									}}
 								>
 									<Icon
@@ -175,7 +216,9 @@ class BizPage extends Component {
 										marginHorizontal: "2%",
 									}}
 									onPress={() => {
-										this.incHearts();
+										Linking.openURL(
+											this.props.route.params["biz"].business.website
+										);
 									}}
 								>
 									<Icon name="laptop" type="entypo" color="red" size={35} />
@@ -214,7 +257,7 @@ class BizPage extends Component {
 									width: vw(66),
 									height: vh(8),
 									top: vh(30),
-									position: "relative",
+									position: "absolute",
 									alignSelf: "flex-end",
 								}}
 								automaticallyAdjustInsets={false}
@@ -299,7 +342,7 @@ class BizPage extends Component {
 								/>
 							</ScrollView>
 						</View>
-						<View style={{ position: "relative", flex: 1 }}>
+						<View style={{ position: "absolute", flex: 1, marginTop: vh(8) }}>
 							<CommentList
 								bizId={this.props.route.params["biz"].business.id}
 								comments={this.state.comments}
@@ -330,13 +373,12 @@ const styles = StyleSheet.create({
 		height: vh(7.1),
 	},
 	cardView: {
-		flex: 1,
 		flexDirection: "column",
 		zIndex: 1,
 	},
 	bizSumm: {
 		position: "relative",
-		fontSize: 38,
+		fontSize: 32,
 		backgroundColor: "black",
 		color: "aqua",
 	},

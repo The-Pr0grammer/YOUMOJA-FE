@@ -12,11 +12,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import bizReducer from "./src/redux/reducers/bizReducer.js";
 
 const createStoreWithMiddleWare = applyMiddleware(thunk)(createStore);
-const store = createStoreWithMiddleWare(bizReducer)
-
+const store = createStoreWithMiddleWare(bizReducer);
 
 const Stack = createStackNavigator();
-
 
 function NotificationsScreen({ navigation }) {
 	return (
@@ -33,6 +31,7 @@ function Home({ navigation }) {
 			screenOptions={{
 				headerStyle: {
 					backgroundColor: "#f4511e",
+					shadowColor: 'transparent'
 				},
 				headerTintColor: "blue",
 				headerTitleStyle: {

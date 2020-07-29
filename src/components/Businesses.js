@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import {
-	ScrollView,
 	View,
 	Text,
 	FlatList,
-	Image,
 	StyleSheet,
 	ImageBackground,
 	TouchableOpacity,
@@ -21,17 +19,17 @@ import { useFocusEffect } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { fetchBizs } from "../redux/actions/bizAction";
 import PropTypes from "prop-types";
+import Categories from "./Categories.js";
 
 class Businesses extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			businesses: [],
 			userLikes: [],
 			page: 1,
 			error: null,
 			search: "",
-			rf: true,
+			catToggle: false,
 		};
 	}
 
@@ -52,40 +50,6 @@ class Businesses extends Component {
 		// this.willFocusSubscription.remove();
 	}
 
-	fetchBizs = () => {
-		const { page } = this.state;
-		axios
-			.get(`http://localhost:3000/user_bizs`)
-
-			.then((response) => {
-				this.setState({
-					businesses: response.data.filter((biz) =>
-						biz.business.name.includes(this.state.search)
-					),
-				});
-			})
-			.catch((error) => {
-				this.setState({ error: error });
-			});
-	};
-
-	reFetchBizs = () => {
-		const { page } = this.state;
-		axios
-			.get(`http://localhost:3000/user_bizs/1`)
-
-			.then((response) => {
-				setTimeout(() => {
-					this.setState({
-						businesses: [...this.state.businesses],
-					});
-				}, 1000);
-			})
-			.catch((error) => {
-				this.setState({ error: error });
-			});
-	};
-
 	fetchLikes = () => {
 		axios
 			.get(`http://localhost:3000/users/1`)
@@ -99,15 +63,6 @@ class Businesses extends Component {
 
 	updateSearch = (e) => {
 		return this.setState({ search: e });
-	};
-
-	onRefresh = () => {
-		this.setState({ rf: true });
-	};
-
-	incComments = (cCount) => {
-		// this.fetchBiz;
-		// this.setState({ cCount });
 	};
 
 	render() {
@@ -139,18 +94,93 @@ class Businesses extends Component {
 						justifyContent: "center",
 					}}
 				>
+					<View
+						style={{
+							zIndex: 1,
+							justifyContent: "center",
+							alignItems: "center",
+							width: vw(104),
+							postion: "absolute",
+							display: "flex",
+							flexDirection: "row",
+							right: vw(2),
+						}}
+					>
+						<TouchableOpacity
+							style={{
+								position: "absolute",
+								top: vh(6.8),
+								left: vw(1),
+								height: vh(7.5),
+								width: vw(16),
+								backgroundColor: "brown",
+								zIndex: 2,
+								opacity: 0.9,
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+							onPress={this.props.navigation.openDrawer}
+						>
+							<Icon
+								style={{ left: vw(0) }}
+								name="menu"
+								type="feather"
+								color="red"
+								size={34}
+							/>
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							style={{
+								position: "absolute",
+								top: vh(6.8),
+								height: vh(7.5),
+								width: vw(100),
+								backgroundColor: "magenta",
+								flexDirection: "row",
+								zIndex: 1,
+								opacity: 0.9,
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<Text
+								style={{
+									textAlign: "center",
+									width: vw(56),
+									fontSize: 20,
+									marginLeft: vw(9.3),
+								}}
+							>
+								CATEGORIES
+							</Text>
+							<View style={{ left: vw(10) }}>
+								<Icon
+									name="circledown"
+									type="antdesign"
+									color="red"
+									size={34}
+								/>
+							</View>
+						</TouchableOpacity>
+					</View>
 					<View style={styles.searchDiv}>
 						<SearchBar
 							round
 							searchIcon={{ size: 18 }}
 							onChangeText={this.updateSearch}
 							onSubmitEditing={(e) => this.props.fetchBizs(this.state.page)}
-							placeholder={"Search by keyword or location"}
+							placeholder={"     Search by keyword or location"}
 							value={this.state.search}
 							inputContainerStyle={{
-								borderRadius: 16,
+								borderRadius: 100,
+								height: vh(6.5),
+								backgroundColor: "aqua",
+								marginHorizontal: 0,
+							}}
+							containerStyle={{
 								backgroundColor: "black",
-								marginHorizontal: 12,
+								padding: 2,
 							}}
 						/>
 					</View>
@@ -175,10 +205,7 @@ class Businesses extends Component {
 								incComments={this.props.incComments}
 							/>
 						)}
-						extraData={this.state.rf}
 						legacyImplementation={true}
-						// refreshing ={this.state.rf}
-						// onRefresh ={this.onRefresh}
 					/>
 				</View>
 			))
@@ -221,13 +248,13 @@ const styles = StyleSheet.create({
 		fontSize: vh(3),
 	},
 	searchDiv: {
+		position: "absolute",
 		zIndex: 1,
 		opacity: 1.0,
-		width: "90%",
-		paddingBottom: vh(4),
-		position: "relative",
-		top: "15%",
-		alignSelf: "center",
+		width: "100%",
+		height: vh(14),
+		top: vh(6.6),
+		// backgroundColor: "gold",
 	},
 });
 

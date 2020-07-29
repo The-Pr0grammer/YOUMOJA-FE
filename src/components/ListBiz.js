@@ -65,18 +65,6 @@ class ListBiz extends React.Component {
 			});
 	};
 
-	
-	// fetchBiz = () => {
-	// 	axios
-	// 		.get(`http://localhost:3000/user_bizs/${this.props.biz.id}`)
-	// 		.then(function (response) {
-	// 			this.setState({ biz: response });
-	// 		})
-	// 		.catch(function (error) {
-	// 			console.log(error);
-	// 		});
-	// };
-
 	render() {
 		// console.log(this.props.biz.business.comments);
 		return (
@@ -96,7 +84,6 @@ class ListBiz extends React.Component {
 						onPress={() => {
 							this.props.navigation.navigate("BizPage", {
 								biz: this.state.biz,
-								incComments: this.props.incComments,
 							});
 						}}
 					>
