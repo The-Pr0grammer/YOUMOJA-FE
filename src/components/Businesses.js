@@ -20,6 +20,7 @@ import { connect } from "react-redux";
 import { fetchBizs } from "../redux/actions/bizAction";
 import PropTypes from "prop-types";
 import Categories from "./Categories.js";
+import Header from "./Header.js";
 
 class Businesses extends Component {
 	constructor(props) {
@@ -29,7 +30,7 @@ class Businesses extends Component {
 			page: 1,
 			error: null,
 			search: "",
-			catToggle: false,
+			catTogg: false,
 		};
 	}
 
@@ -65,8 +66,13 @@ class Businesses extends Component {
 		return this.setState({ search: e });
 	};
 
+	handleCatsTogg = () => {
+		return this.setState({ catTogg: !this.state.catTogg });
+	};
+
 	render() {
 		// console.log(this.props.bizs);
+		console.log(this.state.catTogg);
 
 		return (
 			(this.props.bizs.isFetching && (
@@ -94,76 +100,16 @@ class Businesses extends Component {
 						justifyContent: "center",
 					}}
 				>
-					<View
-						style={{
-							zIndex: 1,
-							justifyContent: "center",
-							alignItems: "center",
-							width: vw(104),
-							postion: "absolute",
-							display: "flex",
-							flexDirection: "row",
-							right: vw(2),
-						}}
-					>
-						<TouchableOpacity
-							style={{
-								position: "absolute",
-								top: vh(6.8),
-								left: vw(1),
-								height: vh(7.5),
-								width: vw(16),
-								backgroundColor: "brown",
-								zIndex: 2,
-								opacity: 0.9,
-								justifyContent: "center",
-								alignItems: "center",
-							}}
-							onPress={this.props.navigation.openDrawer}
-						>
-							<Icon
-								style={{ left: vw(0) }}
-								name="menu"
-								type="feather"
-								color="red"
-								size={34}
-							/>
-						</TouchableOpacity>
-
-						<TouchableOpacity
-							style={{
-								position: "absolute",
-								top: vh(6.8),
-								height: vh(7.5),
-								width: vw(100),
-								backgroundColor: "magenta",
-								flexDirection: "row",
-								zIndex: 1,
-								opacity: 0.9,
-								justifyContent: "center",
-								alignItems: "center",
-							}}
-						>
-							<Text
-								style={{
-									textAlign: "center",
-									width: vw(56),
-									fontSize: 20,
-									marginLeft: vw(9.3),
-								}}
-							>
-								CATEGORIES
-							</Text>
-							<View style={{ left: vw(10) }}>
-								<Icon
-									name="circledown"
-									type="antdesign"
-									color="red"
-									size={34}
-								/>
-							</View>
-						</TouchableOpacity>
-					</View>
+					<Categories
+						handleCatsTogg={this.handleCatsTogg}
+						catTogg={this.state.catTogg}
+						navigation={this.props.navigation}
+						handleCatsTogg={this.handleCatsTogg}
+					/>
+					<Header
+						navigation={this.props.navigation}
+						handleCatsTogg={this.handleCatsTogg}
+					/>
 					<View style={styles.searchDiv}>
 						<SearchBar
 							round
