@@ -12,7 +12,6 @@ import { changeCat } from "../redux/actions/bizAction";
 
 class Category extends React.Component {
 	render() {
-
 		return (
 			<TouchableOpacity
 				style={{
@@ -23,7 +22,7 @@ class Category extends React.Component {
 				}}
 				onPress={() => {
 					this.props.changeCat(this.props.catObj.cat);
-					
+					this.props.handleCatsTogg();
 				}}
 			>
 				<ImageBackground

@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 class Header extends React.Component {
 	render() {
-		console.log(this.props.category);
+		// console.log(this.props.category);
 		return (
 			<View
 				style={{
@@ -34,8 +34,7 @@ class Header extends React.Component {
 						alignItems: "center",
 					}}
 					onPress={() => {
-						this.props.navigation.openDrawer;
-						this.props.handleCatsTogg();
+						this.props.navigation.openDrawer();
 					}}
 				>
 					<Icon
@@ -70,7 +69,7 @@ class Header extends React.Component {
 							marginLeft: vw(9.3),
 						}}
 					>
-						{this.props.category}
+						{this.props.category == "" ? "Categories" : this.props.category}
 					</Text>
 					<View style={{ left: vw(10.5) }}>
 						<Icon name="circledown" type="antdesign" color="red" size={34} />

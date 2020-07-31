@@ -165,7 +165,7 @@ export default class CategoriesList extends React.Component {
 					id: 1,
 					bg: require(`../images/categories/Animal.jpg`),
 				},
-				{ cat: "ANY", id: 34, bg: require(`../images/categories/Any.jpg`) },
+				{ cat: "All Categories", id: 34, bg: require(`../images/categories/Any.jpg`) },
 			],
 		};
 	}
@@ -213,7 +213,12 @@ export default class CategoriesList extends React.Component {
 						}}
 						style={{}}
 						data={this.state.categories}
-						renderItem={({ item }) => <Category catObj={item} />}
+						renderItem={({ item }) => (
+							<Category
+								catObj={item}
+								handleCatsTogg={this.props.handleCatsTogg}
+							/>
+						)}
 						keyExtractor={(item) => item.id.toString()}
 						numColumns={3}
 					/>

@@ -7,7 +7,7 @@ export default class SuccessModal extends React.Component {
 		return (
 			<View
 				style={{
-					backgroundColor: "aqua",
+					backgroundColor: "transparent",
 					alignContent: "center",
 					flex: 1,
 				}}

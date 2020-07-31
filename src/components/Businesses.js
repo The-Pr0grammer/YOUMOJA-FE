@@ -1,26 +1,23 @@
 import React, { Component } from "react";
 import {
 	View,
-	Text,
 	FlatList,
 	StyleSheet,
 	ImageBackground,
-	TouchableOpacity,
 	Dimensions,
 	ActivityIndicator,
 } from "react-native";
-import { Card, SearchBar, Icon, Button } from "react-native-elements";
 import axios from "axios";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
 import ListBiz from "./ListBiz.js";
-import { useFocusEffect } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { fetchBizs } from "../redux/actions/bizAction";
 import PropTypes from "prop-types";
 import CategoriesList from "./CategoriesList.js";
 import Header from "./Header.js";
+import Search from "./Search.js";
 
 class Businesses extends Component {
 	constructor(props) {
@@ -35,8 +32,6 @@ class Businesses extends Component {
 	}
 
 	componentDidMount() {
-		// this.fetchBizs(this.state.page);
-
 		this.props.fetchBizs();
 
 		this.willFocusSubscription = this.props.navigation.addListener(
@@ -71,11 +66,11 @@ class Businesses extends Component {
 	};
 
 	render() {
-		// console.log(this.props.bizs);
+		console.log(this.props.reduxState.category);
 		// console.log(this.state.catTogg);
 
 		return (
-			(this.props.bizs.isFetching && (
+			(this.props.reduxState.isFetching && (
 				<View
 					style={{
 						flex: 1,
@@ -90,7 +85,7 @@ class Businesses extends Component {
 					/>
 				</View>
 			)) ||
-			(!this.props.bizs.isFetching && (
+			(!this.props.reduxState.isFetching && (
 				<View
 					style={{
 						width: "100%",
@@ -104,32 +99,12 @@ class Businesses extends Component {
 						handleCatsTogg={this.handleCatsTogg}
 						catTogg={this.state.catTogg}
 						navigation={this.props.navigation}
-						handleCatsTogg={this.handleCatsTogg}
 					/>
 					<Header
 						navigation={this.props.navigation}
 						handleCatsTogg={this.handleCatsTogg}
 					/>
-					<View style={styles.searchDiv}>
-						<SearchBar
-							round
-							searchIcon={{ size: 18 }}
-							onChangeText={this.updateSearch}
-							onSubmitEditing={(e) => this.props.fetchBizs(this.state.page)}
-							placeholder={"     Search by keyword or location"}
-							value={this.state.search}
-							inputContainerStyle={{
-								borderRadius: 100,
-								height: vh(6.5),
-								backgroundColor: "aqua",
-								marginHorizontal: 0,
-							}}
-							containerStyle={{
-								backgroundColor: "black",
-								padding: 2,
-							}}
-						/>
-					</View>
+					<Search />
 					<ImageBackground
 						source={require("../images/Jarrell-Wadsworth-Revolutionary-Print-Lusenhop-Tate-Loan-Tiff.jpg")}
 						style={styles.bg}
@@ -142,7 +117,7 @@ class Businesses extends Component {
 							alignItems: "left",
 							justifyContent: "left",
 						}}
-						data={this.props.bizs.businesses}
+						data={this.props.filteredBizs}
 						keyExtractor={(item) => item.id.toString()}
 						renderItem={({ item }) => (
 							<ListBiz
@@ -163,7 +138,7 @@ export default connect(mapStateToProps, { fetchBizs })(Businesses);
 
 Businesses.propTypes = {
 	fetchBizs: PropTypes.func.isRequired,
-	bizs: PropTypes.object.isRequired,
+	reduxState: PropTypes.object.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -176,7 +151,6 @@ const styles = StyleSheet.create({
 		height: vh(105),
 	},
 	list: {
-		// alignSelf: "auto",
 		marginTop: "30%",
 		position: "absolute",
 		opacity: 1.0,
@@ -193,17 +167,13 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		fontSize: vh(3),
 	},
-	searchDiv: {
-		position: "absolute",
-		zIndex: 1,
-		opacity: 1.0,
-		width: "100%",
-		height: vh(14),
-		top: vh(6.6),
-		// backgroundColor: "gold",
-	},
 });
 
 function mapStateToProps(state) {
-	return { bizs: state };
+	return {
+		reduxState: state,
+		filteredBizs: state.businesses.filter((biz) =>
+			biz.business.categories.includes(state.category)
+		),
+	};
 }

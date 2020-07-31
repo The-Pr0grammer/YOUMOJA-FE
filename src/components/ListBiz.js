@@ -67,15 +67,31 @@ class ListBiz extends React.Component {
 
 	render() {
 		// console.log(this.props.biz.business.comments);
+		// console.log(this.props.biz.business.categories);
 		return (
 			<View style={styles.cardView}>
+				<Text
+					style={{
+						position: "relative",
+						backgroundColor: "brown",
+						height: vh(4.2),
+						fontFamily: "Marker Felt",
+						fontWeight: "bold",
+						fontSize: 20,
+						textAlign: "center",
+						borderWidth: 2,
+					}}
+				>
+					{this.props.biz.business.name}
+				</Text>
 				<Card
 					containerStyle={{
-						width: vw(97),
+						position: "relative",
+						margin: 0,
+						width: vw(100),
 						padding: 0,
-						borderWidth: 0,
-						shadowOffset: { height: 0, width: 0 },
-						display: "flex",
+						borderWidth: 2,
+						borderColor: "black",
 						flexDirection: "column",
 						backgroundColor: "transparent",
 					}}
@@ -94,11 +110,10 @@ class ListBiz extends React.Component {
 					</TouchableOpacity>
 					<View
 						style={{
-							alignSelf: "flex-end",
-							left: vw(61.3),
 							position: "absolute",
+							alignSelf: "flex-end",
 							height: vh(30),
-							width: vw(34.7),
+							width: vw(33),
 							backgroundColor: "black",
 							opacity: 0.5,
 						}}
@@ -237,14 +252,10 @@ export default ListBiz;
 
 const styles = StyleSheet.create({
 	cardView: {
-		marginTop: vh(-0.5),
-		padding: 0,
-		display: "flex",
-		flexDirection: "row",
+		marginTop: vh(1),
+		width: vw(100),
 	},
 	img: {
-		flex: 2,
-		marginLeft: vw(-4.0),
 		width: vw(66),
 		height: vh(30),
 		opacity: 1.0,

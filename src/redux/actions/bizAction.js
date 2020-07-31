@@ -91,6 +91,7 @@ export const postComment = (comment) => {
 	};
 };
 
+
 export const changeCat = (cat) => ({
 	type: CHANGE_CAT,
 	payload: cat,

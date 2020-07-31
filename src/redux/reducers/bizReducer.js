@@ -16,7 +16,7 @@ const initialState = {
 	errorMessage: "",
 	businesses: [],
 	comments: [],
-	category: "Categories",
+	category: "",
 };
 
 const bizReducer = (state = initialState, action) => {
@@ -52,7 +52,9 @@ const bizReducer = (state = initialState, action) => {
 				comments: [action.payload, ...state.comments],
 			};
 		case CHANGE_CAT:
-			return { ...state, category: action.payload };
+			return action.payload == "All Categories"
+				? { ...state, category: "" }
+				: { ...state, category: action.payload };
 		default:
 			return state;
 	}

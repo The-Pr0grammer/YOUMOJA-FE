@@ -90,8 +90,7 @@ class BizPage extends Component {
 								marqueeDelay={Math.random() * 1000}
 								style={styles.bizSumm}
 							>
-								mad random text cos this is just an example of a businesses
-								description !!!!!!! yeeeeeeeeeeee 🔥🤯♥️
+								{this.props.route.params["biz"].business.summary}
 							</TextTicker>
 						</View>
 						<View style={styles.cardView}>
