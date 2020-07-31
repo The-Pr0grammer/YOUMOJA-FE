@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { Icon } from "react-native-elements";
+import { connect } from "react-redux";
 
-export default class Header extends React.Component {
+class Header extends React.Component {
 	render() {
+		console.log(this.props.category);
 		return (
 			<View
 				style={{
@@ -68,13 +70,19 @@ export default class Header extends React.Component {
 							marginLeft: vw(9.3),
 						}}
 					>
-						CATEGORIES
+						{this.props.category}
 					</Text>
-					<View style={{ left: vw(10) }}>
+					<View style={{ left: vw(10.5) }}>
 						<Icon name="circledown" type="antdesign" color="red" size={34} />
 					</View>
 				</TouchableOpacity>
 			</View>
 		);
 	}
+}
+
+export default connect(mapStateToProps)(Header);
+
+function mapStateToProps(state) {
+	return { category: state.category };
 }

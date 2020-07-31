@@ -19,7 +19,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { fetchBizs } from "../redux/actions/bizAction";
 import PropTypes from "prop-types";
-import Categories from "./Categories.js";
+import CategoriesList from "./CategoriesList.js";
 import Header from "./Header.js";
 
 class Businesses extends Component {
@@ -72,7 +72,7 @@ class Businesses extends Component {
 
 	render() {
 		// console.log(this.props.bizs);
-		console.log(this.state.catTogg);
+		// console.log(this.state.catTogg);
 
 		return (
 			(this.props.bizs.isFetching && (
@@ -100,7 +100,7 @@ class Businesses extends Component {
 						justifyContent: "center",
 					}}
 				>
-					<Categories
+					<CategoriesList
 						handleCatsTogg={this.handleCatsTogg}
 						catTogg={this.state.catTogg}
 						navigation={this.props.navigation}

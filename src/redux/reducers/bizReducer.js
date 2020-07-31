@@ -8,6 +8,7 @@ import {
 	POSTING_COMMENT_REQUEST,
 	POSTING_COMMENT_SUCCESS,
 	POSTING_COMMENT_FAILURE,
+	CHANGE_CAT,
 } from "../actions/types";
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
 	errorMessage: "",
 	businesses: [],
 	comments: [],
+	category: "Categories",
 };
 
 const bizReducer = (state = initialState, action) => {
@@ -49,6 +51,8 @@ const bizReducer = (state = initialState, action) => {
 				isFetching: false,
 				comments: [action.payload, ...state.comments],
 			};
+		case CHANGE_CAT:
+			return { ...state, category: action.payload };
 		default:
 			return state;
 	}

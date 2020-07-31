@@ -8,6 +8,7 @@ import {
 	POSTING_COMMENT_REQUEST,
 	POSTING_COMMENT_SUCCESS,
 	POSTING_COMMENT_FAILURE,
+	CHANGE_CAT,
 } from "./types";
 import axios from "axios";
 
@@ -36,6 +37,7 @@ export const fetchingCommentsFailure = (error) => ({
 	type: FETCHING_COMMENTS_FAILURE,
 	payload: error,
 });
+
 export const postingCommentRequest = () => ({ type: POSTING_COMMENT_REQUEST });
 
 export const postingCommentSuccess = (json) => ({
@@ -88,3 +90,8 @@ export const postComment = (comment) => {
 		}
 	};
 };
+
+export const changeCat = (cat) => ({
+	type: CHANGE_CAT,
+	payload: cat,
+});
