@@ -11,20 +11,18 @@ class Header extends React.Component {
 			<View
 				style={{
 					zIndex: 1,
+					postion: "relative",
 					justifyContent: "center",
 					alignItems: "center",
-					width: vw(104),
-					postion: "absolute",
+					width: vw(100),
 					display: "flex",
 					flexDirection: "row",
-					right: vw(2),
+					marginTop: vh(0.25),
 				}}
 			>
 				<TouchableOpacity
 					style={{
-						position: "absolute",
-						top: vh(6.8),
-						left: vw(0.1),
+						position: "relative",
 						height: vh(7.5),
 						width: vw(16),
 						backgroundColor: "brown",
@@ -37,21 +35,14 @@ class Header extends React.Component {
 						this.props.navigation.openDrawer();
 					}}
 				>
-					<Icon
-						style={{ left: vw(0.8) }}
-						name="menu"
-						type="feather"
-						color="red"
-						size={34}
-					/>
+					<Icon name="menu" type="feather" color="red" size={34} />
 				</TouchableOpacity>
 
 				<TouchableOpacity
 					style={{
-						position: "absolute",
-						top: vh(6.8),
+						position: "relative",
 						height: vh(7.5),
-						width: vw(100),
+						width: vw(70),
 						backgroundColor: "magenta",
 						flexDirection: "row",
 						zIndex: 1,
@@ -64,17 +55,25 @@ class Header extends React.Component {
 					<Text
 						style={{
 							textAlign: "center",
-							width: vw(56),
+							width: vw(64),
 							fontSize: 20,
-							marginLeft: vw(9.3),
 						}}
 					>
 						{this.props.category == "" ? "Categories" : this.props.category}
 					</Text>
-					<View style={{ left: vw(10.5) }}>
-						<Icon name="circledown" type="antdesign" color="red" size={34} />
-					</View>
 				</TouchableOpacity>
+				<View
+					style={{
+						position: "relative",
+						height: vh(7.5),
+						width: vw(16),
+						justifyContent: "center",
+						alignItems: "center",
+						backgroundColor: "blue",
+					}}
+				>
+					<Icon name="circledown" type="antdesign" color="red" size={34} />
+				</View>
 			</View>
 		);
 	}

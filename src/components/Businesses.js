@@ -6,8 +6,8 @@ import {
 	ImageBackground,
 	Dimensions,
 	ActivityIndicator,
+	TouchableOpacity,
 } from "react-native";
-import axios from "axios";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
@@ -46,38 +46,17 @@ class Businesses extends Component {
 		// this.willFocusSubscription.remove();
 	}
 
-	fetchLikes = () => {
-		axios
-			.get(`http://localhost:3000/users/1`)
-			.then((response) => {
-				this.setState({ userLikes: response.data.user_likes });
-			})
-			.catch((error) => {
-				this.setState({ error: error });
-			});
-	};
-
-	updateSearch = (e) => {
-		return this.setState({ search: e });
-	};
-
 	handleCatsTogg = () => {
 		return this.setState({ catTogg: !this.state.catTogg });
 	};
 
 	render() {
-		console.log(this.props.reduxState.category);
+		// console.log(this.props.reduxState.category);
 		// console.log(this.state.catTogg);
 
 		return (
 			(this.props.reduxState.isFetching && (
-				<View
-					style={{
-						flex: 1,
-						justifyContent: "center",
-						backgroundColor: "maroon",
-					}}
-				>
+				<View style={styles.activityView}>
 					<ActivityIndicator
 						size="large"
 						color="#00ff00"
@@ -86,30 +65,75 @@ class Businesses extends Component {
 				</View>
 			)) ||
 			(!this.props.reduxState.isFetching && (
-				<View
-					style={{
-						width: "100%",
-						height: "100%",
-						flex: 1,
-						backgroundColor: "black",
-						justifyContent: "center",
-					}}
-				>
+				<View style={styles.container}>
 					<CategoriesList
 						handleCatsTogg={this.handleCatsTogg}
 						catTogg={this.state.catTogg}
 						navigation={this.props.navigation}
 					/>
-					<Header
-						navigation={this.props.navigation}
-						handleCatsTogg={this.handleCatsTogg}
-					/>
-					<Search />
+					<View
+						style={{ flexDirection: "column", backgroundColor: "transparent" }}
+					>
+						<Header
+							navigation={this.props.navigation}
+							handleCatsTogg={this.handleCatsTogg}
+						/>
+						<Search />
+						<View
+							style={{
+								position: "relative",
+								backgroundColor: "silver",
+								height: vh(6.8),
+								width: vw(100),
+								flexDirection: "row",
+							}}
+						>
+							<TouchableOpacity
+								style={{
+									height: vh(6.8),
+									width: vw(25),
+									borderWidth: 1,
+									position: "relative",
+									backgroundColor: "teal",
+									zIndex: 1,
+								}}
+							></TouchableOpacity>
+							<TouchableOpacity
+								style={{
+									height: vh(6.8),
+									width: vw(25),
+									borderWidth: 1,
+									position: "relative",
+									backgroundColor: "orange",
+									zIndex: 1,
+								}}
+							></TouchableOpacity>
+							<TouchableOpacity
+								style={{
+									height: vh(6.8),
+									width: vw(25),
+									borderWidth: 1,
+									position: "relative",
+									backgroundColor: "silver",
+									zIndex: 1,
+								}}
+							></TouchableOpacity>
+							<TouchableOpacity
+								style={{
+									height: vh(6.8),
+									width: vw(25),
+									borderWidth: 1,
+									position: "relative",
+									backgroundColor: "navy",
+									zIndex: 1,
+								}}
+							></TouchableOpacity>
+						</View>
+					</View>
 					<ImageBackground
 						source={require("../images/Jarrell-Wadsworth-Revolutionary-Print-Lusenhop-Tate-Loan-Tiff.jpg")}
 						style={styles.bg}
 					></ImageBackground>
-
 					<FlatList
 						style={styles.list}
 						contentContainerStyle={{
@@ -120,11 +144,7 @@ class Businesses extends Component {
 						data={this.props.filteredBizs}
 						keyExtractor={(item) => item.id.toString()}
 						renderItem={({ item }) => (
-							<ListBiz
-								biz={item}
-								navigation={this.props.navigation}
-								incComments={this.props.incComments}
-							/>
+							<ListBiz biz={item} navigation={this.props.navigation} />
 						)}
 						legacyImplementation={true}
 					/>
@@ -142,30 +162,32 @@ Businesses.propTypes = {
 };
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		width: "100%",
+		backgroundColor: "black",
+		flexDirection: "column",
+		// justifyContent: "center",
+	},
 	bg: {
 		resizeMode: "cover",
 		opacity: 0.3,
 		padding: 0,
 		borderWidth: 0,
-		width: "100%",
-		height: vh(105),
+		width: vw(100),
+		height: vh(85),
 	},
 	list: {
-		marginTop: "30%",
+		marginTop: vh(21.7),
 		position: "absolute",
 		opacity: 1.0,
-		height: "80%",
-		width: "100%",
-		top: vh(2),
-	},
-	cardText: {
+		height: vh(68.7),
 		width: vw(100),
-		height: vh(5),
-		backgroundColor: "gray",
-		opacity: 0.85,
-		padding: 0,
-		textAlign: "center",
-		fontSize: vh(3),
+	},
+	activityView: {
+		flex: 1,
+		justifyContent: "center",
+		backgroundColor: "maroon",
 	},
 });
 

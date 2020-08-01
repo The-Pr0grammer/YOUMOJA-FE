@@ -15,6 +15,11 @@ class Search extends React.Component {
 			catTogg: false,
 		};
 	}
+
+	updateSearch = (e) => {
+		return this.setState({ search: e });
+	};
+
 	render() {
 		return (
 			<View style={styles.searchDiv}>
@@ -45,13 +50,10 @@ export default connect(mapStateToProps)(Search);
 
 const styles = StyleSheet.create({
 	searchDiv: {
-		position: "absolute",
+		position: "relative",
 		zIndex: 1,
 		opacity: 1.0,
 		width: "100%",
-		height: vh(14),
-		top: vh(6.6),
-		// backgroundColor: "gold",
 	},
 });
 

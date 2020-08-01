@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React from "react";
 import {
 	ScrollView,
 	View,
@@ -9,11 +8,12 @@ import {
 	TouchableOpacity,
 	Dimensions,
 } from "react-native";
-import { Card, SearchBar, Icon, ThemeConsumer } from "react-native-elements";
+import { Card, Icon, ThemeConsumer } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
+import ListBizStats from "./ListBizStats.js";
+import TextTicker from "react-native-text-ticker";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
-import BizPage from "./BizPage.js";
 // import { connect } from "react-redux";
 // import { bindActionCreators } from "redux";
 // import { getComments } from "../actions/commentsAction";
@@ -22,7 +22,6 @@ class ListBiz extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			biz: [],
 			hearts: 0,
 			comments: 0,
 			page: 1,
@@ -30,60 +29,26 @@ class ListBiz extends React.Component {
 		};
 	}
 
-	componentDidMount() {
-		return this.setState({
-			biz: this.props.biz,
-			hearts: this.props.biz.business.hearts,
-			comments: this.props.biz.business.comments.length,
-		});
-	}
-
-	incHearts = () => {
-		const axios = require("axios");
-		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
-		axios
-			.patch(
-				`http://localhost:3000/businesses/${this.props.biz.business.id}`,
-				{
-					hearts: this.state.hearts + 1,
-				},
-				{ headers: { "Content-Type": "application/json" } }
-			)
-			.then(function (response) {
-				// console.log(response);
-			})
-			.catch((error) => {
-				console.log(error.response);
-			});
-		axios
-			.post(`http://localhost:3000/user_likes`, {
-				user_id: 1,
-				business_id: this.props.biz.business.id,
-			})
-			.then(function (response) {
-				console.log(response);
-			});
-	};
+	componentDidMount() {}
 
 	render() {
 		// console.log(this.props.biz.business.comments);
 		// console.log(this.props.biz.business.categories);
 		return (
-			<View style={styles.cardView}>
-				<Text
-					style={{
-						position: "relative",
-						backgroundColor: "brown",
-						height: vh(4.2),
-						fontFamily: "Marker Felt",
-						fontWeight: "bold",
-						fontSize: 20,
-						textAlign: "center",
-						borderWidth: 2,
-					}}
-				>
-					{this.props.biz.business.name}
-				</Text>
+			<View style={styles.container}>
+				<Text style={styles.bizName}>{this.props.biz.business.name}</Text>
+				<View style={styles.bizSummView}>
+					{/* <TextTicker
+						style={styles.bizSumm}
+						loop
+						bounce
+						repeatSpacer={25}
+						// duration={Math.random * 18000}
+						marqueeDelay={Math.random() * 2000}
+					>
+						{this.props.biz.business.summary}
+					</TextTicker> */}
+				</View>
 				<Card
 					containerStyle={{
 						position: "relative",
@@ -91,6 +56,7 @@ class ListBiz extends React.Component {
 						width: vw(100),
 						padding: 0,
 						borderWidth: 2,
+						borderTopWidth: 0,
 						borderColor: "black",
 						flexDirection: "column",
 						backgroundColor: "transparent",
@@ -99,7 +65,7 @@ class ListBiz extends React.Component {
 					<TouchableOpacity
 						onPress={() => {
 							this.props.navigation.navigate("BizPage", {
-								biz: this.state.biz,
+								biz: this.props.biz,
 							});
 						}}
 					>
@@ -108,140 +74,7 @@ class ListBiz extends React.Component {
 							source={{ uri: this.props.biz.business.image_url }}
 						/>
 					</TouchableOpacity>
-					<View
-						style={{
-							position: "absolute",
-							alignSelf: "flex-end",
-							height: vh(30),
-							width: vw(33),
-							backgroundColor: "black",
-							opacity: 0.5,
-						}}
-					>
-						<TouchableOpacity
-							style={{
-								position: "absolute",
-								alignSelf: "center",
-								top: vh(1),
-								height: vh(5),
-								width: vw(13),
-							}}
-							onPress={() => {
-								this.incHearts();
-							}}
-						>
-							<Icon name="heart" type="feather" color="red" size={37} />
-						</TouchableOpacity>
-						<Text
-							style={{
-								position: "absolute",
-								textAlign: "center",
-								fontSize: 25,
-								color: "gold",
-								fontWeight: "bold",
-								top: vh(6),
-								height: vh(5),
-								width: vw(13),
-								alignSelf: "center",
-							}}
-						>
-							{this.state.hearts}
-						</Text>
-						{/* COMMENTS ICON */}
-						<TouchableOpacity
-							style={{
-								position: "absolute",
-								alignSelf: "center",
-								top: vh(11),
-								height: vh(5),
-								width: vw(13),
-							}}
-							onPress={() => {}}
-						>
-							<Icon
-								name="chat"
-								type="materialcommunityicons"
-								color="green"
-								size={37}
-							/>
-						</TouchableOpacity>
-
-						<Text
-							style={{
-								position: "absolute",
-								textAlign: "center",
-								fontSize: 25,
-								color: "gold",
-								fontWeight: "bold",
-								top: vh(15),
-								height: vh(5),
-								width: vw(13),
-								alignSelf: "center",
-							}}
-						>
-							{this.state.comments}
-						</Text>
-
-						<ScrollView
-							style={{
-								alignSelf: "flex-start",
-								backgroundColor: "orange",
-								width: vw(34.5),
-								height: vh(10),
-								position: "absolute",
-								top: vh(20),
-							}}
-							automaticallyAdjustInsets={false}
-							horizontal={true}
-							pagingEnabled={true}
-							scrollEnabled={true}
-							decelerationRate={0}
-							snapToAlignment={"center"}
-							snapToInterval={200}
-							scrollEventThrottle={16}
-							onScroll={(event) => {
-								var contentOffsetX = event.nativeEvent.contentOffset.x;
-								var contentOffsetY = event.nativeEvent.contentOffset.y;
-
-								var cellWidth = (DEVICE_WIDTH - 100).toFixed(2);
-								var cellHeight = (DEVICE_HEIGHT - 200).toFixed(2);
-
-								var cellIndex = Math.floor(contentOffsetX / cellWidth);
-
-								// Round to the next cell if the scrolling will stop over halfway to the next cell.
-								if (
-									contentOffsetX -
-										Math.floor(contentOffsetX / cellWidth) * cellWidth >
-									cellWidth
-								) {
-									cellIndex++;
-								}
-
-								// Adjust stopping point to exact beginning of cell.
-								contentOffsetX = cellIndex * cellWidth;
-								contentOffsetY = cellIndex * cellHeight;
-
-								event.nativeEvent.contentOffsetX = contentOffsetX;
-								event.nativeEvent.contentOffsetY = contentOffsetY;
-
-								// this.setState({contentOffsetX:contentOffsetX,contentOffsetY:contentOffsetY});
-								console.log("cellIndex:" + cellIndex);
-
-								console.log("contentOffsetX:" + contentOffsetX);
-								// contentOffset={{x:this.state.contentOffsetX,y:0}}
-							}}
-						>
-							<Image
-								source={require("../images/LOGO.png")}
-								style={styles.badge}
-							/>
-							<Image
-								source={require("../images/LOGO.png")}
-								style={styles.badge}
-							/>
-						</ScrollView>
-					</View>
-					{/* BADGES VIEW*/}
+					<ListBizStats biz={this.props.biz} />
 				</Card>
 			</View>
 		);
@@ -251,14 +84,42 @@ class ListBiz extends React.Component {
 export default ListBiz;
 
 const styles = StyleSheet.create({
-	cardView: {
-		marginTop: vh(1),
+	container: {
 		width: vw(100),
+		height: vh(41),
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+		borderWidth: 1,
 	},
 	img: {
 		width: vw(66),
 		height: vh(30),
 		opacity: 1.0,
 		borderRadius: 2,
+		resizeMode: "cover",
+	},
+	bizName: {
+		position: "relative",
+		backgroundColor: "brown",
+		height: vh(4.2),
+		fontFamily: "Marker Felt",
+		fontWeight: "bold",
+		fontSize: 20,
+		textAlign: "center",
+		borderWidth: 2,
+		borderBottomWidth: 0,
+	},
+	bizSummView: {
+		position: "relative",
+		justifyContent: "center",
+		alignItems: "center",
+		width: vw(100),
+		height: vh(5.5),
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+		zIndex: 1,
+	},
+	bizSumm: {
+		fontSize: 20,
+		color: "aqua",
+		paddingHorizontal: vw(2),
 	},
 });

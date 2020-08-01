@@ -77,6 +77,8 @@ class BizPage extends Component {
 						<View
 							style={{
 								position: "relative",
+								justifyContent: "center",
+								alignItems: "center",
 								width: vw(100),
 								height: vh(6.6),
 								backgroundColor: "black",
@@ -87,7 +89,7 @@ class BizPage extends Component {
 								loop
 								bounce
 								repeatSpacer={25}
-								marqueeDelay={Math.random() * 1000}
+								marqueeDelay={Math.random() * 2000}
 								style={styles.bizSumm}
 							>
 								{this.props.route.params["biz"].business.summary}
@@ -380,5 +382,6 @@ const styles = StyleSheet.create({
 		fontSize: 32,
 		backgroundColor: "black",
 		color: "aqua",
+		paddingHorizontal: vw(2),
 	},
 });

@@ -165,7 +165,11 @@ export default class CategoriesList extends React.Component {
 					id: 1,
 					bg: require(`../images/categories/Animal.jpg`),
 				},
-				{ cat: "All Categories", id: 34, bg: require(`../images/categories/Any.jpg`) },
+				{
+					cat: "All Categories",
+					id: 34,
+					bg: require(`../images/categories/Any.jpg`),
+				},
 			],
 		};
 	}
@@ -176,15 +180,16 @@ export default class CategoriesList extends React.Component {
 				animationType="fade"
 				transparent={true}
 				visible={this.props.catTogg}
-				style={{ flex: 1, paddingBottom: vh(200) }}
+				style={{ flex: 1 }}
 				backdropOpacity={0.3}
-				contentContainerStyle={{ flex: 1, paddingBottom: vh(200) }}
+				contentContainerStyle={{
+					flex: 1,
+				}}
 			>
 				<View // HEADER
 					style={{
 						position: "absolute",
-						width: vw(104),
-						top: vh(2.5),
+						top: vh(9.5),
 					}}
 				>
 					<Header
@@ -199,9 +204,9 @@ export default class CategoriesList extends React.Component {
 						width: vw(100),
 						justifyContent: "center",
 						alignItems: "center",
-						top: vh(16.3),
+						top: vh(17.3),
 						backgroundColor: "rgba(0, 0, 0, 0.9)",
-						paddingBottom: vh(25),
+						paddingBottom: vh(17.3),
 					}}
 				>
 					<FlatList
@@ -210,8 +215,8 @@ export default class CategoriesList extends React.Component {
 							flexDirection: "column-reverse",
 							justifyContent: "center",
 							alignItems: "center",
+							// height: vh(70),
 						}}
-						style={{}}
 						data={this.state.categories}
 						renderItem={({ item }) => (
 							<Category
