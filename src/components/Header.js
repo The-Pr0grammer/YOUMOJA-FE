@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { Icon } from "react-native-elements";
+import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
 
 class Header extends React.Component {
@@ -42,7 +42,7 @@ class Header extends React.Component {
 					style={{
 						position: "relative",
 						height: vh(7.5),
-						width: vw(70),
+						width: vw(86),
 						backgroundColor: "magenta",
 						flexDirection: "row",
 						zIndex: 1,
@@ -61,19 +61,21 @@ class Header extends React.Component {
 					>
 						{this.props.category == "" ? "Categories" : this.props.category}
 					</Text>
+					<View
+						style={{
+							position: "relative",
+							height: vh(7.5),
+							width: vw(16),
+							justifyContent: "center",
+							alignItems: "center",
+							alignSelf: "flex-start",
+							left: vw(2.5),
+							// backgroundColor: "blue",
+						}}
+					>
+						<Icon name="circledown" type="antdesign" color="red" size={34} />
+					</View>
 				</TouchableOpacity>
-				<View
-					style={{
-						position: "relative",
-						height: vh(7.5),
-						width: vw(16),
-						justifyContent: "center",
-						alignItems: "center",
-						backgroundColor: "blue",
-					}}
-				>
-					<Icon name="circledown" type="antdesign" color="red" size={34} />
-				</View>
 			</View>
 		);
 	}

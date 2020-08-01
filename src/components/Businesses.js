@@ -6,18 +6,18 @@ import {
 	ImageBackground,
 	Dimensions,
 	ActivityIndicator,
-	TouchableOpacity,
 } from "react-native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
-import ListBiz from "./ListBiz.js";
 import { connect } from "react-redux";
 import { fetchBizs } from "../redux/actions/bizAction";
 import PropTypes from "prop-types";
+import ListBiz from "./ListBiz.js";
 import CategoriesList from "./CategoriesList.js";
 import Header from "./Header.js";
 import Search from "./Search.js";
+import Sorter from "./Sorter.js";
 
 class Businesses extends Component {
 	constructor(props) {
@@ -71,64 +71,13 @@ class Businesses extends Component {
 						catTogg={this.state.catTogg}
 						navigation={this.props.navigation}
 					/>
-					<View
-						style={{ flexDirection: "column", backgroundColor: "transparent" }}
-					>
+					<View style={styles.upperDiv}>
 						<Header
 							navigation={this.props.navigation}
 							handleCatsTogg={this.handleCatsTogg}
 						/>
 						<Search />
-						<View
-							style={{
-								position: "relative",
-								backgroundColor: "silver",
-								height: vh(6.8),
-								width: vw(100),
-								flexDirection: "row",
-							}}
-						>
-							<TouchableOpacity
-								style={{
-									height: vh(6.8),
-									width: vw(25),
-									borderWidth: 1,
-									position: "relative",
-									backgroundColor: "teal",
-									zIndex: 1,
-								}}
-							></TouchableOpacity>
-							<TouchableOpacity
-								style={{
-									height: vh(6.8),
-									width: vw(25),
-									borderWidth: 1,
-									position: "relative",
-									backgroundColor: "orange",
-									zIndex: 1,
-								}}
-							></TouchableOpacity>
-							<TouchableOpacity
-								style={{
-									height: vh(6.8),
-									width: vw(25),
-									borderWidth: 1,
-									position: "relative",
-									backgroundColor: "silver",
-									zIndex: 1,
-								}}
-							></TouchableOpacity>
-							<TouchableOpacity
-								style={{
-									height: vh(6.8),
-									width: vw(25),
-									borderWidth: 1,
-									position: "relative",
-									backgroundColor: "navy",
-									zIndex: 1,
-								}}
-							></TouchableOpacity>
-						</View>
+						<Sorter />
 					</View>
 					<ImageBackground
 						source={require("../images/Jarrell-Wadsworth-Revolutionary-Print-Lusenhop-Tate-Loan-Tiff.jpg")}
@@ -167,7 +116,6 @@ const styles = StyleSheet.create({
 		width: "100%",
 		backgroundColor: "black",
 		flexDirection: "column",
-		// justifyContent: "center",
 	},
 	bg: {
 		resizeMode: "cover",
@@ -178,16 +126,20 @@ const styles = StyleSheet.create({
 		height: vh(85),
 	},
 	list: {
-		marginTop: vh(21.7),
+		marginTop: vh(21.8),
 		position: "absolute",
 		opacity: 1.0,
-		height: vh(68.7),
+		height: vh(68.6),
 		width: vw(100),
 	},
 	activityView: {
 		flex: 1,
 		justifyContent: "center",
 		backgroundColor: "maroon",
+	},
+	upperDiv: {
+		flexDirection: "column",
+		backgroundColor: "transparent",
 	},
 });
 

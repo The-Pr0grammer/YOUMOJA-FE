@@ -9,14 +9,14 @@ import {
 	Dimensions,
 } from "react-native";
 import { Card, Icon, ThemeConsumer } from "react-native-elements";
-import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
-import ListBizStats from "./ListBizStats.js";
 import TextTicker from "react-native-text-ticker";
+import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
 // import { connect } from "react-redux";
 // import { bindActionCreators } from "redux";
 // import { getComments } from "../actions/commentsAction";
+import ListBizStats from "./ListBizStats.js";
 
 class ListBiz extends React.Component {
 	constructor(props) {
