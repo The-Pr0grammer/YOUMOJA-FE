@@ -5,32 +5,54 @@ import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
 import { connect } from "react-redux";
+import {
+	sortByLikesTogg,
+	sortByBadgesTogg,
+	sortByLocationTogg,
+} from "../redux/actions/bizAction";
 
 class Sorter extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			sort: true,
-		};
-	}
-
 	render() {
+		console.log(this.props.sorters);
 		return (
 			<View style={styles.container}>
-				<TouchableOpacity style={styles.sortBox1}>
+				<TouchableOpacity
+					onPress={() => {
+						this.props.sortByLikesTogg();
+					}}
+					style={[
+						this.props.sorters.likesSort ? styles.litBox : styles.sortBox1,
+					]}
+				>
 					<Icon name="heart" type="feather" color="lightcoral" size={34} />
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.sortBox2}>
-					<Icon name="clock" type="feather" color="lawngreen" size={34} />
+				<TouchableOpacity
+					onPress={() => {
+						this.props.sortByBadgesTogg();
+					}}
+					style={[
+						this.props.sorters.badgesSort ? styles.litBox : styles.sortBox2,
+					]}
+				>
+					<Icon
+						name="badge"
+						type="simple-line-icon"
+						color="dodgerblue"
+						size={34}
+					/>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.sortBox3}>
-					<Icon name="badge" type="simple-line-icon" color="gold" size={34} />
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.sortBox4}>
+				<TouchableOpacity
+					onPress={() => {
+						this.props.sortByLocationTogg();
+					}}
+					style={[
+						this.props.sorters.locationSort ? styles.litBox : styles.sortBox3,
+					]}
+				>
 					<Icon
 						name="location-arrow"
 						type="font-awesome-5"
-						color="red"
+						color="darkcyan"
 						size={32}
 					/>
 				</TouchableOpacity>
@@ -39,7 +61,11 @@ class Sorter extends React.Component {
 	}
 }
 
-export default connect(mapStateToProps)(Sorter);
+export default connect(mapStateToProps, {
+	sortByLikesTogg,
+	sortByBadgesTogg,
+	sortByLocationTogg,
+})(Sorter);
 
 const styles = StyleSheet.create({
 	container: {
@@ -51,17 +77,17 @@ const styles = StyleSheet.create({
 	},
 	sortBox1: {
 		height: vh(7),
-		width: vw(25),
+		width: vw(33.33),
 		position: "relative",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "khaki",
+		backgroundColor: "crimson",
 		borderWidth: 2,
 		borderBottomWidth: 5,
 	},
 	sortBox2: {
 		height: vh(7),
-		width: vw(25),
+		width: vw(33.33),
 		position: "relative",
 		justifyContent: "center",
 		alignItems: "center",
@@ -71,17 +97,7 @@ const styles = StyleSheet.create({
 	},
 	sortBox3: {
 		height: vh(7),
-		width: vw(25),
-		position: "relative",
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "crimson",
-		borderWidth: 2,
-		borderBottomWidth: 5,
-	},
-	sortBox4: {
-		height: vh(7),
-		width: vw(25),
+		width: vw(33.33),
 		position: "relative",
 		justifyContent: "center",
 		alignItems: "center",
@@ -89,9 +105,9 @@ const styles = StyleSheet.create({
 		borderWidth: 2,
 		borderBottomWidth: 5,
 	},
-	litBox4: {
+	litBox: {
 		height: vh(7),
-		width: vw(25),
+		width: vw(33.33),
 		position: "relative",
 		justifyContent: "center",
 		alignItems: "center",
@@ -102,5 +118,11 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-	return { category: state.category };
+	return {
+		sorters: {
+			likesSort: state.likesSort,
+			badgesSort: state.badgesSort,
+			locationSort: state.locationSort,
+		},
+	};
 }

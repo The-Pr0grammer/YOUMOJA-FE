@@ -8,7 +8,7 @@ import {
 import React from "react";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
-import { changeCat } from "../redux/actions/bizAction";
+import { changeCat, handleSearch } from "../redux/actions/bizAction";
 
 class Category extends React.Component {
 	render() {
@@ -22,6 +22,7 @@ class Category extends React.Component {
 				}}
 				onPress={() => {
 					this.props.changeCat(this.props.catObj.cat);
+					this.props.handleSearch("");
 					this.props.handleCatsTogg();
 				}}
 			>
@@ -55,7 +56,7 @@ class Category extends React.Component {
 	}
 }
 
-export default connect(mapStateToProps, { changeCat })(Category);
+export default connect(mapStateToProps, { changeCat, handleSearch })(Category);
 
 const styles = StyleSheet.create({
 	catRow: {

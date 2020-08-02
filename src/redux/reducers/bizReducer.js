@@ -9,6 +9,10 @@ import {
 	POSTING_COMMENT_SUCCESS,
 	POSTING_COMMENT_FAILURE,
 	CHANGE_CAT,
+	HANDLE_SEARCH,
+	SORT_BY_LIKES_TOGG,
+	SORT_BY_BADGES_TOGG,
+	SORT_BY_LOCATION_TOGG,
 } from "../actions/types";
 
 const initialState = {
@@ -17,6 +21,10 @@ const initialState = {
 	businesses: [],
 	comments: [],
 	category: "",
+	search: "",
+	likesSort: false,
+	badgesSort: false,
+	locationSort: false,
 };
 
 const bizReducer = (state = initialState, action) => {
@@ -55,6 +63,16 @@ const bizReducer = (state = initialState, action) => {
 			return action.payload == "All Categories"
 				? { ...state, category: "" }
 				: { ...state, category: action.payload };
+		case HANDLE_SEARCH:
+			return action.payload == ""
+				? { ...state, search: "" }
+				: { ...state, search: action.payload };
+		case SORT_BY_LIKES_TOGG:
+			return { ...state, likesSort: !state.likesSort };
+		case SORT_BY_BADGES_TOGG:
+			return { ...state, badgesSort: !state.badgesSort };
+		case SORT_BY_LOCATION_TOGG:
+			return { ...state, locationSort: !state.locationSort };
 		default:
 			return state;
 	}

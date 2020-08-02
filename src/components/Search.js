@@ -1,33 +1,49 @@
-import React, { Component } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { SearchBar } from "react-native-elements";
 import { connect } from "react-redux";
+import { handleSearch } from "../redux/actions/bizAction";
 
 class Search extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			userLikes: [],
-			page: 1,
 			error: null,
 			search: "",
-			catTogg: false,
 		};
+	}
+
+	componentDidMount() {
+		this.props.handleSearch(this.state.search);
 	}
 
 	updateSearch = (e) => {
 		return this.setState({ search: e });
 	};
 
+	submitSearch = () => {
+		this.props.handleSearch(this.state.search);
+		this.search.clear();
+	};
+
 	render() {
+		// console.log(this.props.search);
+
 		return (
-			<View style={styles.searchDiv}>
+			<View
+				onFocus={() => {
+					this.search.blur();
+					this.props.handleSearchFocus();
+				}}
+				style={styles.searchDiv}
+			>
 				<SearchBar
+					ref={(search) => (this.search = search)}
 					round
 					searchIcon={{ size: 18 }}
 					onChangeText={this.updateSearch}
-					onSubmitEditing={(e) => this.props.fetchBizs(this.state.page)}
+					onSubmitEditing={(e) => this.submitSearch()}
 					placeholder={"     Search by keyword or location"}
 					value={this.state.search}
 					inputContainerStyle={{
@@ -46,7 +62,7 @@ class Search extends React.Component {
 	}
 }
 
-export default connect(mapStateToProps)(Search);
+export default connect(mapStateToProps, { handleSearch })(Search);
 
 const styles = StyleSheet.create({
 	searchDiv: {
@@ -58,5 +74,5 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-	return { category: state.category };
+	return { search: state.search };
 }

@@ -17,6 +17,7 @@ import ListBiz from "./ListBiz.js";
 import CategoriesList from "./CategoriesList.js";
 import Header from "./Header.js";
 import Search from "./Search.js";
+import FocusedSearch from "./FocusedSearch.js";
 import Sorter from "./Sorter.js";
 
 class Businesses extends Component {
@@ -26,7 +27,7 @@ class Businesses extends Component {
 			userLikes: [],
 			page: 1,
 			error: null,
-			search: "",
+			searchFocus: false,
 			catTogg: false,
 		};
 	}
@@ -50,9 +51,12 @@ class Businesses extends Component {
 		return this.setState({ catTogg: !this.state.catTogg });
 	};
 
+	handleSearchFocus = () => {
+		return this.setState({ searchFocus: !this.state.searchFocus });
+	};
+
 	render() {
-		// console.log(this.props.reduxState.category);
-		// console.log(this.state.catTogg);
+		// console.log(this.props.reduxState);
 
 		return (
 			(this.props.reduxState.isFetching && (
@@ -76,7 +80,10 @@ class Businesses extends Component {
 							navigation={this.props.navigation}
 							handleCatsTogg={this.handleCatsTogg}
 						/>
-						<Search />
+						<Search handleSearchFocus={this.handleSearchFocus} />
+						{this.state.searchFocus && (
+							<FocusedSearch handleSearchFocus={this.handleSearchFocus} />
+						)}
 						<Sorter />
 					</View>
 					<ImageBackground
@@ -95,6 +102,7 @@ class Businesses extends Component {
 						renderItem={({ item }) => (
 							<ListBiz biz={item} navigation={this.props.navigation} />
 						)}
+						extraData={this.props.sorters}
 						legacyImplementation={true}
 					/>
 				</View>
@@ -126,11 +134,11 @@ const styles = StyleSheet.create({
 		height: vh(85),
 	},
 	list: {
-		marginTop: vh(21.8),
 		position: "absolute",
-		opacity: 1.0,
+		marginTop: vh(21.8),
 		height: vh(68.6),
 		width: vw(100),
+		// opacity: 1.0,
 	},
 	activityView: {
 		flex: 1,
@@ -141,13 +149,46 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		backgroundColor: "transparent",
 	},
+	topDrop: {
+		position: "absolute",
+		height: vh(10),
+		width: vw(100),
+		top: 150,
+		backgroundColor: "blue",
+		zIndex: 3,
+	},
+	botDrop: {
+		position: "absolute",
+		marginTop: vh(21.8),
+		height: vh(68.6),
+		width: vw(100),
+		backgroundColor: "red",
+		zIndex: 4,
+	},
 });
 
 function mapStateToProps(state) {
 	return {
 		reduxState: state,
-		filteredBizs: state.businesses.filter((biz) =>
-			biz.business.categories.includes(state.category)
-		),
+		sorters: {
+			likesSort: state.likesSort,
+			badgesSort: state.badgesSort,
+			locationSort: state.locationSort,
+		},
+		filteredBizs: state.businesses
+			.filter((biz) => biz.business.categories.includes(state.category))
+			.filter(
+				(biz) =>
+					biz.business.summary
+						.toUpperCase()
+						.includes(state.search.toUpperCase()) ||
+					biz.business.name
+						.toUpperCase()
+						.includes(state.search.toUpperCase()) ||
+					biz.business.city.toUpperCase().includes(state.search.toUpperCase())
+			)
+			.sort((a, b) => {
+				return state.likesSort ? b.business.hearts - a.business.hearts : b.business.name < a.business.name;
+			}),
 	};
 }

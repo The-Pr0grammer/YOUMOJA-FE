@@ -9,6 +9,10 @@ import {
 	POSTING_COMMENT_SUCCESS,
 	POSTING_COMMENT_FAILURE,
 	CHANGE_CAT,
+	HANDLE_SEARCH,
+	SORT_BY_LIKES_TOGG,
+	SORT_BY_BADGES_TOGG,
+	SORT_BY_LOCATION_TOGG
 } from "./types";
 import axios from "axios";
 
@@ -91,8 +95,18 @@ export const postComment = (comment) => {
 	};
 };
 
-
 export const changeCat = (cat) => ({
 	type: CHANGE_CAT,
 	payload: cat,
 });
+
+export const handleSearch = (search) => ({
+	type: HANDLE_SEARCH,
+	payload: search,
+});
+
+export const sortByLikesTogg = () => ({ type: SORT_BY_LIKES_TOGG });
+
+export const sortByBadgesTogg = () => ({ type: SORT_BY_BADGES_TOGG });
+
+export const sortByLocationTogg = () => ({ type: SORT_BY_LOCATION_TOGG });
