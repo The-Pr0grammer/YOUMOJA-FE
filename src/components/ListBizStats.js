@@ -78,12 +78,13 @@ class ListBizStats extends React.Component {
 		return (
 			<View
 				style={{
+					flex: 1,
 					position: "absolute",
 					alignSelf: "flex-end",
 					height: vh(30),
 					width: vw(33),
 					backgroundColor: "black",
-					opacity: 0.5,
+					opacity: 0.65,
 				}}
 			>
 				<TouchableOpacity
@@ -129,7 +130,7 @@ class ListBizStats extends React.Component {
 					<Icon
 						name="chat"
 						type="materialcommunityicons"
-						color="green"
+						color="tomato"
 						size={37}
 					/>
 				</TouchableOpacity>
@@ -152,55 +153,76 @@ class ListBizStats extends React.Component {
 
 				<ScrollView
 					style={{
-						alignSelf: "flex-start",
-						backgroundColor: "orange",
-						width: vw(33),
-						height: vh(10),
 						position: "absolute",
 						top: vh(20),
+						backgroundColor: "black",
+						width: vw(33),
+					}}
+					contentContainerStyle={{
+						height: vh(10),
+						flexGrow: 1,
+						justifyContent: "center",
 					}}
 					automaticallyAdjustInsets={false}
 					horizontal={true}
 					pagingEnabled={true}
 					scrollEnabled={true}
-					decelerationRate={0}
+					decelerationRate={0.998}
 					snapToAlignment={"center"}
-					snapToInterval={200}
-					scrollEventThrottle={16}
-					onScroll={(event) => {
-						var contentOffsetX = event.nativeEvent.contentOffset.x;
-						var contentOffsetY = event.nativeEvent.contentOffset.y;
-
-						var cellWidth = (DEVICE_WIDTH - 100).toFixed(2);
-						var cellHeight = (DEVICE_HEIGHT - 200).toFixed(2);
-
-						var cellIndex = Math.floor(contentOffsetX / cellWidth);
-
-						// Round to the next cell if the scrolling will stop over halfway to the next cell.
-						if (
-							contentOffsetX -
-								Math.floor(contentOffsetX / cellWidth) * cellWidth >
-							cellWidth
-						) {
-							cellIndex++;
-						}
-
-						// Adjust stopping point to exact beginning of cell.
-						contentOffsetX = cellIndex * cellWidth;
-						contentOffsetY = cellIndex * cellHeight;
-
-						event.nativeEvent.contentOffsetX = contentOffsetX;
-						event.nativeEvent.contentOffsetY = contentOffsetY;
-
-						// this.setState({contentOffsetX:contentOffsetX,contentOffsetY:contentOffsetY});
-						console.log("cellIndex:" + cellIndex);
-
-						console.log("contentOffsetX:" + contentOffsetX);
-						// contentOffset={{x:this.state.contentOffsetX,y:0}}
-					}}
+					snapToInterval={33}
+					scrollEventThrottle={1}
 				>
-					<Image source={require("../images/LOGO.png")} style={styles.badge} />
-					<Image source={require("../images/LOGO.png")} style={styles.badge} />
+					<TouchableOpacity style={styles.badge}>
+						<Icon
+							name="donate"
+							type="font-awesome-5"
+							color="green"
+							size={25}
+							reverse
+							reverseColor="lawngreen"
+							style={{ marginRight: vw(10) }}
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.badge}>
+						<Icon
+							name="donate"
+							type="font-awesome-5"
+							color="blue"
+							size={25}
+							reverse
+							reverseColor="dodgerblue"
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.badge}>
+						<Icon
+							name="donate"
+							type="font-awesome-5"
+							color="firebrick"
+							size={25}
+							reverse
+							reverseColor="lightcoral"
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.badge}>
+						<Icon
+							name="donate"
+							type="font-awesome-5"
+							color="slateblue"
+							size={25}
+							reverse
+							reverseColor="darkmagenta"
+						/>
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.badge}>
+						<Icon
+							name="donate"
+							type="font-awesome-5"
+							color="gold"
+							size={25}
+							reverse
+							reverseColor="darkorange"
+						/>
+					</TouchableOpacity>
 				</ScrollView>
 			</View>
 		);
@@ -209,7 +231,15 @@ class ListBizStats extends React.Component {
 
 export default connect(mapStateToProps)(ListBizStats);
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+	badge: {
+		width: vw(33),
+		height: vh(10),
+		opacity: 1.0,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+});
 
 function mapStateToProps(state) {
 	return { category: state.category };

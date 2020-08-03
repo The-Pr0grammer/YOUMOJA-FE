@@ -30,10 +30,10 @@ function Home({ navigation }) {
 		<Stack.Navigator
 			screenOptions={{
 				headerStyle: {
-					backgroundColor: "#f4511e",
-					shadowColor: 'transparent'
+					backgroundColor: "darkslategray",
+					shadowColor: "transparent",
 				},
-				headerTintColor: "blue",
+				headerTintColor: "olivedrab",
 				headerTitleStyle: {
 					fontWeight: "bold",
 					fontFamily: "Marker Felt",

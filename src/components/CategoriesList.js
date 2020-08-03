@@ -226,6 +226,7 @@ export default class CategoriesList extends React.Component {
 						)}
 						keyExtractor={(item) => item.id.toString()}
 						numColumns={3}
+						showsVerticalScrollIndicator={false}
 					/>
 				</View>
 			</Modal>

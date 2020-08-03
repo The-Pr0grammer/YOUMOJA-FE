@@ -49,7 +49,7 @@ class Search extends React.Component {
 							inputContainerStyle={{
 								borderRadius: 100,
 								height: vh(6.5),
-								backgroundColor: "aqua",
+								backgroundColor: "deepskyblue",
 								marginHorizontal: 0,
 							}}
 							containerStyle={{

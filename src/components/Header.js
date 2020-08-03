@@ -43,7 +43,7 @@ class Header extends React.Component {
 						position: "relative",
 						height: vh(7.5),
 						width: vw(86),
-						backgroundColor: "magenta",
+						backgroundColor: "salmon",
 						flexDirection: "row",
 						zIndex: 1,
 						opacity: 0.9,
@@ -56,7 +56,11 @@ class Header extends React.Component {
 						style={{
 							textAlign: "center",
 							width: vw(64),
-							fontSize: 20,
+							height: vh(5),
+							fontSize: 22,
+							lineHeight: vh(6),
+							fontFamily: "Rockwell",
+							// backgroundColor: "blue",
 						}}
 					>
 						{this.props.category == "" ? "Categories" : this.props.category}
@@ -69,7 +73,7 @@ class Header extends React.Component {
 							justifyContent: "center",
 							alignItems: "center",
 							alignSelf: "flex-start",
-							left: vw(2.5),
+							// left: vw(2.5),
 							// backgroundColor: "blue",
 						}}
 					>

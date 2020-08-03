@@ -15,7 +15,7 @@ class Search extends React.Component {
 	}
 
 	componentDidMount() {
-		this.props.handleSearch(this.state.search);
+		this.props.handleSearch(this.props.search);
 	}
 
 	updateSearch = (e) => {
@@ -45,11 +45,11 @@ class Search extends React.Component {
 					onChangeText={this.updateSearch}
 					onSubmitEditing={(e) => this.submitSearch()}
 					placeholder={"     Search by keyword or location"}
-					value={this.state.search}
+					value={this.props.search}
 					inputContainerStyle={{
 						borderRadius: 100,
 						height: vh(6.5),
-						backgroundColor: "aqua",
+						backgroundColor: "lightskyblue",
 						marginHorizontal: 0,
 					}}
 					containerStyle={{

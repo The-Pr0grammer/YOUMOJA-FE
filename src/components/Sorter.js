@@ -13,7 +13,7 @@ import {
 
 class Sorter extends React.Component {
 	render() {
-		console.log(this.props.sorters);
+		// console.log(this.props.sorters);
 		return (
 			<View style={styles.container}>
 				<TouchableOpacity
@@ -24,7 +24,7 @@ class Sorter extends React.Component {
 						this.props.sorters.likesSort ? styles.litBox : styles.sortBox1,
 					]}
 				>
-					<Icon name="heart" type="feather" color="lightcoral" size={34} />
+					<Icon name="heart" type="antdesign" color="lightcoral" size={32} />
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
@@ -35,9 +35,9 @@ class Sorter extends React.Component {
 					]}
 				>
 					<Icon
-						name="badge"
-						type="simple-line-icon"
-						color="dodgerblue"
+						name="donate"
+						type="font-awesome-5"
+						color="darkcyan"
 						size={34}
 					/>
 				</TouchableOpacity>
@@ -52,7 +52,7 @@ class Sorter extends React.Component {
 					<Icon
 						name="location-arrow"
 						type="font-awesome-5"
-						color="darkcyan"
+						color="dodgerblue"
 						size={32}
 					/>
 				</TouchableOpacity>
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
 		position: "relative",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "blue",
+		backgroundColor: "mediumspringgreen",
 		borderWidth: 2,
 		borderBottomWidth: 5,
 	},
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 		position: "relative",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "mediumspringgreen",
+		backgroundColor: "blue",
 		borderWidth: 2,
 		borderBottomWidth: 5,
 	},
