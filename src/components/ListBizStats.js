@@ -58,9 +58,7 @@ class ListBizStats extends React.Component {
 				},
 				{ headers: { "Content-Type": "application/json" } }
 			)
-			.then(function (response) {
-				// console.log(response);
-			})
+			.then(function (response) {})
 			.catch((error) => {
 				console.log(error.response);
 			});
@@ -70,7 +68,7 @@ class ListBizStats extends React.Component {
 				business_id: this.props.biz.business.id,
 			})
 			.then(function (response) {
-				console.log(response);
+				// console.log(response);
 			});
 	};
 

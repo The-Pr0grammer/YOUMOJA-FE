@@ -12,6 +12,7 @@ const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
 import { connect } from "react-redux";
 import { fetchBizs } from "../redux/actions/bizAction";
+import { getUsers } from "../api/users.js";
 import PropTypes from "prop-types";
 import ListBiz from "./ListBiz.js";
 import CategoriesList from "./CategoriesList.js";
@@ -24,6 +25,9 @@ class Businesses extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			users: [],
+			hasLoadedUsers: false,
+			userLoadingErrorMessage: "",
 			userLikes: [],
 			page: 1,
 			error: null,
@@ -33,18 +37,54 @@ class Businesses extends Component {
 	}
 
 	componentDidMount() {
+		this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
+		this.loadUsers();
 		this.props.fetchBizs();
 
-		this.willFocusSubscription = this.props.navigation.addListener(
-			"focus",
+		this.didFocusSubscription = this.props.navigation.addListener(
+			"didfocus",
 			() => {
+				if (this.state.hasLoadedUsers != true) {
+					this.loadUsers();
+				}
 				this.props.fetchBizs();
 			}
 		);
 	}
 
+	loadUsers() {
+		this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
+		getUsers().then((res) => {
+			if (res.status === 401) {
+				this.props.navigation.navigate("Login");
+			} else {
+				this.setState({
+					hasLoadedUsers: false,
+					userLoadingErrorMessage: res.message,
+				});
+			}
+			this.setState({
+				hasLoadedUsers: true,
+				users: res.data,
+			});
+		});
+	}
+
+	handleUserLoadingError = (res) => {
+		console.log("in loading error", res);
+		if (res.status === 401) {
+			this.props.navigation.navigate("Login");
+		} else {
+			this.setState({
+				hasLoadedUsers: false,
+				userLoadingErrorMessage: res.message,
+			});
+		}
+	};
+
 	componentWillUnmount() {
-		// this.willFocusSubscription.remove();
+		// this.setState({ hasLoadedUsers: false, users: [] })
+		// return this.didFocusSubscription.remove()
 	}
 
 	handleCatsTogg = () => {
@@ -57,6 +97,7 @@ class Businesses extends Component {
 
 	render() {
 		// console.log(this.props.reduxState);
+		// console.log("USERS:", this.state.users[0]);
 
 		return (
 			(this.props.reduxState.isFetching && (
@@ -188,7 +229,9 @@ function mapStateToProps(state) {
 					biz.business.city.toUpperCase().includes(state.search.toUpperCase())
 			)
 			.sort((a, b) => {
-				return state.likesSort ? b.business.hearts - a.business.hearts : b.business.name < a.business.name;
+				return state.likesSort
+					? b.business.hearts - a.business.hearts
+					: b.business.name < a.business.name;
 			}),
 	};
 }

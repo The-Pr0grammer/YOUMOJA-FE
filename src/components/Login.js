@@ -1,169 +1,267 @@
-import * as React from "react";
-import { View, StyleSheet, ImageBackground, TextInput } from "react-native";
+import React, { useState } from "react";
+import {
+	View,
+	StyleSheet,
+	ImageBackground,
+	TextInput,
+	KeyboardAvoidingView,
+	TouchableOpacity,
+} from "react-native";
 import {
 	Input,
 	ThemeProvider,
 	Button,
 	Icon,
 	Text,
+	Image,
 } from "react-native-elements";
-import { Dimensions } from "react-native";
-import Image from "react-native-scalable-image";
+import { useFocusEffect } from "@react-navigation/native";
+import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
+// import { Dimensions } from "react-native";
 import { connect } from "react-redux";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { login } from "../api/authentication.js";
+import { setToken } from "../api/token";
+import Form from "./forms/Form";
+import { validateContent, validateLength } from "./forms/validation";
 
-class Login extends React.Component {
-	render() {
-		// console.log(this.props.isLogged);
-		return (
-			<View style={styles.container}>
-				<Image
-					style={styles.background}
-					width={Dimensions.get("window").width}
-					source={require("../images/TulsaRiot.jpg")}
-				></Image>
-				<Image
-					style={styles.background}
-					width={Dimensions.get("window").width}
-					source={require("../images/TulsaBookerTWashHighBand.jpg")}
-				></Image>
-				<Image
+const Login = ({ navigation }) => {
+	useFocusEffect(
+		React.useCallback(() => {
+			logOut();
+		}, [])
+	);
+	const [errorMessage, setErrorMessage] = useState("");
+	// const loginUser = async (email, password) => {
+	// 	// setErrorMessage("");
+	// 	login(email, password)
+	// 		.then(async (res) => {
+	// 			console.log(result);
+
+	// 			await setToken(res.auth_token);
+	// 			navigation.navigate("Home", { screen: "Home" });
+	// 		})
+	// 		.catch((err) => setErrorMessage(err.message));
+	// };
+
+	const logOut = async () => {
+		await setToken("");
+	};
+
+	const handleResult = async (result) => {
+		if (result.ok && result.data) {
+			console.log("result data is", result.data);
+			await setToken(result.data.auth_token);
+			navigation.navigate("Home");
+		} else if (result.status === 401) {
+			throw new Error("Invalid login.");
+		} else {
+			throw new Error("Something went wrong.");
+		}
+	};
+
+	return (
+		<KeyboardAvoidingView behavior="padding" style={styles.container}>
+			<View style={styles.inner}>
+				<View
 					style={{
-						position: "absolute",
-						bottom: "52%",
+						flex: 1,
+						height: vh(100),
+						justifyContent: "center",
+						alignItems: "center",
+						opacity: 1,
 						zIndex: 1,
-						alignSelf: "center",
-						backgroundColor: "black",
 					}}
-					width={Dimensions.get("window").width / 2}
-					source={require("../images/name.png")}
-				></Image>
-				<Image
-					style={styles.background}
-					width={Dimensions.get("window").width}
-					source={require("../images/tulsa.jpeg")}
-				></Image>
-				<Image
-					style={styles.background}
-					width={Dimensions.get("window").width}
-					source={require("../images/tulsaAftermath.jpeg")}
-				></Image>
-				<Image
-					width={Dimensions.get("window").width / 4.5}
-					style={styles.logo}
-					source={require("../images/LOGO.png")}
-				></Image>
-				<View style={styles.inputView2}>
-					<TextInput
+				>
+					<View
+						style={{
+							marginTop: vh(10),
+							height: vh(9.5),
+							width: vw(85),
+							justifyContent: "center",
+							alignItems: "center",
+							opacity: 1,
+							zIndex: 1,
+							backgroundColor: "black",
+							borderRadius: 6,
+						}}
+					>
+						<Image
+							style={{
+								height: vh(20),
+								width: vw(75),
+								resizeMode: "cover",
+							}}
+							source={require("../images/name.png")}
+						></Image>
+					</View>
+					<Image
+						style={{
+							height: vh(7.5),
+							width: vw(15),
+							zIndex: 1,
+							resizeMode: "stretch",
+							marginVertical: vh(1),
+						}}
+						source={require("../images/LOGO.png")}
+					></Image>
+
+					{/* <TextInput
 						textAlign
 						clearTextOnFocus={true}
-						defaultValue="username"
-						style={styles.input}
+						placeholder="username or email"
+						placeholderTextColor="#D50000"
+						style={{
+							height: vh(6),
+							width: vw(55),
+							fontSize: 20,
+							borderRadius: 30,
+							color: "black",
+							borderWidth: 3.5,
+							backgroundColor: "maroon",
+							marginVertical: vh(1),
+						}}
 					/>
 					<TextInput
 						textAlign
 						clearTextOnFocus={true}
-						defaultValue="password"
-						style={styles.input}
+						// defaultValue="password"
+						textContentType={"password"}
 						secureTextEntry={true}
+						placeholder="password"
+						placeholderTextColor="#D50000"
+						style={{
+							height: vh(6),
+							width: vw(55),
+							fontSize: 20,
+							borderRadius: 30,
+							color: "black",
+							borderWidth: 3.5,
+							backgroundColor: "maroon",
+						}}
 					/>
 					<Button
 						buttonStyle={{ backgroundColor: "black", borderRadius: 18 }}
-						titleStyle={{ color: "red" }}
-						style={styles.loginButton}
-						onPress={() => {
-							this.props.signIn();
-							this.props.navigation.navigate("Home");
+						style={{
+							color: "black",
+							position: "relative",
+							borderRadius: 20,
+							height: vh(10),
+							width: vw(30),
+							marginTop: vh(2.5),
 						}}
+						titleStyle={{ color: "red" }}
 						title="Log In"
+						onPress={loginUser}
 					></Button>
+					 */}
+
+					<Form
+						action={login}
+						afterSubmit={handleResult}
+						buttonText="Submit"
+						fields={{
+							email: {
+								label: "Email",
+								validators: [validateContent],
+								inputProps: {
+									keyboardType: "email-address",
+								},
+							},
+							password: {
+								label: "Password",
+								validators: [validateLength],
+								inputProps: {
+									secureTextEntry: true,
+								},
+							},
+						}}
+					/>
+
+					<View
+						style={{
+							top: vh(4.5),
+							width: vw(77),
+							height: vh(0.5),
+							backgroundColor: "black",
+						}}
+					></View>
+					<TouchableWithoutFeedback
+						style={{
+							marginTop: vh(5),
+							width: vw(92.5),
+							height: vh(5),
+						}}
+						onPress={() => navigation.navigate("Home", { screen: "Signup" })}
+					>
+						<Text
+							style={{
+								textAlign: "center",
+								fontSize: 20,
+								color: "red",
+								backgroundColor: "black",
+							}}
+						>
+							Don't have an account? Sign up for free.
+						</Text>
+					</TouchableWithoutFeedback>
 				</View>
-				<View style={styles.loginBottom}></View>
-				<Text h6 style={styles.signupMess}>
-					Don't have an account? Sign up for free.
-				</Text>
+				<View
+					style={{
+						position: "absolute",
+						flex: 1,
+						height: vh(100),
+						width: vw(100),
+					}}
+				>
+					<ImageBackground
+						style={styles.background}
+						source={require("../images/tulsa.jpeg")}
+					></ImageBackground>
+					<ImageBackground
+						style={styles.background}
+						source={require("../images/TulsaRiot.jpg")}
+					></ImageBackground>
+					<ImageBackground
+						style={styles.background}
+						source={require("../images/tulsaAftermath.jpeg")}
+					></ImageBackground>
+					<ImageBackground
+						style={styles.background}
+						source={require("../images/TulsaBookerTWashHighBand.jpg")}
+					></ImageBackground>
+				</View>
 			</View>
-		);
-	}
-}
+		</KeyboardAvoidingView>
+	);
+};
+
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 2,
-		top: "2.5%",
-		justifyContent: "center",
+		flex: 1,
+		height: vh(100),
+		alignItems: "center",
 	},
 	background: {
-		flexDirection: "column",
+		flex: 1,
+		height: vh(25),
+		width: vw(100),
+		alignItems: "center",
 	},
-	name: {
-		zIndex: 1,
-		width: "40%",
-		fontWeight: "bold",
-		textAlign: "center",
-		backgroundColor: "red",
-	},
-	inputView1: {
-		position: "absolute",
-		top: 435,
-		left: "24%",
-		justifyContent: "center",
-		width: "50%",
-		borderRadius: 10,
-		// backgroundColor: "gold",
-	},
-	inputView2: {
-		position: "absolute",
-		top: 495,
-		left: "24%",
-		height: 200,
-		justifyContent: "center",
-		width: "50%",
-		borderRadius: 10,
-		// backgroundColor: "gold",
-	},
-	input: {
-		top: 20,
-		height: 40,
-		fontSize: 26,
-		borderRadius: 10,
-		backgroundColor: "red",
-		color: "black",
-		margin: 5,
-	},
-	loginBottom: {
-		position: "absolute",
-		justifyContent: "center",
-		color: "green",
-		top: 750,
-		left: 100,
+	name: {},
+	inputView: {},
+	input: {},
+	logo: {},
+	loginButton: {},
+	signupMess: {},
+	inner: {
+		padding: vh(10),
+		flex: 1,
+		justifyContent: "space-around",
 		backgroundColor: "black",
-		height: 5,
-		width: 205,
-	},
-	logo: {
-		zIndex: 1,
-		position: "absolute",
-		alignSelf: "center",
-	},
-	loginButton: {
-		color: "black",
-		marginTop: "15%",
-		alignSelf: "center",
-		position: "relative",
-		justifyContent: "center",
-		borderRadius: 20,
-		height: "37%",
-		width: "70%",
-	},
-	signupMess: {
-		position: "absolute",
-		justifyContent: "center",
-		backgroundColor: "black",
-		borderRadius: 40,
-		color: "red",
-		top: 760,
-		left: 70,
+		alignItems: "center",
 	},
 });
 

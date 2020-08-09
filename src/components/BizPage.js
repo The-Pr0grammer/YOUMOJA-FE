@@ -301,10 +301,16 @@ class BizPage extends Component {
 									// contentOffset={{x:this.state.contentOffsetX,y:0}}
 								}}
 							>
-								<Image
-									source={require("../images/LOGO.png")}
-									style={styles.badge}
-								/>
+								<TouchableOpacity
+									onPress={() => {
+										Linking.openURL("https://cash.app/$Issagoattt");
+									}}
+								>
+									<Image
+										source={require("../images/LOGO.png")}
+										style={styles.badge}
+									/>
+								</TouchableOpacity>
 								<Image
 									source={require("../images/LOGO.png")}
 									style={styles.badge}
