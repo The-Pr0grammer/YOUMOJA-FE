@@ -49,7 +49,6 @@ class CommentList extends React.Component {
 	};
 
 	updateComments = (newComment) => {
-		console.log("thissa new comment");
 		this.setState({ comments: [newComment, ...this.state.comments] });
 	};
 

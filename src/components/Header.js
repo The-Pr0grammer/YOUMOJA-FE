@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
@@ -21,35 +21,27 @@ class Header extends React.Component {
 				}}
 			>
 				<TouchableOpacity
-					style={{
-						position: "relative",
-						height: vh(7.5),
-						width: vw(16),
-						backgroundColor: "brown",
-						zIndex: 2,
-						opacity: 0.9,
-						justifyContent: "center",
-						alignItems: "center",
-					}}
+					activeOpacity={!this.props.active ? 0.2 : 1}
+					style={[
+						!this.props.active ? styles.menuButton : styles.disabledButton,
+					]}
 					onPress={() => {
-						this.props.navigation.openDrawer();
+						!this.props.active && this.props.navigation.openDrawer();
 					}}
 				>
-					<Icon name="menu" type="feather" color="red" size={34} />
+					<Icon
+						name="menu"
+						type="feather"
+						color={!this.props.active ? "red" : "grey"}
+						size={34}
+					/>
 				</TouchableOpacity>
 
 				<TouchableOpacity
-					style={{
-						position: "relative",
-						height: vh(7.5),
-						width: vw(86),
-						backgroundColor: "salmon",
-						flexDirection: "row",
-						zIndex: 1,
-						opacity: 0.9,
-						justifyContent: "center",
-						alignItems: "center",
-					}}
+					activeOpacity={!this.props.active ? 0.2 : 1}
+					style={[
+						!this.props.active ? styles.catButton : styles.disabledCatButton,
+					]}
 					onPress={() => this.props.handleCatsTogg()}
 				>
 					<Text
@@ -77,7 +69,12 @@ class Header extends React.Component {
 							// backgroundColor: "blue",
 						}}
 					>
-						<Icon name="circledown" type="antdesign" color="red" size={34} />
+						<Icon
+							name="circledown"
+							type="antdesign"
+							color={!this.props.active ? "red" : "midnightblue"}
+							size={34}
+						/>
 					</View>
 				</TouchableOpacity>
 			</View>
@@ -86,6 +83,51 @@ class Header extends React.Component {
 }
 
 export default connect(mapStateToProps)(Header);
+
+const styles = StyleSheet.create({
+	menuButton: {
+		position: "relative",
+		height: vh(7.5),
+		width: vw(16),
+		backgroundColor: "brown",
+		zIndex: 2,
+		opacity: 0.9,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	disabledButton: {
+		position: "relative",
+		height: vh(7.5),
+		width: vw(16),
+		backgroundColor: "lavender",
+		zIndex: 2,
+		opacity: 0.9,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	catButton: {
+		position: "relative",
+		height: vh(7.5),
+		width: vw(86),
+		backgroundColor: "salmon",
+		flexDirection: "row",
+		zIndex: 1,
+		opacity: 0.9,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	disabledCatButton: {
+		position: "relative",
+		height: vh(7.5),
+		width: vw(86),
+		backgroundColor: "gold",
+		flexDirection: "row",
+		zIndex: 1,
+		opacity: 0.9,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+});
 
 function mapStateToProps(state) {
 	return { category: state.category };

@@ -12,11 +12,20 @@ import BizPage from "./src/components/BizPage.js";
 import { createStackNavigator } from "@react-navigation/stack";
 import bizReducer from "./src/redux/reducers/bizReducer.js";
 import Signup from "./src/components/Signup.js";
+import * as firebase from "firebase";
 
 const createStoreWithMiddleWare = applyMiddleware(thunk)(createStore);
 const store = createStoreWithMiddleWare(bizReducer);
-
 const Stack = createStackNavigator();
+const config = {
+	apiKey: "AIzaSyAKHrDPaOn0wKzABaPixdVmtameX1Yh-ps",
+	projectId: "youmoja-ae253",
+	authDomain: "youmoja-ae253.firebaseapp.com",
+	databaseURL: "https://youmoja-ae253.firebaseio.com/",
+	storageBucket: "bucket.appspot.com",
+};
+firebase.initializeApp(config);
+const database = firebase.database();
 
 function NotificationsScreen({ navigation }) {
 	return (

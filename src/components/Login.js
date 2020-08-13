@@ -6,6 +6,7 @@ import {
 	TextInput,
 	KeyboardAvoidingView,
 	TouchableOpacity,
+	Keyboard,
 } from "react-native";
 import {
 	Input,
@@ -23,26 +24,21 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { login } from "../api/authentication.js";
 import { setToken } from "../api/token";
 import Form from "./forms/Form";
-import { validateContent, validateLength } from "./forms/validation";
+import {
+	validateContent,
+	validateLength,
+	emailCheck,
+} from "./forms/validation";
 
 const Login = ({ navigation }) => {
 	useFocusEffect(
 		React.useCallback(() => {
 			logOut();
+			Keyboard.dismiss();
 		}, [])
 	);
-	const [errorMessage, setErrorMessage] = useState("");
-	// const loginUser = async (email, password) => {
-	// 	// setErrorMessage("");
-	// 	login(email, password)
-	// 		.then(async (res) => {
-	// 			console.log(result);
 
-	// 			await setToken(res.auth_token);
-	// 			navigation.navigate("Home", { screen: "Home" });
-	// 		})
-	// 		.catch((err) => setErrorMessage(err.message));
-	// };
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const logOut = async () => {
 		await setToken("");
@@ -52,7 +48,7 @@ const Login = ({ navigation }) => {
 		if (result.ok && result.data) {
 			console.log("result data is", result.data);
 			await setToken(result.data.auth_token);
-			navigation.navigate("Home");
+			navigation.navigate("Home", { screen: "Home" });
 		} else if (result.status === 401) {
 			throw new Error("Invalid login.");
 		} else {
@@ -66,7 +62,7 @@ const Login = ({ navigation }) => {
 				<View
 					style={{
 						flex: 1,
-						height: vh(100),
+						height: vh(60),
 						justifyContent: "center",
 						alignItems: "center",
 						opacity: 1,
@@ -106,81 +102,54 @@ const Login = ({ navigation }) => {
 						source={require("../images/LOGO.png")}
 					></Image>
 
-					{/* <TextInput
-						textAlign
-						clearTextOnFocus={true}
-						placeholder="username or email"
-						placeholderTextColor="#D50000"
+					<View
 						style={{
-							height: vh(6),
-							width: vw(55),
-							fontSize: 20,
-							borderRadius: 30,
-							color: "black",
-							borderWidth: 3.5,
-							backgroundColor: "maroon",
-							marginVertical: vh(1),
+							// flex: 1,
+							height: vh(24),
+							justifyContent: "center",
+							alignItems: "center",
+							zIndex: 1,
+							backgroundColor: "rgba(0, 0, 0, 0.8)",
+							paddingTop: vh(12.3),
+							marginBottom: vh(10.5),
 						}}
-					/>
-					<TextInput
-						textAlign
-						clearTextOnFocus={true}
-						// defaultValue="password"
-						textContentType={"password"}
-						secureTextEntry={true}
-						placeholder="password"
-						placeholderTextColor="#D50000"
-						style={{
-							height: vh(6),
-							width: vw(55),
-							fontSize: 20,
-							borderRadius: 30,
-							color: "black",
-							borderWidth: 3.5,
-							backgroundColor: "maroon",
-						}}
-					/>
-					<Button
-						buttonStyle={{ backgroundColor: "black", borderRadius: 18 }}
-						style={{
-							color: "black",
-							position: "relative",
-							borderRadius: 20,
-							height: vh(10),
-							width: vw(30),
-							marginTop: vh(2.5),
-						}}
-						titleStyle={{ color: "red" }}
-						title="Log In"
-						onPress={loginUser}
-					></Button>
-					 */}
-
-					<Form
-						action={login}
-						afterSubmit={handleResult}
-						buttonText="Submit"
-						fields={{
-							email: {
-								label: "Email",
-								validators: [validateContent],
-								inputProps: {
-									keyboardType: "email-address",
+					>
+						<Form
+							action={login}
+							afterSubmit={handleResult}
+							buttonText="Login"
+							type="Login"
+							fields={{
+								email: {
+									label: "Email",
+									validators: [validateContent],
+									inputProps: {
+										keyboardType: "email-address",
+										autoCapitalize: "none",
+										textContentType: "username",
+										placeholder: "email address or username",
+										placeholderTextColor: "#D50000",
+										textAlign: "center",
+									},
 								},
-							},
-							password: {
-								label: "Password",
-								validators: [validateLength],
-								inputProps: {
-									secureTextEntry: true,
+								password: {
+									label: "Password",
+									validators: [validateContent],
+									inputProps: {
+										secureTextEntry: true,
+										textContentType: "password",
+										placeholder: "password",
+										placeholderTextColor: "#D50000",
+										textAlign: "center",
+									},
 								},
-							},
-						}}
-					/>
+							}}
+						/>
+					</View>
 
 					<View
 						style={{
-							top: vh(4.5),
+							top: vh(0.5),
 							width: vw(77),
 							height: vh(0.5),
 							backgroundColor: "black",
@@ -188,9 +157,12 @@ const Login = ({ navigation }) => {
 					></View>
 					<TouchableWithoutFeedback
 						style={{
-							marginTop: vh(5),
+							marginTop: vh(1),
 							width: vw(92.5),
-							height: vh(5),
+							height: vh(4),
+							alignItems: "center",
+							justifyContent: "center",
+							zIndex: 2,
 						}}
 						onPress={() => navigation.navigate("Home", { screen: "Signup" })}
 					>
@@ -243,6 +215,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		height: vh(100),
 		alignItems: "center",
+		marginBottom: vh(8),
 	},
 	background: {
 		flex: 1,
@@ -257,7 +230,7 @@ const styles = StyleSheet.create({
 	loginButton: {},
 	signupMess: {},
 	inner: {
-		padding: vh(10),
+		padding: vh(18),
 		flex: 1,
 		justifyContent: "space-around",
 		backgroundColor: "black",

@@ -195,6 +195,7 @@ export default class CategoriesList extends React.Component {
 					<Header
 						navigation={this.props.navigation}
 						handleCatsTogg={this.props.handleCatsTogg}
+						active={true}
 					/>
 				</View>
 				<View //BACKDROP

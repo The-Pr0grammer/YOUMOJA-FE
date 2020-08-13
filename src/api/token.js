@@ -13,7 +13,7 @@ export const getToken = async () => {
 };
 
 export const setToken = async (token) => {
-	console.log("token value will be:", token);
+	// console.log("token value will be:", token);
 
 	try {
 		await AsyncStorage.setItem("@auth_token", token);

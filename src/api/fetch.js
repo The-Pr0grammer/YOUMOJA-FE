@@ -3,7 +3,7 @@ import { getToken } from "./token";
 
 const getHeaders = async () => {
 	const token = await getToken();
-	console.log("token is", token);
+	// console.log("token is", token);
 	const headers = {
 		Accept: "application/json",
 		"Content-Type": "application/json",
@@ -25,7 +25,7 @@ export const post = async (destination, body) => {
 		body: JSON.stringify(body),
 	});
 
-	const formattedResult = await formatResult(result);
+	const formattedResult = await formatResult(result, body);
 	// console.log(formattedResult);
 	return formattedResult;
 };
@@ -39,15 +39,17 @@ export const get = async (destination) => {
 	});
 
 	const formattedResult = await formatResult(result);
-	console.log(formattedResult);
+	// console.log(formattedResult);
 
 	return formattedResult;
 };
 
-const formatResult = async (result) => {
+const formatResult = async (result, body) => {
 	const formatted = {
 		status: result.status,
 		ok: result.ok,
+		messChars: result._bodyInit.data.size,
+		body: body,
 	};
 
 	if (result.ok) {
