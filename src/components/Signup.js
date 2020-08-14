@@ -41,7 +41,13 @@ const CreateAccount = ({ navigation }) => {
 									result.body.user.password
 								)
 								.then((user) => {
-									console.log(user);
+									firebase.auth().onAuthStateChanged(function (user) {
+										if (!user.emailVerified) {
+											user.sendEmailVerification();
+										} else {
+											console.log("Not verified");
+										}
+									});
 								})
 								.catch((error) => {
 									console.log(error.message);
@@ -57,7 +63,8 @@ const CreateAccount = ({ navigation }) => {
 				console.log(error.message);
 			}
 
-			navigation.navigate("Home");
+			navigation.navigate("Email Confirmation");
+			// navigation.navigate("Home", { screen: "Home" });
 		} else if (result.status === 422 && result.messChars === 44) {
 			// console.log(result);
 			throw new Error("That email is already registered");
@@ -67,7 +74,7 @@ const CreateAccount = ({ navigation }) => {
 	};
 
 	return (
-		<KeyboardAvoidingView behavior="height" style={styles.container}>
+		<KeyboardAvoidingView behavior="padding" style={styles.container}>
 			<View style={styles.inner}>
 				<Form
 					action={createAccount}
@@ -126,6 +133,7 @@ const CreateAccount = ({ navigation }) => {
 						flex: 1,
 						height: vh(100),
 						width: vw(100),
+						opacity: 0.1,
 					}}
 				>
 					<ImageBackground
@@ -145,6 +153,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		height: vh(100),
 		alignItems: "center",
+		backgroundColor: "black",
 	},
 	background: {
 		flex: 1,
@@ -154,9 +163,8 @@ const styles = StyleSheet.create({
 	},
 	inner: {
 		flex: 1,
-		padding: vh(5),
+		padding: vh(10),
 		justifyContent: "space-around",
-		backgroundColor: "gold",
 		alignItems: "center",
 	},
 });

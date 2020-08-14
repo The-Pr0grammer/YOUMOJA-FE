@@ -94,9 +94,10 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 						style={{
 							flex: 1,
 							zIndex: 1,
-							backgroundColor: "rgba(0, 0, 0, 0.8)",
+							// backgroundColor: "blue",
+							// backgroundColor: "rgba(0, 0, 0, 0.8)",
 							width: vw(85),
-							height: vw(70),
+							height: vh(70),
 							marginTop: vh(0.1),
 						}}
 					>
@@ -185,14 +186,13 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		width: vw(38),
 		height: vh(7),
-		marginTop: vh(17.5),
+		// marginTop: vh(17.5),
 	},
 	loginButton: {
-		color: "black",
 		position: "relative",
 		borderRadius: 20,
 		width: vw(35),
-		height: vh(6),
+		height: vh(7),
 		marginBottom: vh(2.2),
 	},
 	loginError: {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
 		height: vh(3),
 		width: vw(85),
 		position: "relative",
-		backgroundColor: "rgba(0, 0, 0, 0.8)",
+		// backgroundColor: "rgba(0, 0, 0, 0.8)",
 		color: "red",
 		textAlign: "center",
 		zIndex: -1,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
 		height: vh(3),
 		width: vw(85),
 		position: "relative",
-		backgroundColor: "rgba(0, 0, 0, 0.8)",
+		// backgroundColor: "blue",
 		color: "red",
 		textAlign: "center",
 		zIndex: -1,

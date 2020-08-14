@@ -46,13 +46,13 @@ const Login = ({ navigation }) => {
 
 	const handleResult = async (result) => {
 		if (result.ok && result.data) {
-			console.log("result data is", result.data);
+			// console.log("result data is", result.data);
 			await setToken(result.data.auth_token);
 			navigation.navigate("Home", { screen: "Home" });
 		} else if (result.status === 401) {
-			throw new Error("Invalid login.");
+			throw new Error("Invalid login");
 		} else {
-			throw new Error("Something went wrong.");
+			throw new Error("Something went wrong");
 		}
 	};
 
@@ -66,7 +66,7 @@ const Login = ({ navigation }) => {
 						justifyContent: "center",
 						alignItems: "center",
 						opacity: 1,
-						zIndex: 1,
+						zIndex: 3,
 					}}
 				>
 					<View
@@ -78,7 +78,7 @@ const Login = ({ navigation }) => {
 							alignItems: "center",
 							opacity: 1,
 							zIndex: 1,
-							backgroundColor: "black",
+							// backgroundColor: "black",
 							borderRadius: 6,
 						}}
 					>
@@ -109,9 +109,9 @@ const Login = ({ navigation }) => {
 							justifyContent: "center",
 							alignItems: "center",
 							zIndex: 1,
-							backgroundColor: "rgba(0, 0, 0, 0.8)",
+							// backgroundColor: "rgba(0, 0, 0, 0.8)",
 							paddingTop: vh(12.3),
-							marginBottom: vh(10.5),
+							marginVertical: vh(10.5),
 						}}
 					>
 						<Form
@@ -164,14 +164,14 @@ const Login = ({ navigation }) => {
 							justifyContent: "center",
 							zIndex: 2,
 						}}
-						onPress={() => navigation.navigate("Home", { screen: "Signup" })}
+						onPress={() => navigation.navigate("Signup")}
 					>
 						<Text
 							style={{
 								textAlign: "center",
 								fontSize: 20,
 								color: "red",
-								backgroundColor: "black",
+								backgroundColor: "rgba(0, 0, 0, 0.8)",
 							}}
 						>
 							Don't have an account? Sign up for free.
@@ -184,6 +184,8 @@ const Login = ({ navigation }) => {
 						flex: 1,
 						height: vh(100),
 						width: vw(100),
+						opacity: 0.1,
+						zIndex: 2,
 					}}
 				>
 					<ImageBackground
@@ -215,7 +217,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		height: vh(100),
 		alignItems: "center",
-		marginBottom: vh(8),
+		backgroundColor: "black",
 	},
 	background: {
 		flex: 1,
@@ -230,10 +232,9 @@ const styles = StyleSheet.create({
 	loginButton: {},
 	signupMess: {},
 	inner: {
-		padding: vh(18),
 		flex: 1,
+		padding: vh(18),
 		justifyContent: "space-around",
-		backgroundColor: "black",
 		alignItems: "center",
 	},
 });

@@ -20,6 +20,7 @@ import Header from "./Header.js";
 import Search from "./Search.js";
 import FocusedSearch from "./FocusedSearch.js";
 import Sorter from "./Sorter.js";
+import * as firebase from "firebase";
 
 class Businesses extends Component {
 	constructor(props) {
@@ -35,6 +36,8 @@ class Businesses extends Component {
 			catTogg: false,
 		};
 	}
+
+	
 
 	componentDidMount() {
 		this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
@@ -88,6 +91,13 @@ class Businesses extends Component {
 	}
 
 	handleCatsTogg = () => {
+		firebase.auth().onAuthStateChanged(function (user) {
+			if (!user.emailVerified) {
+				console.log("verified");
+			} else {
+				console.log("Not verified");
+			}
+		});
 		return this.setState({ catTogg: !this.state.catTogg });
 	};
 
