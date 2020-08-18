@@ -50,6 +50,7 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 		return fieldKeys.sort().map((key) => values[key]);
 	};
 	const submit = async () => {
+		Keyboard.dismiss();
 		setErrorMessage("");
 		setValidationErrors(getInitialState(fieldKeys));
 
@@ -87,6 +88,7 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 
 					<ScrollView
 						enableAutoAutomaticScroll={false}
+						keyboardShouldPersistTaps="handled"
 						contentContainerStyle={{
 							alignItems: "center",
 							paddingVertical: vh(2.5),
@@ -114,16 +116,18 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 								/>
 							);
 						})}
-						<Button
-							title={buttonText}
-							buttonStyle={{
-								backgroundColor: "black",
-								borderRadius: 18,
-							}}
-							style={styles.createButton}
-							titleStyle={{ color: "red" }}
-							onPress={submit}
-						/>
+						<View style={{ top: vh(1) }}>
+							<Button
+								title={buttonText}
+								buttonStyle={{
+									backgroundColor: "black",
+									borderRadius: 18,
+								}}
+								style={styles.createButton}
+								titleStyle={{ color: "red" }}
+								onPress={submit}
+							/>
+						</View>
 					</ScrollView>
 				</View>
 			)}
@@ -154,17 +158,20 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 					{type == "Login" && (
 						<Text style={styles.loginError}>{errorMessage}</Text>
 					)}
-
-					<Button
-						title={buttonText}
-						buttonStyle={{
-							backgroundColor: "black",
-							borderRadius: 18,
-						}}
-						style={[type == "Login" ? styles.loginButton : styles.createButton]}
-						titleStyle={{ color: "red" }}
-						onPress={submit}
-					/>
+					<View style={{ bottom: vh(1) }}>
+						<Button
+							title={buttonText}
+							buttonStyle={{
+								backgroundColor: "black",
+								borderRadius: 18,
+							}}
+							style={[
+								type == "Login" ? styles.loginButton : styles.createButton,
+							]}
+							titleStyle={{ color: "red" }}
+							onPress={submit}
+						/>
+					</View>
 				</View>
 			)}
 		</View>
@@ -186,7 +193,6 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		width: vw(38),
 		height: vh(7),
-		// marginTop: vh(17.5),
 	},
 	loginButton: {
 		position: "relative",
@@ -200,18 +206,14 @@ const styles = StyleSheet.create({
 		height: vh(3),
 		width: vw(85),
 		position: "relative",
-		// backgroundColor: "rgba(0, 0, 0, 0.8)",
 		color: "red",
 		textAlign: "center",
 		zIndex: -1,
 	},
 	signupError: {
-		// marginTop: vh(6),
-		// marginBottom: vh(1),
 		height: vh(3),
 		width: vw(85),
 		position: "relative",
-		// backgroundColor: "blue",
 		color: "red",
 		textAlign: "center",
 		zIndex: -1,

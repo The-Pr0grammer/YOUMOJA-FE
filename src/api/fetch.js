@@ -1,7 +1,7 @@
 import { API_URL } from "../../secrets.js";
 import { getToken } from "./token";
 
-const getHeaders = async () => {
+export const getHeaders = async () => {
 	const token = await getToken();
 	// console.log("token is", token);
 	const headers = {

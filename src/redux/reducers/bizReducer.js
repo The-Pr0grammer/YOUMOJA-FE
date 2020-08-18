@@ -13,6 +13,7 @@ import {
 	SORT_BY_LIKES_TOGG,
 	SORT_BY_BADGES_TOGG,
 	SORT_BY_LOCATION_TOGG,
+	SET_USER,
 } from "../actions/types";
 
 const initialState = {
@@ -25,6 +26,7 @@ const initialState = {
 	likesSort: false,
 	badgesSort: false,
 	locationSort: false,
+	userInfo: {},
 };
 
 const bizReducer = (state = initialState, action) => {
@@ -73,6 +75,8 @@ const bizReducer = (state = initialState, action) => {
 			return { ...state, badgesSort: !state.badgesSort };
 		case SORT_BY_LOCATION_TOGG:
 			return { ...state, locationSort: !state.locationSort };
+		case SET_USER:
+			return { ...state, userInfo: action.payload };
 		default:
 			return state;
 	}

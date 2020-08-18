@@ -32,6 +32,14 @@ export const emailCheck = (email) => {
 	}
 };
 
+export const passwordCheck = (password) => {
+	if (/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/.test(password)) {
+		return;
+	} else {
+		return "must be between 7 to 16 characters, contain at least one numeric digit and a special character"
+	}
+};
+
 export const validateField = (validators, value, values, key) => {
 	let error = "";
 	validators.forEach((validator) => {

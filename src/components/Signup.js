@@ -9,6 +9,8 @@ import {
 	KeyboardAvoidingView,
 } from "react-native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
+import { connect } from "react-redux";
+import { setUser } from "../redux/actions/bizAction";
 import { createAccount } from "../api/authentication";
 import Form from "./forms/Form";
 import { setToken } from "../api/token";
@@ -17,35 +19,52 @@ import {
 	validateLength,
 	passwordMatch,
 	emailCheck,
+	passwordCheck,
 } from "./forms/validation";
 import * as firebase from "firebase";
+import { useNavigation } from "@react-navigation/native";
+import moment from "moment";
 
-const CreateAccount = ({ navigation }) => {
+const CreateAccount = (props) => {
+	const navigation = useNavigation();
+	const [spinner, spinnerTogg] = useState("");
 	const handleResult = async (result) => {
 		if (result.ok && result.data) {
 			await setToken(result.data.auth_token);
-
+			console.log("result body is", result.body);
 			try {
 				firebase
 					.auth()
 					.createUserWithEmailAndPassword(
 						result.body.user.email,
-						result.body.user.password
+						result.body.user.opaque
 					)
-					.then((user) => {
+					.then(() => {
 						try {
 							firebase
 								.auth()
 								.signInWithEmailAndPassword(
 									result.body.user.email,
-									result.body.user.password
+									result.body.user.opaque
 								)
-								.then((user) => {
+								.then(() => {
 									firebase.auth().onAuthStateChanged(function (user) {
 										if (!user.emailVerified) {
+											props.setUser({
+												id: result.data.id,
+												email: user.email,
+												emailVerified: user.emailVerified,
+												timeSent: moment().utcOffset("-04:00"),
+												opaque: result.body.user.opaque,
+											});
 											user.sendEmailVerification();
 										} else {
-											console.log("Not verified");
+											props.setUser({
+												id: result.data.id,
+												email: result.data.email,
+												emailVerified: user.emailVerified,
+											});
+											console.log("Verified?👀");
 										}
 									});
 								})
@@ -63,8 +82,7 @@ const CreateAccount = ({ navigation }) => {
 				console.log(error.message);
 			}
 
-			navigation.navigate("Email Confirmation");
-			// navigation.navigate("Home", { screen: "Home" });
+			setTimeout(() => navigation.navigate("Email Confirmation"), 2500);
 		} else if (result.status === 422 && result.messChars === 44) {
 			// console.log(result);
 			throw new Error("That email is already registered");
@@ -80,6 +98,7 @@ const CreateAccount = ({ navigation }) => {
 					action={createAccount}
 					afterSubmit={handleResult}
 					buttonText="Create Account"
+					buttonSpinner={spinner}
 					type="Signup"
 					fields={{
 						email: {
@@ -105,7 +124,7 @@ const CreateAccount = ({ navigation }) => {
 						},
 						password: {
 							label: "Password",
-							validators: [validateContent],
+							validators: [validateContent, passwordCheck],
 							inputProps: {
 								textContentType: "newPassword",
 								secureTextEntry: true,
@@ -127,6 +146,21 @@ const CreateAccount = ({ navigation }) => {
 						},
 					}}
 				/>
+				<View style={{ zIndex: 4 }}>
+					<Button
+						title="Change Email"
+						buttonStyle={{
+							backgroundColor: "transparent",
+							borderRadius: 18,
+						}}
+						style={{ alignSelf: "flex-end" }}
+						titleStyle={{ color: "gray" }}
+						onPress={() => {
+							props.setUser({ email: "yo", emailVerified: false });
+							navigation.navigate("Email Confirmation");
+						}}
+					/>
+				</View>
 				<View
 					style={{
 						position: "absolute",
@@ -146,7 +180,7 @@ const CreateAccount = ({ navigation }) => {
 	);
 };
 
-export default CreateAccount;
+export default connect(mapStateToProps, { setUser })(CreateAccount);
 
 const styles = StyleSheet.create({
 	container: {
@@ -168,3 +202,9 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 });
+
+function mapStateToProps(state) {
+	return {
+		userInfo: state.userInfo,
+	};
+}

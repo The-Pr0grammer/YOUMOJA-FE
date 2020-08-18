@@ -12,7 +12,8 @@ import {
 	HANDLE_SEARCH,
 	SORT_BY_LIKES_TOGG,
 	SORT_BY_BADGES_TOGG,
-	SORT_BY_LOCATION_TOGG
+	SORT_BY_LOCATION_TOGG,
+	SET_USER,
 } from "./types";
 import axios from "axios";
 
@@ -110,3 +111,8 @@ export const sortByLikesTogg = () => ({ type: SORT_BY_LIKES_TOGG });
 export const sortByBadgesTogg = () => ({ type: SORT_BY_BADGES_TOGG });
 
 export const sortByLocationTogg = () => ({ type: SORT_BY_LOCATION_TOGG });
+
+export const setUser = (user) => ({
+	type: SET_USER,
+	payload: user,
+});

@@ -18,6 +18,7 @@ const Field = ({ fieldName, field, value, onChangeText, error, dupError }) => {
 			/>
 
 			{/* <Text style={styles.error}>{dupError}</Text> */}
+
 			<Text style={styles.error}>{error}</Text>
 		</View>
 	);
@@ -34,12 +35,9 @@ const styles = StyleSheet.create({
 		backgroundColor: "maroon",
 	},
 	inputContainer: {
-		// borderRadius: 2,
 		paddingTop: vh(0.7),
 		alignItems: "center",
-		height: vh(12),
 		width: vh(47.5),
-		// backgroundColor: "rgba(0, 0, 0, 0.8)",
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
@@ -52,8 +50,7 @@ const styles = StyleSheet.create({
 	label: {
 		paddingLeft: vw(1.1),
 		color: "red",
-		// width: vw(20),
 		alignSelf: "flex-start",
 	},
-	error: { textAlign: "center", height: 17.5, color: "red" },
+	error: { textAlign: "center", color: "red" },
 });

@@ -73,7 +73,7 @@ function AuthFlow({ navigation }) {
 						<Button
 							icon={<Icon name="arrow-circle-left" size={25} color="black" />}
 							type="clear"
-							onPress={() => navigation.goBack()}
+							onPress={() => navigation.navigate("Login")}
 							title=" Login"
 							titleStyle={{ color: "black" }}
 						/>
@@ -84,7 +84,16 @@ function AuthFlow({ navigation }) {
 				name="Email Confirmation"
 				component={EmailConfirmation}
 				options={{
-					headerShown: false,
+					headerShown: true,
+					headerLeft: () => (
+						<Button
+							icon={<Icon name="arrow-circle-left" size={25} color="black" />}
+							type="clear"
+							onPress={() => navigation.navigate("Login")}
+							title=" Login"
+							titleStyle={{ color: "black" }}
+						/>
+					),
 				}}
 			/>
 		</Stack.Navigator>
@@ -94,7 +103,19 @@ function AuthFlow({ navigation }) {
 function DrawerNav({ navigation }) {
 	return (
 		<Drawer.Navigator
-			initialRouteName="Login"
+			screenOptions={{
+				headerStyle: {
+					backgroundColor: "darkslategray",
+					shadowColor: "transparent",
+				},
+				headerTintColor: "olivedrab",
+				headerTitleStyle: {
+					fontWeight: "bold",
+					fontFamily: "Marker Felt",
+					fontSize: 24,
+				},
+			}}
+			initialRouteName="Home"
 			drawerType="slide"
 			drawerContentOptions={{
 				activeBackgroundColor: "maroon",
@@ -106,16 +127,12 @@ function DrawerNav({ navigation }) {
 				},
 			}}
 		>
-			<Drawer.Screen name="Main" component={Main} />
+			<Drawer.Screen name="Home" component={Main} />
+
 			<Drawer.Screen name="Notifications" component={NotificationsScreen} />
 			<Drawer.Screen
-				name="Login"
+				name="Logout"
 				component={Login}
-				options={{ swipeEnabled: false }}
-			/>
-			<Drawer.Screen
-				name="Email Confirmation"
-				component={EmailConfirmation}
 				options={{ swipeEnabled: false }}
 			/>
 		</Drawer.Navigator>
@@ -160,7 +177,13 @@ function AppNav({ navigation }) {
 					headerShown: false,
 				}}
 			/>
-			<Stack.Screen name="DrawerNav" component={DrawerNav} />
+			<Stack.Screen
+				name="DrawerNav"
+				component={DrawerNav}
+				options={{
+					headerShown: false,
+				}}
+			/>
 		</Stack.Navigator>
 	);
 }

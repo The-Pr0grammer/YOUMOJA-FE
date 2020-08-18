@@ -1,20 +1,13 @@
 import { post } from "./fetch";
-import * as firebase from "firebase";
 
-export const login = (email, password) => {
-	
+export const login = (email, opaque) => {
 	return post("/users/login", {
-		user: { email, password },
+		user: { email, opaque },
 	});
 };
 
-export const createAccount = (
-	email,
-	password,
-	password_confirmation,
-	username
-) => {
+export const createAccount = (email, opaque, opaque_two, username) => {
 	return post("/users", {
-		user: { email, password, password_confirmation, username },
+		user: { email, opaque, opaque_two, username },
 	});
 };

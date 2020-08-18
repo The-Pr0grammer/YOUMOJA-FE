@@ -37,8 +37,6 @@ class Businesses extends Component {
 		};
 	}
 
-	
-
 	componentDidMount() {
 		this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
 		this.loadUsers();

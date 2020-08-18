@@ -20,6 +20,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 // import { Dimensions } from "react-native";
 import { connect } from "react-redux";
+import { setUser } from "../redux/actions/bizAction";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { login } from "../api/authentication.js";
 import { setToken } from "../api/token";
@@ -29,8 +30,12 @@ import {
 	validateLength,
 	emailCheck,
 } from "./forms/validation";
+import * as firebase from "firebase";
+import { useNavigation } from "@react-navigation/native";
+import moment from "moment";
 
-const Login = ({ navigation }) => {
+const Login = (props) => {
+	const navigation = useNavigation();
 	useFocusEffect(
 		React.useCallback(() => {
 			logOut();
@@ -46,9 +51,48 @@ const Login = ({ navigation }) => {
 
 	const handleResult = async (result) => {
 		if (result.ok && result.data) {
-			// console.log("result data is", result.data);
 			await setToken(result.data.auth_token);
-			navigation.navigate("Home", { screen: "Home" });
+			try {
+				firebase
+					.auth()
+					.signInWithEmailAndPassword(
+						result.data.email,
+						result.body.user.opaque
+					)
+					.then(() => {
+						firebase.auth().onAuthStateChanged(function (user) {
+							if (!user.emailVerified) {
+								props.setUser({
+									id: result.data.id,
+									email: result.data.email,
+									emailVerified: user.emailVerified,
+									opaque: result.body.user.opaque,
+								});
+								return navigation.navigate("Email Confirmation");
+							} else {
+								props.setUser({
+									id: result.data.id,
+									email: result.data.email,
+									emailVerified: user.emailVerified,
+								});
+								console.log("Verified😎", user.email);
+							}
+						});
+					})
+					.catch((error) => {
+						console.log(error.message);
+					});
+			} catch (error) {
+				console.log(error.message);
+			}
+
+			{
+				(await props.userInfo.emailVerified) &&
+					setTimeout(
+						() => navigation.navigate("DrawerNav", { screen: "Home" }),
+						2500
+					);
+			}
 		} else if (result.status === 401) {
 			throw new Error("Invalid login");
 		} else {
@@ -210,7 +254,7 @@ const Login = ({ navigation }) => {
 	);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, { setUser })(Login);
 
 const styles = StyleSheet.create({
 	container: {
@@ -240,11 +284,5 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-	return { isLogged: state.isLogged };
-}
-
-function mapDispatchToProps(dispatch) {
-	return {
-		signIn: () => dispatch({ type: "SIGN IN" }),
-	};
+	return { userInfo: state.userInfo };
 }
