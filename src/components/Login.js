@@ -83,13 +83,13 @@ const Login = (props) => {
 									});
 								{
 									errorMessage == "" || ".";
-									setTimeout(
-										() =>
-											navigation.navigate("Email Confirmation", {
-												purpose: "Signup",
-											}),
-										2500
-									);
+									setTimeout(() => {
+										spinnerTogg(false);
+										navigation.navigate("Email Confirmation", {
+											purpose: "Signup",
+										}),
+											5000;
+									});
 									console.log("Verified😎", user.email);
 								}
 							} else {
@@ -101,7 +101,10 @@ const Login = (props) => {
 									});
 								{
 									errorMessage == "" || ".";
-									setTimeout(() => navigation.navigate("Welcome Splash"), 2500);
+									setTimeout(() => {
+										spinnerTogg(false);
+										navigation.navigate("Welcome Splash"), 5000;
+									});
 									console.log("Verified😎", user.email);
 								}
 							}
@@ -119,20 +122,27 @@ const Login = (props) => {
 
 			if (errorMessage !== "") {
 				if (errorMessage.includes("password")) {
+					spinnerTogg(false);
 					throw new Error("Invalid login");
 				} else if (errorMessage.includes("later")) {
+					spinnerTogg(false);
 					throw new Error("Too many failed attempts. Try again later");
 				} else if (errorMessage.includes("deleted")) {
+					spinnerTogg(false);
 					throw new Error("No profile matches that username/email");
 				} else {
+					spinnerTogg(false);
 					throw new Error("Something went wrong. Try again");
 				}
 			} else if (test) {
+				spinnerTogg(false);
 				throw new Error("Invalid login");
 			}
 		} else if (result.status === 401) {
+			spinnerTogg(false);
 			throw new Error("No profile matches that username/email");
 		} else if (errorMessage.length > 1) {
+			spinnerTogg(false);
 			throw new Error("Something went wrong. Try again");
 		}
 	};
@@ -199,6 +209,7 @@ const Login = (props) => {
 							action={login}
 							afterSubmit={handleResult}
 							buttonText="Login"
+							buttonSpinner={spinner}
 							type="Login"
 							fields={{
 								email: {

@@ -34,6 +34,7 @@ const CreateAccount = (props) => {
 	const [spinner, spinnerTogg] = useState("");
 	const handleResult = async (result) => {
 		let test = false;
+		spinnerTogg(true);
 		if (result.ok && result.data) {
 			// await setToken(result.data.auth_token);
 			console.log("result body is", result.body);
@@ -75,7 +76,7 @@ const CreateAccount = (props) => {
 									});
 								})
 								.catch((error) => {
-									test=true
+									test = true;
 									console.log(error.message);
 								});
 						} catch (error) {
@@ -89,18 +90,21 @@ const CreateAccount = (props) => {
 				console.log(error.message);
 			}
 
-			if(test) {
-				throw new Error("Something went wrong. Try again.")
+			if (test) {
+				spinnerTogg(false);
+				throw new Error("Something went wrong. Try again.");
 			}
 
-			setTimeout(
-				() => navigation.navigate("Email Confirmation", { purpose: "Signup" }),
-				2500
-			);
+			setTimeout(() => {
+				spinnerTogg(false);
+				navigation.navigate("Email Confirmation", { purpose: "Signup" });
+			}, 2500);
 		} else if (result.status === 422 && result.messChars === 44) {
 			// console.log(result);
+			spinnerTogg(false);
 			throw new Error("That email is already registered");
 		} else if (result.status === 422 && result.messChars === 34) {
+			spinnerTogg(false);
 			throw new Error("That username is taken.");
 		}
 	};
