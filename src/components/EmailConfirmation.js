@@ -10,16 +10,15 @@ import { Icon } from "react-native-elements";
 import { Button } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
-import { setUser } from "../redux/actions/bizAction";
+import { setUserInfo } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 import * as firebase from "firebase";
 import axios from "axios";
-import { getHeaders } from "../api/fetch";
 import { Alert } from "react-native";
 import moment from "moment";
 
 function EmailConfirmation(props) {
-	// console.log(props.userInfo);
+	// console.log("USER INFO IS", props.userInfo);
 	const navigation = useNavigation();
 	const [errorMessage, setErrorMessage] = useState("");
 	let check;
@@ -30,15 +29,26 @@ function EmailConfirmation(props) {
 				"checking for verification and time sent was",
 				props.userInfo.timeSent
 			);
-			if (user.emailVerified) {
-				setTimeout(
-					() => navigation.navigate("DrawerNav", { screen: "Home" }),
-					2500
-				);
+			if (user.emailVerified && props.route.params.purpose == "Signup") {
+				setTimeout(() => navigation.navigate("Welcome Splash"), 500);
+				return clearInterval(check);
+			} else if (user.emailVerified && props.route.params.purpose == "Reset") {
+				props.setUserInfo({
+					...props.userInfo,
+					emailVerified: true,
+				});
 				return clearInterval(check);
 			}
 		});
 	};
+
+	useEffect(() => {
+		check = setInterval(confirmationCheck, 3500);
+		return () => {
+			clearInterval(check);
+		};
+	}, []);
+
 	// check = setInterval(confirmationCheck, 3500);
 	const reauthenticate = (opaque) => {
 		const user = firebase.auth().currentUser;
@@ -47,17 +57,22 @@ function EmailConfirmation(props) {
 	};
 	const emailPatch = async (newEmail) => {
 		setErrorMessage("");
-		const headers = await getHeaders();
 		await axios({
 			method: "PATCH",
 			url: `http://localhost:3000/users/${props.userInfo.id}`,
-			data: {
-				email: newEmail,
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
 			},
-			headers,
+			data: {
+				user: {
+					id: props.userInfo.id,
+					email: newEmail,
+				},
+			},
 		})
 			.then((response) => {
-				props.setUser({
+				props.setUserInfo({
 					...props.userInfo,
 					email: response.data.email,
 				});
@@ -96,7 +111,7 @@ function EmailConfirmation(props) {
 				.updateEmail(newEmail)
 				.then(() => {
 					user.sendEmailVerification();
-					props.setUser({
+					props.setUserInfo({
 						...props.userInfo,
 						email: newEmail,
 						timeSent: currentTime,
@@ -121,7 +136,7 @@ function EmailConfirmation(props) {
 				user.sendEmailVerification();
 			});
 			setErrorMessage("Ok. Sent!");
-			props.setUser({
+			props.setUserInfo({
 				...props.userInfo,
 				timeSent: currentTime,
 			});
@@ -129,13 +144,13 @@ function EmailConfirmation(props) {
 			setErrorMessage("Please wait before requesting another email");
 		}
 	};
-
-	useEffect(() => {
-		check = setInterval(confirmationCheck, 3500);
-		return () => {
-			clearInterval(check);
-		};
-	});
+	const handleResetCheck = () => {
+		if (props.userInfo.emailVerified) {
+			setTimeout(() => navigation.navigate("Reset Password"), 2500);
+		} else {
+			setErrorMessage("Please confirm your email before continuing");
+		}
+	};
 
 	return (
 		<View style={styles.container}>
@@ -205,20 +220,38 @@ function EmailConfirmation(props) {
 						}}
 					/>
 				</View>
-				<View style={{ marginHorizontal: vw(5) }}>
-					<Button
-						title="Change Email"
-						buttonStyle={{
-							backgroundColor: "transparent",
-							borderRadius: 18,
-						}}
-						style={{ alignSelf: "flex-end" }}
-						titleStyle={{ color: "gray" }}
-						onPress={() => {
-							changeEmailAlert();
-						}}
-					/>
-				</View>
+				{props.route.params.purpose == "Signup" && (
+					<View style={{ marginHorizontal: vw(5) }}>
+						<Button
+							title="Change Email"
+							buttonStyle={{
+								backgroundColor: "transparent",
+								borderRadius: 18,
+							}}
+							style={{ alignSelf: "flex-end" }}
+							titleStyle={{ color: "gray" }}
+							onPress={() => {
+								changeEmailAlert();
+							}}
+						/>
+					</View>
+				)}
+				{props.route.params.purpose == "Reset" && (
+					<View style={{ marginHorizontal: vw(5) }}>
+						<Button
+							title="Continue"
+							buttonStyle={{
+								backgroundColor: "transparent",
+								borderRadius: 18,
+							}}
+							style={{ alignSelf: "flex-end" }}
+							titleStyle={{ color: "gray" }}
+							onPress={() => {
+								handleResetCheck();
+							}}
+						/>
+					</View>
+				)}
 			</View>
 			<View
 				style={{
@@ -239,7 +272,7 @@ function EmailConfirmation(props) {
 	);
 }
 
-export default connect(mapStateToProps, { setUser })(EmailConfirmation);
+export default connect(mapStateToProps, { setUserInfo })(EmailConfirmation);
 
 const styles = StyleSheet.create({
 	container: {

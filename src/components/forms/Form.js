@@ -22,7 +22,14 @@ const getInitialState = (fieldKeys) => {
 	return state;
 };
 
-const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
+const Form = ({
+	fields,
+	buttonText,
+	action,
+	afterSubmit,
+	type,
+	buttonSpinner,
+}) => {
 	useFocusEffect(
 		React.useCallback(() => {
 			setValues("");
@@ -64,7 +71,6 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 			// console.log("RESULT IS", result);
 			await afterSubmit(result);
 		} catch (e) {
-			// console.log(e.message);
 			setErrorMessage(e.message);
 		}
 	};
@@ -91,7 +97,7 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 						keyboardShouldPersistTaps="handled"
 						contentContainerStyle={{
 							alignItems: "center",
-							paddingVertical: vh(2.5),
+							// paddingVertical: vh(2.5),
 						}}
 						style={{
 							flex: 1,
@@ -110,7 +116,6 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 									fieldName={key}
 									field={fields[key]}
 									error={validationErrors[key]}
-									dupError={errorMessage}
 									onChangeText={onChangeValue}
 									value={values[key]}
 								/>
@@ -120,12 +125,14 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 							<Button
 								title={buttonText}
 								buttonStyle={{
-									backgroundColor: "black",
+									backgroundColor: "transparent",
 									borderRadius: 18,
 								}}
 								style={styles.createButton}
-								titleStyle={{ color: "red" }}
+								titleStyle={{ color: "gray" }}
 								onPress={submit}
+								loading={buttonSpinner}
+								loadingProps={{ color: "green", size: "large" }}
 							/>
 						</View>
 					</ScrollView>
@@ -148,7 +155,7 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 								fieldName={key}
 								field={fields[key]}
 								error={validationErrors[key]}
-								dupError={errorMessage}
+								clearError={() => setErrorMessage("")}
 								onChangeText={onChangeValue}
 								value={values[key]}
 							/>
@@ -162,14 +169,16 @@ const Form = ({ fields, buttonText, action, afterSubmit, type }) => {
 						<Button
 							title={buttonText}
 							buttonStyle={{
-								backgroundColor: "black",
+								backgroundColor: "transparent",
 								borderRadius: 18,
 							}}
 							style={[
 								type == "Login" ? styles.loginButton : styles.createButton,
 							]}
-							titleStyle={{ color: "red" }}
+							titleStyle={{ color: "gray" }}
 							onPress={submit}
+							loading={buttonSpinner}
+							loadingProps={{ color: "green", size: "large" }}
 						/>
 					</View>
 				</View>

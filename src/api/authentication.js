@@ -6,8 +6,8 @@ export const login = (email, opaque) => {
 	});
 };
 
-export const createAccount = (email, opaque, opaque_two, username) => {
+export const createAccount = (email, name, opaque, opaque_two, username) => {
 	return post("/users", {
-		user: { email, opaque, opaque_two, username },
+		user: { email, name, opaque, opaque_two, username },
 	});
 };

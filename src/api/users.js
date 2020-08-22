@@ -1,5 +1,5 @@
-import { get } from "./fetch";
+// import { get } from "./fetch";
 
-export const getUsers = () => {
-	return get("users");
-};
+// export const getUsers = () => {
+// 	return get("users");
+// };

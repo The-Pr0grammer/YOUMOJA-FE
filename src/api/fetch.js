@@ -1,27 +1,31 @@
 import { API_URL } from "../../secrets.js";
-import { getToken } from "./token";
 
-export const getHeaders = async () => {
-	const token = await getToken();
-	// console.log("token is", token);
-	const headers = {
-		Accept: "application/json",
-		"Content-Type": "application/json",
-	};
+// import { getToken } from "./token";
 
-	if (token) {
-		headers.Authorization = `Bearer ${token}`;
-	}
+// export const getHeaders = async () => {
+// 	const token = await getToken();
+// 	// console.log("token is", token);
+// 	const headers = {
+// 		Accept: "application/json",
+// 		"Content-Type": "application/json",
+// 	};
 
-	return headers;
-};
+// 	if (token) {
+// 		headers.Authorization = `Bearer ${token}`;
+// 	}
+
+// 	return headers;
+// };
 
 export const post = async (destination, body) => {
-	const headers = await getHeaders();
-
+	// const headers = await getHeaders();
+	// console.log("BODY IS", body);
 	const result = await fetch(`${API_URL}${destination}`, {
 		method: "POST",
-		headers,
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
 		body: JSON.stringify(body),
 	});
 
@@ -31,11 +35,10 @@ export const post = async (destination, body) => {
 };
 
 export const get = async (destination) => {
-	const headers = await getHeaders();
+	// const headers = await getHeaders();
 
 	const result = await fetch(`${API_URL}${destination}`, {
 		method: "GET",
-		headers,
 	});
 
 	const formattedResult = await formatResult(result);

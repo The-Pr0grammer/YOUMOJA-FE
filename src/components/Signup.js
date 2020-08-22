@@ -10,27 +10,32 @@ import {
 } from "react-native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
-import { setUser } from "../redux/actions/bizAction";
+import { setUserInfo } from "../redux/actions/bizAction";
 import { createAccount } from "../api/authentication";
 import Form from "./forms/Form";
-import { setToken } from "../api/token";
+// import { setToken } from "../api/token";
 import {
 	validateContent,
 	validateLength,
 	passwordMatch,
 	emailCheck,
+	lengthCap,
+	usernameCheck,
+	nameCheck,
 	passwordCheck,
 } from "./forms/validation";
 import * as firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
+import axios from "axios";
 
 const CreateAccount = (props) => {
 	const navigation = useNavigation();
 	const [spinner, spinnerTogg] = useState("");
 	const handleResult = async (result) => {
+		let test = false;
 		if (result.ok && result.data) {
-			await setToken(result.data.auth_token);
+			// await setToken(result.data.auth_token);
 			console.log("result body is", result.body);
 			try {
 				firebase
@@ -50,8 +55,9 @@ const CreateAccount = (props) => {
 								.then(() => {
 									firebase.auth().onAuthStateChanged(function (user) {
 										if (!user.emailVerified) {
-											props.setUser({
-												id: result.data.id,
+											console.log("RESULT DATA IS", result.data);
+											props.setUserInfo({
+												id: result.data.user.id,
 												email: user.email,
 												emailVerified: user.emailVerified,
 												timeSent: moment().utcOffset("-04:00"),
@@ -59,7 +65,7 @@ const CreateAccount = (props) => {
 											});
 											user.sendEmailVerification();
 										} else {
-											props.setUser({
+											props.setUserInfo({
 												id: result.data.id,
 												email: result.data.email,
 												emailVerified: user.emailVerified,
@@ -69,6 +75,7 @@ const CreateAccount = (props) => {
 									});
 								})
 								.catch((error) => {
+									test=true
 									console.log(error.message);
 								});
 						} catch (error) {
@@ -82,7 +89,14 @@ const CreateAccount = (props) => {
 				console.log(error.message);
 			}
 
-			setTimeout(() => navigation.navigate("Email Confirmation"), 2500);
+			if(test) {
+				throw new Error("Something went wrong. Try again.")
+			}
+
+			setTimeout(
+				() => navigation.navigate("Email Confirmation", { purpose: "Signup" }),
+				2500
+			);
 		} else if (result.status === 422 && result.messChars === 44) {
 			// console.log(result);
 			throw new Error("That email is already registered");
@@ -101,6 +115,16 @@ const CreateAccount = (props) => {
 					buttonSpinner={spinner}
 					type="Signup"
 					fields={{
+						name: {
+							label: "Name",
+							validators: [validateContent, nameCheck],
+							inputProps: {
+								autoCapitalize: "words",
+								placeholder: "Who are you?",
+								placeholderTextColor: "#D50000",
+								textAlign: "center",
+							},
+						},
 						email: {
 							label: "Email",
 							validators: [validateContent, emailCheck],
@@ -115,7 +139,7 @@ const CreateAccount = (props) => {
 						},
 						username: {
 							label: "Username",
-							validators: [validateContent],
+							validators: [validateContent, usernameCheck, lengthCap],
 							inputProps: {
 								placeholder: "choose a username",
 								placeholderTextColor: "#D50000",
@@ -124,7 +148,7 @@ const CreateAccount = (props) => {
 						},
 						password: {
 							label: "Password",
-							validators: [validateContent, passwordCheck],
+							validators: [validateContent, validateLength],
 							inputProps: {
 								textContentType: "newPassword",
 								secureTextEntry: true,
@@ -146,7 +170,7 @@ const CreateAccount = (props) => {
 						},
 					}}
 				/>
-				<View style={{ zIndex: 4 }}>
+				{/* <View style={{ zIndex: 4 }}>
 					<Button
 						title="Change Email"
 						buttonStyle={{
@@ -156,11 +180,25 @@ const CreateAccount = (props) => {
 						style={{ alignSelf: "flex-end" }}
 						titleStyle={{ color: "gray" }}
 						onPress={() => {
-							props.setUser({ email: "yo", emailVerified: false });
-							navigation.navigate("Email Confirmation");
+							props.setUserInfo({ email: "yo", emailVerified: false });
+							navigation.navigate("Email Confirmation", { purpose: "Reset" });
 						}}
 					/>
-				</View>
+				</View> */}
+				{/* <View style={{ zIndex: 4 }}>
+					<Button
+						title="Check for phone auth"
+						buttonStyle={{
+							backgroundColor: "transparent",
+							borderRadius: 18,
+						}}
+						style={{ alignSelf: "flex-end" }}
+						titleStyle={{ color: "gray" }}
+						onPress={() => {
+							navigation.navigate("Welcome Splash");
+						}}
+					/>
+				</View> */}
 				<View
 					style={{
 						position: "absolute",
@@ -180,7 +218,7 @@ const CreateAccount = (props) => {
 	);
 };
 
-export default connect(mapStateToProps, { setUser })(CreateAccount);
+export default connect(mapStateToProps, { setUserInfo })(CreateAccount);
 
 const styles = StyleSheet.create({
 	container: {

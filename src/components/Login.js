@@ -20,10 +20,10 @@ import { useFocusEffect } from "@react-navigation/native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 // import { Dimensions } from "react-native";
 import { connect } from "react-redux";
-import { setUser } from "../redux/actions/bizAction";
+import { setUserInfo } from "../redux/actions/bizAction";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { login } from "../api/authentication.js";
-import { setToken } from "../api/token";
+// import { setToken } from "../api/token";
 import Form from "./forms/Form";
 import {
 	validateContent,
@@ -32,28 +32,40 @@ import {
 } from "./forms/validation";
 import * as firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
-import moment from "moment";
 
 const Login = (props) => {
 	const navigation = useNavigation();
+	const [spinner, spinnerTogg] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 	useFocusEffect(
 		React.useCallback(() => {
-			logOut();
+			// logOut();
+			props.setUserInfo(false);
+			// firebase
+			// 	.auth()
+			// 	.signOut()
+			// 	.then(function () {
+			// 		console.log("Sign-out successful.");
+			// 	})
+			// 	.catch(function (error) {
+			// 		console.log(error);
+			// 	});
 			Keyboard.dismiss();
 		}, [])
 	);
 
-	const [errorMessage, setErrorMessage] = useState("");
-
-	const logOut = async () => {
-		await setToken("");
-	};
+	// const logOut = async () => {
+	// 	await setToken("");
+	// };
 
 	const handleResult = async (result) => {
+		// console.log(result);
+		let test = false;
+		spinnerTogg(true);
 		if (result.ok && result.data) {
-			await setToken(result.data.auth_token);
+			// await setToken(result.data.auth_token);
 			try {
-				firebase
+				await firebase
 					.auth()
 					.signInWithEmailAndPassword(
 						result.data.email,
@@ -62,41 +74,66 @@ const Login = (props) => {
 					.then(() => {
 						firebase.auth().onAuthStateChanged(function (user) {
 							if (!user.emailVerified) {
-								props.setUser({
-									id: result.data.id,
-									email: result.data.email,
-									emailVerified: user.emailVerified,
-									opaque: result.body.user.opaque,
-								});
-								return navigation.navigate("Email Confirmation");
+								setErrorMessage(""),
+									props.setUserInfo({
+										id: result.data.id,
+										email: result.data.email,
+										emailVerified: false,
+										opaque: result.body.user.opaque,
+									});
+								{
+									errorMessage == "" || ".";
+									setTimeout(
+										() =>
+											navigation.navigate("Email Confirmation", {
+												purpose: "Signup",
+											}),
+										2500
+									);
+									console.log("Verified😎", user.email);
+								}
 							} else {
-								props.setUser({
-									id: result.data.id,
-									email: result.data.email,
-									emailVerified: user.emailVerified,
-								});
-								console.log("Verified😎", user.email);
+								setErrorMessage(""),
+									props.setUserInfo({
+										id: result.data.id,
+										email: result.data.email,
+										emailVerified: user.emailVerified,
+									});
+								{
+									errorMessage == "" || ".";
+									setTimeout(() => navigation.navigate("Welcome Splash"), 2500);
+									console.log("Verified😎", user.email);
+								}
 							}
 						});
 					})
 					.catch((error) => {
-						console.log(error.message);
+						test = true;
+						// console.log("E.message is", error.message);
+						setErrorMessage(error.message);
 					});
 			} catch (error) {
-				console.log(error.message);
+				test = true;
+				setErrorMessage(error.message);
 			}
 
-			{
-				(await props.userInfo.emailVerified) &&
-					setTimeout(
-						() => navigation.navigate("DrawerNav", { screen: "Home" }),
-						2500
-					);
+			if (errorMessage !== "") {
+				if (errorMessage.includes("password")) {
+					throw new Error("Invalid login");
+				} else if (errorMessage.includes("later")) {
+					throw new Error("Too many failed attempts. Try again later");
+				} else if (errorMessage.includes("deleted")) {
+					throw new Error("No profile matches that username/email");
+				} else {
+					throw new Error("Something went wrong. Try again");
+				}
+			} else if (test) {
+				throw new Error("Invalid login");
 			}
 		} else if (result.status === 401) {
-			throw new Error("Invalid login");
-		} else {
-			throw new Error("Something went wrong");
+			throw new Error("No profile matches that username/email");
+		} else if (errorMessage.length > 1) {
+			throw new Error("Something went wrong. Try again");
 		}
 	};
 
@@ -195,7 +232,7 @@ const Login = (props) => {
 						style={{
 							top: vh(0.5),
 							width: vw(77),
-							height: vh(0.5),
+							height: vh(0.45),
 							backgroundColor: "black",
 						}}
 					></View>
@@ -215,10 +252,32 @@ const Login = (props) => {
 								textAlign: "center",
 								fontSize: 20,
 								color: "red",
-								backgroundColor: "rgba(0, 0, 0, 0.8)",
+								// backgroundColor: "rgba(0, 0, 0, 0.8)",
 							}}
 						>
 							Don't have an account? Sign up for free.
+						</Text>
+					</TouchableWithoutFeedback>
+					<TouchableWithoutFeedback
+						style={{
+							marginTop: vh(1),
+							width: vw(92.5),
+							height: vh(4),
+							alignItems: "center",
+							justifyContent: "center",
+							zIndex: 2,
+						}}
+						onPress={() => navigation.navigate("Password Reset")}
+					>
+						<Text
+							style={{
+								textAlign: "center",
+								fontSize: 20,
+								color: "red",
+								// backgroundColor: "rgba(0, 0, 0, 0.8)",
+							}}
+						>
+							Forgot password?
 						</Text>
 					</TouchableWithoutFeedback>
 				</View>
@@ -254,7 +313,7 @@ const Login = (props) => {
 	);
 };
 
-export default connect(mapStateToProps, { setUser })(Login);
+export default connect(mapStateToProps, { setUserInfo })(Login);
 
 const styles = StyleSheet.create({
 	container: {

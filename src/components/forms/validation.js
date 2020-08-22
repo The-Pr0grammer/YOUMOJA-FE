@@ -11,8 +11,32 @@ export const validateContent = (text, values, key) => {
 };
 
 export const validateLength = (text) => {
-	if (text && text.length < 4) {
-		return "Must be 4 characters or more.";
+	if (text && text.length < 6) {
+		return "Must be 6 characters or more.";
+	}
+};
+
+export const lengthCap = (text) => {
+	if (text && text.length > 64) {
+		return "Cannot exceed 64 characters";
+	}
+};
+
+
+export const nameCheck = (name) => {
+	if (/^[\w'\-,.]*[^_!¡?÷?¿\/\\+=@#$%ˆ&*(){}|~<>;:[\]]*$/.test(name)) {
+		return;
+	} else {
+		return "Enter a valid name";
+	}
+};
+
+
+export const usernameCheck = (username) => {
+	if (/^\w+$/.test(username)) {
+		return;
+	} else {
+		return "Contains invalid characters";
 	}
 };
 
@@ -36,7 +60,7 @@ export const passwordCheck = (password) => {
 	if (/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/.test(password)) {
 		return;
 	} else {
-		return "must be between 7 to 16 characters, contain at least one numeric digit and a special character"
+		return "must be more than 6 characters, contain at least one numeric digit and a special character";
 	}
 };
 

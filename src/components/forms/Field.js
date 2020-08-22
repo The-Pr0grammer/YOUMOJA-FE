@@ -3,8 +3,14 @@ import { Text, TextInput, View, StyleSheet, Keyboard } from "react-native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { useFocusEffect } from "@react-navigation/native";
 
-const Field = ({ fieldName, field, value, onChangeText, error, dupError }) => {
-	console.log(dupError);
+const Field = ({
+	fieldName,
+	field,
+	value,
+	onChangeText,
+	error,
+	clearError,
+}) => {
 	return (
 		<View style={styles.inputContainer}>
 			<Text style={styles.label}>{field.label}</Text>
@@ -15,9 +21,9 @@ const Field = ({ fieldName, field, value, onChangeText, error, dupError }) => {
 				onChangeText={(text) => onChangeText(fieldName, text)}
 				blurOnSubmit={false}
 				onSubmitEditing={() => Keyboard.dismiss()}
+				onFocus={clearError}
 			/>
 
-			{/* <Text style={styles.error}>{dupError}</Text> */}
 
 			<Text style={styles.error}>{error}</Text>
 		</View>
@@ -52,5 +58,5 @@ const styles = StyleSheet.create({
 		color: "red",
 		alignSelf: "flex-start",
 	},
-	error: { textAlign: "center", color: "red" },
+	error: { textAlign: "center", color: "red", width: vw(80) },
 });

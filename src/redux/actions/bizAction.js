@@ -13,7 +13,7 @@ import {
 	SORT_BY_LIKES_TOGG,
 	SORT_BY_BADGES_TOGG,
 	SORT_BY_LOCATION_TOGG,
-	SET_USER,
+	SET_USER_INFO,
 } from "./types";
 import axios from "axios";
 
@@ -112,7 +112,7 @@ export const sortByBadgesTogg = () => ({ type: SORT_BY_BADGES_TOGG });
 
 export const sortByLocationTogg = () => ({ type: SORT_BY_LOCATION_TOGG });
 
-export const setUser = (user) => ({
-	type: SET_USER,
+export const setUserInfo = (user) => ({
+	type: SET_USER_INFO,
 	payload: user,
 });

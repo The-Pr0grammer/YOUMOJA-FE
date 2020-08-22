@@ -11,8 +11,8 @@ import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
 import { connect } from "react-redux";
-import { fetchBizs } from "../redux/actions/bizAction";
-import { getUsers } from "../api/users.js";
+import { fetchBizs, setUserInfo } from "../redux/actions/bizAction";
+// import { getUsers } from "../api/users.js";
 import PropTypes from "prop-types";
 import ListBiz from "./ListBiz.js";
 import CategoriesList from "./CategoriesList.js";
@@ -26,62 +26,65 @@ class Businesses extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			users: [],
-			hasLoadedUsers: false,
-			userLoadingErrorMessage: "",
 			userLikes: [],
 			page: 1,
 			error: null,
 			searchFocus: false,
 			catTogg: false,
+			// users: [],
+			// hasLoadedUsers: false,
+			// userLoadingErrorMessage: "",
 		};
 	}
 
 	componentDidMount() {
 		this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
-		this.loadUsers();
+		// this.loadUsers();
+		console.log("USER INFO ON LOGIN IS", this.props.userInfo);
 		this.props.fetchBizs();
-
+		!this.props.userInfo
+			? this.props.navigation.navigate("Login", { message: "Please log in" })
+			: null;
 		this.didFocusSubscription = this.props.navigation.addListener(
 			"didfocus",
 			() => {
-				if (this.state.hasLoadedUsers != true) {
-					this.loadUsers();
-				}
+				// if (this.state.hasLoadedUsers != true) {
+				// 	this.loadUsers();
+				// }
 				this.props.fetchBizs();
 			}
 		);
 	}
 
-	loadUsers() {
-		this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
-		getUsers().then((res) => {
-			if (res.status === 401) {
-				this.props.navigation.navigate("Login");
-			} else {
-				this.setState({
-					hasLoadedUsers: false,
-					userLoadingErrorMessage: res.message,
-				});
-			}
-			this.setState({
-				hasLoadedUsers: true,
-				users: res.data,
-			});
-		});
-	}
+	// loadUsers() {
+	// 	this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
+	// 	getUsers().then((res) => {
+	// 		if (res.status === 401) {
+	// 			this.props.navigation.navigate("Login");
+	// 		} else {
+	// 			this.setState({
+	// 				hasLoadedUsers: false,
+	// 				userLoadingErrorMessage: res.message,
+	// 			});
+	// 		}
+	// 		this.setState({
+	// 			hasLoadedUsers: true,
+	// 			users: res.data,
+	// 		});
+	// 	});
+	// }
 
-	handleUserLoadingError = (res) => {
-		console.log("in loading error", res);
-		if (res.status === 401) {
-			this.props.navigation.navigate("Login");
-		} else {
-			this.setState({
-				hasLoadedUsers: false,
-				userLoadingErrorMessage: res.message,
-			});
-		}
-	};
+	// handleUserLoadingError = (res) => {
+	// 	console.log("in loading error", res);
+	// 	if (res.status === 401) {
+	// 		this.props.navigation.navigate("Login");
+	// 	} else {
+	// 		this.setState({
+	// 			hasLoadedUsers: false,
+	// 			userLoadingErrorMessage: res.message,
+	// 		});
+	// 	}
+	// };
 
 	componentWillUnmount() {
 		// this.setState({ hasLoadedUsers: false, users: [] })
@@ -160,7 +163,7 @@ class Businesses extends Component {
 	}
 }
 
-export default connect(mapStateToProps, { fetchBizs })(Businesses);
+export default connect(mapStateToProps, { fetchBizs, setUserInfo })(Businesses);
 
 Businesses.propTypes = {
 	fetchBizs: PropTypes.func.isRequired,
@@ -219,6 +222,7 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
 	return {
 		reduxState: state,
+		userInfo: state.userInfo,
 		sorters: {
 			likesSort: state.likesSort,
 			badgesSort: state.badgesSort,

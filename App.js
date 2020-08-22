@@ -15,6 +15,8 @@ import Login from "./src/components/Login.js";
 import BizPage from "./src/components/BizPage.js";
 import Signup from "./src/components/Signup.js";
 import EmailConfirmation from "./src/components/EmailConfirmation.js";
+import WelcomeSplash from "./src/components/WelcomeSplash.js";
+import ResetPassword from "./src/components/ResetPassword.js";
 import * as firebase from "firebase";
 
 const createStoreWithMiddleWare = applyMiddleware(thunk)(createStore);
@@ -83,6 +85,30 @@ function AuthFlow({ navigation }) {
 			<Stack.Screen
 				name="Email Confirmation"
 				component={EmailConfirmation}
+				options={{
+					headerShown: true,
+					headerLeft: () => (
+						<Button
+							icon={<Icon name="arrow-circle-left" size={25} color="black" />}
+							type="clear"
+							onPress={() => navigation.navigate("Login")}
+							title=" Login"
+							titleStyle={{ color: "black" }}
+						/>
+					),
+				}}
+			/>
+			<Stack.Screen
+				name="Welcome Splash"
+				component={WelcomeSplash}
+				options={{
+					headerShown: false,
+					headerLeft: null,
+				}}
+			/>
+			<Stack.Screen
+				name="Password Reset"
+				component={ResetPassword}
 				options={{
 					headerShown: true,
 					headerLeft: () => (
