@@ -22,15 +22,20 @@ export const lengthCap = (text) => {
 	}
 };
 
-
 export const nameCheck = (name) => {
 	if (/^[\w'\-,.]*[^_!¡?÷?¿\/\\+=@#$%ˆ&*(){}|~<>;:[\]]*$/.test(name)) {
-		return;
+		// console.log("valid name");
+	}
+	if (
+		!/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(
+			name
+		)
+	) {
+		// console.log("no emojis");
 	} else {
 		return "Enter a valid name";
 	}
 };
-
 
 export const usernameCheck = (username) => {
 	if (/^\w+$/.test(username)) {

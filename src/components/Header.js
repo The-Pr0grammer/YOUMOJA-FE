@@ -1,134 +1,156 @@
-import React, { Component } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Icon } from "react-native-elements";
+import React, { useState } from "react";
+import { View, StyleSheet, Text } from "react-native";
+import { Button } from "react-native-elements";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
+import TextTicker from "react-native-text-ticker";
 import { connect } from "react-redux";
+import {
+	setUserInfo,
+	setIsFetching,
+	handleRefresh,
+	fetchBizs,
+} from "../redux/actions/bizAction";
 
-class Header extends React.Component {
-	render() {
-		// console.log(this.props.category);
-		return (
+const Header = (props) => {
+	return (
+		<View style={styles.container}>
 			<View
 				style={{
-					zIndex: 1,
-					postion: "relative",
-					justifyContent: "center",
-					alignItems: "center",
+					position: "relative",
+					flex: 1,
+					height: vh(100),
 					width: vw(100),
-					display: "flex",
+					justifyContent: "center",
 					flexDirection: "row",
-					marginTop: vh(0.25),
 				}}
 			>
-				<TouchableOpacity
-					activeOpacity={!this.props.active ? 0.2 : 1}
-					style={[
-						!this.props.active ? styles.menuButton : styles.disabledButton,
-					]}
-					onPress={() => {
-						!this.props.active && this.props.navigation.openDrawer();
+				<View
+					style={{
+						position: "relative",
+						height: vh(10),
+						width: vw(16),
+						alignItems: "center",
+						flexDirection: "row-reverse",
+						// paddingLeft: vh(1),
+						// backgroundColor: "salmon",
 					}}
 				>
-					<Icon
-						name="menu"
-						type="feather"
-						color={!this.props.active ? "red" : "grey"}
-						size={34}
+					<Button
+						containerStyle={{
+							top: vh(1),
+							width: vw(22),
+							zIndex: 2,
+							paddingLeft: vw(5),
+						}}
+						icon={<Icon name="angle-left" size={40} color="black" />}
+						type="clear"
+						onPress={() => {
+							props.refresh && props.fetchBizs();
+							props.refresh && props.handleRefresh();
+							props.navigation.goBack();
+							props.setIsFetching(true);
+							setTimeout(() => {
+								props.setIsFetching(false);
+							}, 100);
+						}}
+						titleStyle={{
+							color: "olivedrab",
+							paddingLeft: vw(2),
+							fontFamily: "ArialHebrew-Light",
+							fontSize: 17,
+						}}
 					/>
-				</TouchableOpacity>
+				</View>
 
-				<TouchableOpacity
-					activeOpacity={!this.props.active ? 0.2 : 1}
-					style={[
-						!this.props.active ? styles.catButton : styles.disabledCatButton,
-					]}
-					onPress={() => this.props.handleCatsTogg()}
+				<View
+					style={{
+						flex: 1,
+						position: "relative",
+						height: vh(10),
+						// width: vw(20),
+						// alignItems: "center",
+						// justifyContent:"center",
+						flexDirection: "column-reverse",
+						// backgroundColor: "orange",
+						// paddingRight: vw(15),
+						// right: vw(5),
+					}}
+				>
+					<TextTicker
+						shouldAnimateTreshold={25}
+						duration={6400}
+						loop
+						bounce
+						repeatSpacer={25}
+						marqueeDelay={3200}
+						// bouncePadding={{ right: 25 }}
+						style={{
+							textAlign: "center",
+							flex: 1,
+							fontWeight: "bold",
+							fontFamily: "Marker Felt",
+							fontSize: 22,
+							color: "olivedrab",
+							// backgroundColor: "navy",
+							paddingVertical: vh(4.5),
+						}}
+					>
+						{props.name}
+					</TextTicker>
+				</View>
+
+				{/* <View
+					style={{
+						flex: 1,
+						position: "relative",
+						height: vh(10),
+						alignItems: "center",
+						flexDirection: "column-reverse",
+						paddingHorizontal: vh(1),
+						// backgroundColor: "orange",
+					}}
 				>
 					<Text
 						style={{
 							textAlign: "center",
-							width: vw(64),
-							height: vh(5),
-							fontSize: 22,
-							lineHeight: vh(6),
-							fontFamily: "Rockwell",
-							// backgroundColor: "blue",
+							fontWeight: "bold",
+							fontFamily: "Marker Felt",
+							fontSize: 26,
+							color: "olivedrab",
+							// backgroundColor: "navy",
+							paddingBottom: vw(2.5),
 						}}
 					>
-						{this.props.category == "" ? "Categories" : this.props.category}
+						{props.name}
 					</Text>
-					<View
-						style={{
-							position: "relative",
-							height: vh(7.5),
-							width: vw(16),
-							justifyContent: "center",
-							alignItems: "center",
-							alignSelf: "flex-start",
-							// left: vw(2.5),
-							// backgroundColor: "blue",
-						}}
-					>
-						<Icon
-							name="circledown"
-							type="antdesign"
-							color={!this.props.active ? "red" : "midnightblue"}
-							size={34}
-						/>
-					</View>
-				</TouchableOpacity>
+				</View> */}
 			</View>
-		);
-	}
-}
+		</View>
+	);
+};
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, {
+	setIsFetching,
+	handleRefresh,
+	fetchBizs,
+})(Header);
 
 const styles = StyleSheet.create({
-	menuButton: {
+	container: {
+		// flex: 1,
 		position: "relative",
-		height: vh(7.5),
-		width: vw(16),
-		backgroundColor: "brown",
-		zIndex: 2,
-		opacity: 0.9,
-		justifyContent: "center",
+		height: vh(10),
 		alignItems: "center",
-	},
-	disabledButton: {
-		position: "relative",
-		height: vh(7.5),
-		width: vw(16),
-		backgroundColor: "lavender",
-		zIndex: 2,
-		opacity: 0.9,
 		justifyContent: "center",
-		alignItems: "center",
-	},
-	catButton: {
-		position: "relative",
-		height: vh(7.5),
-		width: vw(86),
-		backgroundColor: "salmon",
-		flexDirection: "row",
-		zIndex: 1,
-		opacity: 0.9,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	disabledCatButton: {
-		position: "relative",
-		height: vh(7.5),
-		width: vw(86),
-		backgroundColor: "gold",
-		flexDirection: "row",
-		zIndex: 1,
-		opacity: 0.9,
-		justifyContent: "center",
-		alignItems: "center",
+		backgroundColor: "darkslategray",
+		shadowColor: "transparent",
+		bottom: vh(10),
 	},
 });
 
 function mapStateToProps(state) {
-	return { category: state.category };
+	return {
+		isFetching: state.isFetching,
+	};
 }

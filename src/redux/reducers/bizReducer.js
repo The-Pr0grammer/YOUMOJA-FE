@@ -14,6 +14,8 @@ import {
 	SORT_BY_BADGES_TOGG,
 	SORT_BY_LOCATION_TOGG,
 	SET_USER_INFO,
+	SET_IS_FETCHING,
+	HANDLE_REFRESH,
 } from "../actions/types";
 
 const initialState = {
@@ -32,7 +34,10 @@ const initialState = {
 const bizReducer = (state = initialState, action) => {
 	switch (action.type) {
 		case FETCHING_BIZS_REQUEST:
-			return { ...state, isFetching: true };
+			// console.log("$ is", action.payload);
+			return action.payload
+				? { ...state, isFetching: action.payload }
+				: { ...state, isFetching: true };
 		case FETCHING_BIZS_FAILURE:
 			return { ...state, isFetching: false, errorMessage: action.payload };
 		case FETCHING_BIZS_SUCCESS:
@@ -77,6 +82,20 @@ const bizReducer = (state = initialState, action) => {
 			return { ...state, locationSort: !state.locationSort };
 		case SET_USER_INFO:
 			return { ...state, userInfo: action.payload };
+		case SET_IS_FETCHING:
+			// console.log("reducing isFetching");
+			return { ...state, isFetching: action.payload };
+		case HANDLE_REFRESH:
+			// console.log("reducing handleRefresh");
+			return {
+				...state,
+				category: "",
+				search: "",
+				likesSort: false,
+				badgesSort: false,
+				locationSort: false,
+			};
+
 		default:
 			return state;
 	}

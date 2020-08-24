@@ -10,15 +10,22 @@ import {
 	TouchableOpacity,
 	Dimensions,
 	Modal,
+	ActivityIndicator,
 } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
-import Header from "./Header.js";
+import { setIsFetching } from "../redux/actions/bizAction";
+import { connect } from "react-redux";
+
+import Menu from "./Menu.js";
 import Category from "./Category.js";
 
-export default class CategoriesList extends React.Component {
+class CategoriesList extends React.Component {
 	constructor(props) {
 		super(props);
+		this.loaded = [];
 		this.state = {
+			loadedState: false,
 			categories: [
 				{
 					cat: "Travel",
@@ -80,7 +87,11 @@ export default class CategoriesList extends React.Component {
 					id: 22,
 					bg: require(`../images/categories/Nightlife.jpg`),
 				},
-				{ cat: "Music", id: 21, bg: require(`../images/categories/Music.jpg`) },
+				{
+					cat: "Music",
+					id: 21,
+					bg: require(`../images/categories/Music.jpg`),
+				},
 				{
 					cat: "Legal",
 					id: 20,
@@ -96,7 +107,11 @@ export default class CategoriesList extends React.Component {
 					id: 18,
 					bg: require(`../images/categories/Health.jpg`),
 				},
-				{ cat: "Food", id: 17, bg: require(`../images/categories/Food.jpeg`) },
+				{
+					cat: "Food",
+					id: 17,
+					bg: require(`../images/categories/Food.jpeg`),
+				},
 				{
 					cat: "Financial",
 					id: 16,
@@ -122,7 +137,11 @@ export default class CategoriesList extends React.Component {
 					id: 12,
 					bg: require(`../images/categories/Education.jpg`),
 				},
-				{ cat: "Decor", id: 11, bg: require(`../images/categories/Decor.jpg`) },
+				{
+					cat: "Decor",
+					id: 11,
+					bg: require(`../images/categories/Decor.jpg`),
+				},
 				{
 					cat: "Construction",
 					id: 10,
@@ -174,7 +193,25 @@ export default class CategoriesList extends React.Component {
 		};
 	}
 
+	handleLoaded = (cat) => {
+		if (this.loaded.length == this.state.categories.length - 1) {
+			this.setState({ loadedState: true });
+		} else if (this.loaded.length >= this.state.categories.length) {
+			this.loaded.length = 0;
+		}
+		this.loaded.push(cat);
+		// console.log(this.loaded.length);
+	};
+
 	render() {
+		// console.log("loading");
+		const { isFocused } = this.props;
+		{
+			if (isFocused) {
+				// this.loaded = [];
+				// console.log("LOADED ARRAY IS", this.loaded);
+			}
+		}
 		return (
 			<Modal
 				animationType="fade"
@@ -186,13 +223,13 @@ export default class CategoriesList extends React.Component {
 					flex: 1,
 				}}
 			>
-				<View // HEADER
+				<View // MENU
 					style={{
 						position: "absolute",
 						top: vh(9.5),
 					}}
 				>
-					<Header
+					<Menu
 						navigation={this.props.navigation}
 						handleCatsTogg={this.props.handleCatsTogg}
 						active={true}
@@ -223,6 +260,8 @@ export default class CategoriesList extends React.Component {
 							<Category
 								catObj={item}
 								handleCatsTogg={this.props.handleCatsTogg}
+								handleLoaded={this.handleLoaded}
+								loaded={this.state.loadedState}
 							/>
 						)}
 						keyExtractor={(item) => item.id.toString()}
@@ -235,6 +274,14 @@ export default class CategoriesList extends React.Component {
 	}
 }
 
+export default connect(mapStateToProps, {
+	setIsFetching,
+})(function (props) {
+	const isFocused = useIsFocused();
+
+	return <CategoriesList {...props} isFocused={isFocused} />;
+});
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -243,3 +290,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "red",
 	},
 });
+
+function mapStateToProps(state) {
+	return { category: state.category };
+}

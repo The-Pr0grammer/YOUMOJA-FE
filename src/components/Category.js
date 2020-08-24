@@ -12,6 +12,9 @@ import { changeCat, handleSearch } from "../redux/actions/bizAction";
 
 class Category extends React.Component {
 	render() {
+
+		// this.props.loaded && console.log("AYE🔥");
+
 		return (
 			<TouchableOpacity
 				style={{
@@ -33,7 +36,10 @@ class Category extends React.Component {
 						flex: 1,
 						alignItems: "center",
 						// justifyContent: "center",
+
+						opacity: this.props.loaded ? 1 : 0,
 					}}
+					onLoadEnd={() => this.props.handleLoaded(this.props.catObj.cat)}
 				>
 					<Text
 						style={{

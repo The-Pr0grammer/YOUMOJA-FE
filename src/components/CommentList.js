@@ -4,7 +4,7 @@ import {
 	View,
 	TouchableOpacity,
 	FlatList,
-	Modal,
+	ActivityIndicator,
 } from "react-native";
 import React from "react";
 import Comment from "./Comment.js";
@@ -53,7 +53,7 @@ class CommentList extends React.Component {
 	};
 
 	render() {
-		// console.log(this.props.comments);
+		// console.log(this.props.isFetching);
 		return (
 			<View style={styles.commList}>
 				<Text
@@ -64,9 +64,10 @@ class CommentList extends React.Component {
 						// backgroundColor: "magenta",
 						width: vw(50),
 						alignSelf: "center",
+						color: "lightslategray",
 					}}
 				>
-					COMMENTS({this.props.bizs.comments.length})
+					COMMENTS({!this.props.isFetching && this.props.bizs.comments.length})
 				</Text>
 				{this.state.newCommentTogg == false && (
 					<TouchableOpacity
@@ -83,13 +84,12 @@ class CommentList extends React.Component {
 						<Icon
 							name="plus-circle"
 							type="feather"
-							color="aqua"
+							color="black"
 							size={37}
 							style={styles.add}
 						/>
 					</TouchableOpacity>
 				)}
-
 				{this.state.successTogg == false && (
 					<TouchableOpacity
 						style={{
@@ -106,7 +106,7 @@ class CommentList extends React.Component {
 						<Icon
 							name="arrows-expand"
 							type="foundation"
-							color="aqua"
+							color="black"
 							size={30}
 							style={styles.add}
 						/>
@@ -126,15 +126,26 @@ class CommentList extends React.Component {
 				{this.state.successTogg && (
 					<SuccessModal handleDismiss={this.handleDismiss} />
 				)}
-				<FlatList
-					// contentContainerStyle={{ height: 1000 }}
-					// style={{ height: 100, flexGrow: 1 }}
-					style={{ marginTop: vh(1.2) }}
-					data={this.props.bizs.comments}
-					renderItem={({ item }) => <Comment comment={item} />}
-					keyExtractor={(item) => item.id.toString()}
-					extraData={this.props.bizs.comments}
-				/>
+				{!this.props.isFetching && (
+					<FlatList
+						// contentContainerStyle={{ height: 1000 }}
+						// style={{ height: 100, flexGrow: 1 }}
+						style={{ marginTop: vh(1) }}
+						data={this.props.bizs.comments}
+						renderItem={({ item }) => <Comment comment={item} />}
+						keyExtractor={(item) => item.id.toString()}
+						extraData={this.props.bizs.comments}
+					/>
+				)}
+				{this.props.isFetching && (
+					<View style={styles.activityView}>
+						<ActivityIndicator
+							size="large"
+							color="#00ff00"
+							hidesWhenStopped={true}
+						/>
+					</View>
+				)}
 			</View>
 		);
 	}
@@ -147,17 +158,20 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: vw(100),
 		height: vh(100),
-		marginTop: vh(36.5),
-		backgroundColor: "green",
+		top: vh(36.5),
+		backgroundColor: "darkslategray",
 		flexDirection: "column",
 		position: "absolute",
 		paddingBottom: vh(54.4), //THIS FIXED THE NOT SCROLLING TO BOTTOM ISSUE AFTER A DAY OF DEBUGGING
+		borderWidth: 2.5,
+		borderColor: "black",
 	},
-	add: {
-		// backgroundColor: "pink",
+	activityView: {
+		flex: 1,
+		justifyContent: "center",
 	},
 });
 
 function mapStateToProps(state) {
-	return { bizs: state };
+	return { bizs: state, isFetching: state.isFetching };
 }

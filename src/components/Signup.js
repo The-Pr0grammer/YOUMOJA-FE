@@ -31,7 +31,7 @@ import axios from "axios";
 
 const CreateAccount = (props) => {
 	const navigation = useNavigation();
-	const [spinner, spinnerTogg] = useState("");
+	const [spinner, spinnerTogg] = useState(false);
 	const handleResult = async (result) => {
 		let test = false;
 		spinnerTogg(true);
@@ -174,7 +174,7 @@ const CreateAccount = (props) => {
 						},
 					}}
 				/>
-				{/* <View style={{ zIndex: 4 }}>
+				<View style={{ zIndex: 4 }}>
 					<Button
 						title="Change Email"
 						buttonStyle={{
@@ -185,10 +185,10 @@ const CreateAccount = (props) => {
 						titleStyle={{ color: "gray" }}
 						onPress={() => {
 							props.setUserInfo({ email: "yo", emailVerified: false });
-							navigation.navigate("Email Confirmation", { purpose: "Reset" });
+							navigation.navigate("Email Confirmation", { purpose: "Signup" });
 						}}
 					/>
-				</View> */}
+				</View>
 				{/* <View style={{ zIndex: 4 }}>
 					<Button
 						title="Check for phone auth"

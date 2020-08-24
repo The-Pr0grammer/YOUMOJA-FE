@@ -10,6 +10,7 @@ import React from "react";
 import { vh, vw } from "react-native-expo-viewport-units";
 import { Icon } from "react-native-elements";
 import axios from "axios";
+import { fetchBizs } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
 import { postComment } from "../redux/actions/bizAction";
 
@@ -22,7 +23,7 @@ class NewComment extends React.Component {
 		this.setState({ text });
 	};
 
-	handleSubmit = (props) => {
+	handleSubmit = () => {
 		if (!this.state.text) return;
 		this.props.handleCancel();
 		this.props.handleSuccess();
@@ -32,7 +33,7 @@ class NewComment extends React.Component {
 			business_id: this.props.bizId,
 			content: this.state.text,
 		};
-		this.props.postComment(data);
+		this.props.postComment(data).then(() => this.props.fetchBizs());
 	};
 
 	render() {
@@ -136,7 +137,7 @@ class NewComment extends React.Component {
 	}
 }
 
-export default connect(mapStateToProps, { postComment })(NewComment);
+export default connect(mapStateToProps, { postComment, fetchBizs })(NewComment);
 
 const styles = StyleSheet.create({
 	container: {

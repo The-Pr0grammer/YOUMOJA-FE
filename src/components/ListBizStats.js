@@ -12,6 +12,7 @@ import { Icon, ThemeConsumer } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
+import { fetchBizs } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
 import axios from "axios";
 
@@ -47,7 +48,7 @@ class ListBizStats extends React.Component {
 			});
 	};
 
-	incHearts = () => {
+	incHearts = (fetchBizs) => {
 		const axios = require("axios");
 		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
 		axios
@@ -58,7 +59,9 @@ class ListBizStats extends React.Component {
 				},
 				{ headers: { "Content-Type": "application/json" } }
 			)
-			.then(function (response) {})
+			.then(function (response) {
+				fetchBizs(false); //PASSED AS A FUNCTION TO onPress! Don't change to this.props...
+			})
 			.catch((error) => {
 				console.log(error.response);
 			});
@@ -94,7 +97,7 @@ class ListBizStats extends React.Component {
 						width: vw(13),
 					}}
 					onPress={() => {
-						this.incHearts();
+						this.incHearts(this.props.fetchBizs);
 					}}
 				>
 					<Icon name="heart" type="feather" color="red" size={37} />
@@ -112,7 +115,9 @@ class ListBizStats extends React.Component {
 						alignSelf: "center",
 					}}
 				>
-					{this.state.hearts}
+					{this.state.hearts > this.props.biz.business.hearts
+						? this.state.hearts
+						: this.props.biz.business.hearts}
 				</Text>
 				{/* COMMENTS ICON */}
 				<TouchableOpacity
@@ -172,7 +177,7 @@ class ListBizStats extends React.Component {
 				>
 					<TouchableOpacity style={styles.badge}>
 						<Icon
-							name="donate"
+							name="award"
 							type="font-awesome-5"
 							color="green"
 							size={25}
@@ -183,7 +188,7 @@ class ListBizStats extends React.Component {
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.badge}>
 						<Icon
-							name="donate"
+							name="award"
 							type="font-awesome-5"
 							color="blue"
 							size={25}
@@ -193,7 +198,7 @@ class ListBizStats extends React.Component {
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.badge}>
 						<Icon
-							name="donate"
+							name="award"
 							type="font-awesome-5"
 							color="firebrick"
 							size={25}
@@ -203,7 +208,7 @@ class ListBizStats extends React.Component {
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.badge}>
 						<Icon
-							name="donate"
+							name="award"
 							type="font-awesome-5"
 							color="slateblue"
 							size={25}
@@ -213,7 +218,7 @@ class ListBizStats extends React.Component {
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.badge}>
 						<Icon
-							name="donate"
+							name="award"
 							type="font-awesome-5"
 							color="gold"
 							size={25}
@@ -227,7 +232,7 @@ class ListBizStats extends React.Component {
 	}
 }
 
-export default connect(mapStateToProps)(ListBizStats);
+export default connect(mapStateToProps, { fetchBizs })(ListBizStats);
 
 const styles = StyleSheet.create({
 	badge: {

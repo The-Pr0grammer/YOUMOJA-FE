@@ -34,9 +34,9 @@ const styles = StyleSheet.create({
 		paddingVertical: vh(0.5),
 		paddingRight: 20,
 		marginBottom: vh(1),
-		backgroundColor: "blue",
-		borderWidth: 0.5,
-		borderColor: "purple",
+		backgroundColor: "lightslategray",
+		borderWidth: 2,
+		borderColor: "black",
 		borderRadius: 3,
 	},
 	comment: {
@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
 	},
 	username: {
 		position: "relative",
-		backgroundColor: "gold",
 		alignSelf: "flex-end",
 		marginVertical: 1,
 		marginLeft: vw(1.5),

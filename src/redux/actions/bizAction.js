@@ -14,10 +14,15 @@ import {
 	SORT_BY_BADGES_TOGG,
 	SORT_BY_LOCATION_TOGG,
 	SET_USER_INFO,
+	SET_IS_FETCHING,
+	HANDLE_REFRESH,
 } from "./types";
 import axios from "axios";
 
-export const fetchingBizsRequest = () => ({ type: FETCHING_BIZS_REQUEST });
+export const fetchingBizsRequest = (indicator = true) => ({
+	type: FETCHING_BIZS_REQUEST,
+	payload: indicator,
+});
 
 export const fetchingBizsSuccess = (json) => ({
 	type: FETCHING_BIZS_SUCCESS,
@@ -55,9 +60,9 @@ export const postingCommentFailure = (error) => ({
 	payload: error,
 });
 
-export const fetchBizs = () => {
+export const fetchBizs = (activityIndicator) => {
 	return async (dispatch) => {
-		dispatch(fetchingBizsRequest());
+		dispatch(fetchingBizsRequest(activityIndicator));
 		try {
 			let response = await axios(`http://localhost:3000/user_bizs`);
 			// let json = await response.json();
@@ -115,4 +120,13 @@ export const sortByLocationTogg = () => ({ type: SORT_BY_LOCATION_TOGG });
 export const setUserInfo = (user) => ({
 	type: SET_USER_INFO,
 	payload: user,
+});
+
+export const setIsFetching = (togg) => ({
+	type: SET_IS_FETCHING,
+	payload: togg,
+});
+
+export const handleRefresh = () => ({
+	type: HANDLE_REFRESH,
 });

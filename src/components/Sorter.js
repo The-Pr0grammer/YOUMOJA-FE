@@ -35,10 +35,10 @@ class Sorter extends React.Component {
 					]}
 				>
 					<Icon
-						name="donate"
+						name="location-arrow"
 						type="font-awesome-5"
-						color="darkcyan"
-						size={34}
+						color="dodgerblue"
+						size={32}
 					/>
 				</TouchableOpacity>
 				<TouchableOpacity
@@ -49,12 +49,7 @@ class Sorter extends React.Component {
 						this.props.sorters.locationSort ? styles.litBox : styles.sortBox3,
 					]}
 				>
-					<Icon
-						name="location-arrow"
-						type="font-awesome-5"
-						color="dodgerblue"
-						size={32}
-					/>
+					<Icon name="award" type="font-awesome-5" color="darkcyan" size={34} />
 				</TouchableOpacity>
 			</View>
 		);
@@ -91,7 +86,7 @@ const styles = StyleSheet.create({
 		position: "relative",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "mediumspringgreen",
+		backgroundColor: "blue",
 		borderWidth: 2,
 		borderBottomWidth: 5,
 	},
@@ -101,7 +96,7 @@ const styles = StyleSheet.create({
 		position: "relative",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "blue",
+		backgroundColor: "mediumspringgreen",
 		borderWidth: 2,
 		borderBottomWidth: 5,
 	},

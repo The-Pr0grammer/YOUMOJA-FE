@@ -23,15 +23,15 @@ class WelcomeSplash extends React.Component {
 
 	render() {
 		const { isFocused } = this.props;
-		{isFocused && setTimeout(
-			() =>
-				this.props.navigation.navigate("DrawerNav", { screen: "Home" }),
-			4500
-		)}
+		{
+			isFocused &&
+				setTimeout(
+					() => this.props.navigation.navigate("DrawerNav", { screen: "Home" }),
+					6400
+				);
+		}
 		return (
-			<View
-				style={styles.container}
-			>
+			<View style={styles.container}>
 				<View>
 					<Animation
 						ref={(animation) => (this.myAnimation = animation)}

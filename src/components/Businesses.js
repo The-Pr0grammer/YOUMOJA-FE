@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 import {
 	View,
 	FlatList,
@@ -6,21 +7,29 @@ import {
 	ImageBackground,
 	Dimensions,
 	ActivityIndicator,
+	Text,
 } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
+import {
+	fetchBizs,
+	setUserInfo,
+	setIsFetching,
+} from "../redux/actions/bizAction";
 import { connect } from "react-redux";
-import { fetchBizs, setUserInfo } from "../redux/actions/bizAction";
 // import { getUsers } from "../api/users.js";
 import PropTypes from "prop-types";
 import ListBiz from "./ListBiz.js";
 import CategoriesList from "./CategoriesList.js";
-import Header from "./Header.js";
+import Menu from "./Menu.js";
 import Search from "./Search.js";
 import FocusedSearch from "./FocusedSearch.js";
 import Sorter from "./Sorter.js";
 import * as firebase from "firebase";
+import { Alert } from "react-native";
 
 class Businesses extends Component {
 	constructor(props) {
@@ -31,29 +40,51 @@ class Businesses extends Component {
 			error: null,
 			searchFocus: false,
 			catTogg: false,
+			userLoadingErrorMessage: "",
 			// users: [],
 			// hasLoadedUsers: false,
-			// userLoadingErrorMessage: "",
 		};
 	}
 
+	loadUser = async (id) => {
+		try {
+			let response = await axios(`http://localhost:3000/users/${id}`);
+			// console.log("response is", response )
+			this.props.setUserInfo({
+				...this.props.userInfo,
+				name: response.data.name,
+				username: response.data.username,
+			});
+		} catch (error) {
+			this.setState({ userLoadingErrorMessage: error.message });
+		}
+	};
+
 	componentDidMount() {
+		this.props.setUserInfo({
+			email: "anthonyh202x@gmail.com",
+			emailVerified: true,
+			id: 17,
+			name: "AnthonyTheProgrammer👨🏾‍💻",
+			username: "ADOT",
+		});
+
+		// !this.props.userInfo
+		// 	? this.props.navigation.navigate("Login", { message: "Please log in" })
+		// 	: null;
+		this.loadUser(this.props.userInfo.id);
 		this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
 		// this.loadUsers();
-		console.log("USER INFO ON LOGIN IS", this.props.userInfo);
+		// console.log("USER INFO ON LOGIN IS", this.props.userInfo);
 		this.props.fetchBizs();
-		!this.props.userInfo
-			? this.props.navigation.navigate("Login", { message: "Please log in" })
-			: null;
-		this.didFocusSubscription = this.props.navigation.addListener(
-			"didfocus",
-			() => {
-				// if (this.state.hasLoadedUsers != true) {
-				// 	this.loadUsers();
-				// }
-				this.props.fetchBizs();
-			}
-		);
+		// this.didFocusSubscription = this.props.navigation.addListener(
+		// 	"didfocus",
+		// 	() => {
+		// 		// if (this.state.hasLoadedUsers != true) {
+		// 		// 	this.loadUsers();
+		// 		// }
+		// 	}
+		// );
 	}
 
 	// loadUsers() {
@@ -92,13 +123,6 @@ class Businesses extends Component {
 	}
 
 	handleCatsTogg = () => {
-		firebase.auth().onAuthStateChanged(function (user) {
-			if (!user.emailVerified) {
-				console.log("verified");
-			} else {
-				console.log("Not verified");
-			}
-		});
 		return this.setState({ catTogg: !this.state.catTogg });
 	};
 
@@ -106,10 +130,38 @@ class Businesses extends Component {
 		return this.setState({ searchFocus: !this.state.searchFocus });
 	};
 
-	render() {
-		// console.log(this.props.reduxState);
-		// console.log("USERS:", this.state.users[0]);
+	// handleFetchingToggle = (togg) => {
+	// 	return this.props.setIsFetching(togg);
+	// };
 
+	render() {
+		const { isFocused } = this.props;
+		{
+			// isFocused && console.log("focused");
+			// this.props.fetchBizs();
+		}
+		let emptyCheck = this.props.filteredBizs.length;
+		// console.log(
+		// 	"HEARTS ARE",
+		// 	this.props.reduxState.businesses.map((biz) => biz.business.hearts)
+		// );
+		// console.log("isFETCHING", this.props.reduxState.isFetching);
+		// console.log("USERS:", this.state.users[0]);
+		// console.log("THIS.STATE.USER IS", this.state.user);
+		{
+		}
+		// Alert.prompt("Change Email", "Enter the email you would like to use", [
+		// 	{
+		// 		text: "Cancel",
+		// 		style: "cancel",
+		// 	},
+		// 	{
+		// 		text: "OK",
+		// 		onPress: (newEmail) => {
+		// 			emailPatch(newEmail);
+		// 		},
+		// 	},
+		// ]);
 		return (
 			(this.props.reduxState.isFetching && (
 				<View style={styles.activityView}>
@@ -127,8 +179,9 @@ class Businesses extends Component {
 						catTogg={this.state.catTogg}
 						navigation={this.props.navigation}
 					/>
+
 					<View style={styles.upperDiv}>
-						<Header
+						<Menu
 							navigation={this.props.navigation}
 							handleCatsTogg={this.handleCatsTogg}
 						/>
@@ -138,32 +191,66 @@ class Businesses extends Component {
 						)}
 						<Sorter />
 					</View>
-					<ImageBackground
-						source={require("../images/Jarrell-Wadsworth-Revolutionary-Print-Lusenhop-Tate-Loan-Tiff.jpg")}
-						style={styles.bg}
-					></ImageBackground>
-					<FlatList
-						style={styles.list}
-						contentContainerStyle={{
-							backgroundColor: "rgba(0, 0, 0, 0)",
-							alignItems: "left",
-							justifyContent: "left",
-						}}
-						data={this.props.filteredBizs}
-						keyExtractor={(item) => item.id.toString()}
-						renderItem={({ item }) => (
-							<ListBiz biz={item} navigation={this.props.navigation} />
-						)}
-						extraData={this.props.sorters}
-						legacyImplementation={true}
-					/>
+					{emptyCheck > 0 && (
+						<ImageBackground
+							source={require("../images/Jarrell-Wadsworth-Revolutionary-Print-Lusenhop-Tate-Loan-Tiff.jpg")}
+							style={styles.bg}
+						></ImageBackground>
+					)}
+					{emptyCheck < 1 && this.props.reduxState.isFetching == false && (
+						<View>
+							<Icon
+								name="binoculars"
+								type="font-awesome"
+								color="darkslategray"
+								size={112}
+								style={{ marginTop: vh(5) }}
+							/>
+							<Text style={styles.empty}>NO RESULTS</Text>
+						</View>
+					)}
+
+					{emptyCheck > 0 && (
+						<FlatList
+							style={styles.list}
+							contentContainerStyle={{
+								backgroundColor: "rgba(0, 0, 0, 0)",
+								alignItems: "left",
+								justifyContent: "left",
+							}}
+							data={this.props.filteredBizs}
+							keyExtractor={(item) => item.id.toString()}
+							renderItem={({ item }) => (
+								<ListBiz biz={item} navigation={this.props.navigation} />
+							)}
+							extraData={
+								this.props.sorters ||
+								this.props.reduxState.businesses[1].business.hearts
+							}
+							legacyImplementation={true}
+						/>
+					)}
 				</View>
 			))
 		);
 	}
 }
 
-export default connect(mapStateToProps, { fetchBizs, setUserInfo })(Businesses);
+export default connect(mapStateToProps, {
+	fetchBizs,
+	setUserInfo,
+	setIsFetching,
+})(function (props) {
+	const isFocused = useIsFocused();
+
+	return <Businesses {...props} isFocused={isFocused} />;
+});
+
+// export default function (props) {
+// 	const isFocused = useIsFocused();
+
+// 	return <Businesses {...props} isFocused={isFocused} />;
+// }
 
 Businesses.propTypes = {
 	fetchBizs: PropTypes.func.isRequired,
@@ -217,18 +304,29 @@ const styles = StyleSheet.create({
 		backgroundColor: "red",
 		zIndex: 4,
 	},
+	empty: {
+		backgroundColor: "transparent",
+		color: "lightslategray",
+		fontSize: 64,
+		fontFamily: "Marker Felt",
+		alignSelf: "center",
+		textAlign: "center",
+		width: vw(64),
+	},
 });
 
 function mapStateToProps(state) {
 	return {
 		reduxState: state,
 		userInfo: state.userInfo,
+		isFetching: state.isFetching,
 		sorters: {
 			likesSort: state.likesSort,
 			badgesSort: state.badgesSort,
 			locationSort: state.locationSort,
 		},
 		filteredBizs: state.businesses
+			.sort((a, b) => b.business.name < a.business.name)
 			.filter((biz) => biz.business.categories.includes(state.category))
 			.filter(
 				(biz) =>

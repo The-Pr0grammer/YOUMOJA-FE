@@ -17,6 +17,7 @@ import Signup from "./src/components/Signup.js";
 import EmailConfirmation from "./src/components/EmailConfirmation.js";
 import WelcomeSplash from "./src/components/WelcomeSplash.js";
 import ResetPassword from "./src/components/ResetPassword.js";
+import Profile from "./src/components/Profile.js";
 import * as firebase from "firebase";
 
 const createStoreWithMiddleWare = applyMiddleware(thunk)(createStore);
@@ -154,8 +155,38 @@ function DrawerNav({ navigation }) {
 			}}
 		>
 			<Drawer.Screen name="Home" component={Main} />
-
-			<Drawer.Screen name="Notifications" component={NotificationsScreen} />
+			<Drawer.Screen
+				name="Profile"
+				component={Profile}
+				options={{
+					headerShown: true,
+					headerLeft: () => (
+						<Button
+							icon={<Icon name="arrow-circle-left" size={25} color="black" />}
+							type="clear"
+							onPress={() => navigation.navigate("Login")}
+							title=" Login"
+							titleStyle={{ color: "black" }}
+						/>
+					),
+				}}
+			/>
+			<Drawer.Screen
+				name="Notifications"
+				component={NotificationsScreen}
+				options={{
+					headerShown: false,
+					headerLeft: () => (
+						<Button
+							icon={<Icon name="arrow-circle-left" size={25} color="black" />}
+							type="clear"
+							onPress={() => navigation.navigate("Login")}
+							title=" Login"
+							titleStyle={{ color: "black" }}
+						/>
+					),
+				}}
+			/>
 			<Drawer.Screen
 				name="Logout"
 				component={Login}
@@ -188,7 +219,13 @@ function Main({ navigation }) {
 					headerLeft: null,
 				}}
 			/>
-			<Stack.Screen name="BizPage" component={BizPage} />
+			<Stack.Screen
+				name="BizPage"
+				component={BizPage}
+				options={{
+					headerShown: false,
+				}}
+			/>
 		</Stack.Navigator>
 	);
 }
@@ -197,15 +234,15 @@ function AppNav({ navigation }) {
 	return (
 		<Stack.Navigator>
 			<Stack.Screen
-				name="Auth"
-				component={AuthFlow}
+				name="DrawerNav"
+				component={DrawerNav}
 				options={{
 					headerShown: false,
 				}}
 			/>
 			<Stack.Screen
-				name="DrawerNav"
-				component={DrawerNav}
+				name="Auth"
+				component={AuthFlow}
 				options={{
 					headerShown: false,
 				}}

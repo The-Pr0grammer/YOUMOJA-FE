@@ -81,17 +81,15 @@ const Login = (props) => {
 										emailVerified: false,
 										opaque: result.body.user.opaque,
 									});
-								{
-									errorMessage == "" || ".";
-									setTimeout(() => {
-										spinnerTogg(false);
-										navigation.navigate("Email Confirmation", {
-											purpose: "Signup",
-										}),
-											5000;
-									});
-									console.log("Verified😎", user.email);
-								}
+
+								setTimeout(() => {
+									spinnerTogg(false);
+									navigation.navigate("Email Confirmation", {
+										purpose: "Signup",
+									}),
+										5000;
+								});
+								console.log("Verified😎", user.email);
 							} else {
 								setErrorMessage(""),
 									props.setUserInfo({
@@ -99,14 +97,12 @@ const Login = (props) => {
 										email: result.data.email,
 										emailVerified: user.emailVerified,
 									});
-								{
-									errorMessage == "" || ".";
-									setTimeout(() => {
-										spinnerTogg(false);
-										navigation.navigate("Welcome Splash"), 5000;
-									});
-									console.log("Verified😎", user.email);
-								}
+
+								setTimeout(() => {
+									spinnerTogg(false);
+									navigation.navigate("Welcome Splash"), 5000;
+								});
+								console.log("Verified😎", user.email);
 							}
 						});
 					})
@@ -213,13 +209,13 @@ const Login = (props) => {
 							type="Login"
 							fields={{
 								email: {
-									label: "Email",
+									label: "Username or Email",
 									validators: [validateContent],
 									inputProps: {
 										keyboardType: "email-address",
 										autoCapitalize: "none",
 										textContentType: "username",
-										placeholder: "email address or username",
+										placeholder: "Enter a username or email",
 										placeholderTextColor: "#D50000",
 										textAlign: "center",
 									},
