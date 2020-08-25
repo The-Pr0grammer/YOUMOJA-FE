@@ -165,6 +165,8 @@ class ListBizStats extends React.Component {
 						height: vh(10),
 						flexGrow: 1,
 						justifyContent: "center",
+						paddingLeft: vw(4.5),
+						paddingRight: vw(0.5),
 					}}
 					automaticallyAdjustInsets={false}
 					horizontal={true}
@@ -177,53 +179,53 @@ class ListBizStats extends React.Component {
 				>
 					<TouchableOpacity style={styles.badge}>
 						<Icon
-							name="award"
-							type="font-awesome-5"
+							name="certificate"
+							type="material-community"
 							color="green"
-							size={25}
-							reverse
-							reverseColor="lawngreen"
+							size={45}
+							// reverse
+							// reverseColor="lawngreen"
 							style={{ marginRight: vw(10) }}
 						/>
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.badge}>
 						<Icon
-							name="award"
-							type="font-awesome-5"
+							name="certificate"
+							type="material-community"
 							color="blue"
-							size={25}
-							reverse
-							reverseColor="dodgerblue"
+							size={45}
+							// reverse
+							// reverseColor="dodgerblue"
 						/>
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.badge}>
 						<Icon
-							name="award"
-							type="font-awesome-5"
+							name="certificate"
+							type="material-community"
 							color="firebrick"
-							size={25}
-							reverse
-							reverseColor="lightcoral"
+							size={45}
+							// reverse
+							// reverseColor="lightcoral"
 						/>
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.badge}>
 						<Icon
-							name="award"
-							type="font-awesome-5"
+							name="certificate"
+							type="material-community"
 							color="slateblue"
-							size={25}
-							reverse
-							reverseColor="darkmagenta"
+							size={45}
+							// reverse
+							// reverseColor="darkmagenta"
 						/>
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.badge}>
 						<Icon
-							name="award"
-							type="font-awesome-5"
+							name="certificate"
+							type="material-community"
 							color="gold"
-							size={25}
-							reverse
-							reverseColor="darkorange"
+							size={45}
+							// reverse
+							// reverseColor="darkorange"
 						/>
 					</TouchableOpacity>
 				</ScrollView>

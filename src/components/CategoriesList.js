@@ -14,8 +14,8 @@ import {
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
-import { setIsFetching } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
+import { setIsFetching } from "../redux/actions/bizAction";
 
 import Menu from "./Menu.js";
 import Category from "./Category.js";
@@ -235,6 +235,7 @@ class CategoriesList extends React.Component {
 						active={true}
 					/>
 				</View>
+
 				<View //BACKDROP
 					style={{
 						flex: 1,
@@ -247,27 +248,41 @@ class CategoriesList extends React.Component {
 						paddingBottom: vh(17.3),
 					}}
 				>
-					<FlatList
-						contentContainerStyle={{
-							flexGrow: 1,
-							flexDirection: "column-reverse",
-							justifyContent: "center",
-							alignItems: "center",
-							// height: vh(70),
-						}}
-						data={this.state.categories}
-						renderItem={({ item }) => (
-							<Category
-								catObj={item}
-								handleCatsTogg={this.props.handleCatsTogg}
-								handleLoaded={this.handleLoaded}
-								loaded={this.state.loadedState}
-							/>
+					<TouchableOpacity
+						style={{ backgroundColor: "transparent", height: vh(83.3) }}
+						onPress={() => this.props.handleCatsTogg()}
+					>
+						{!this.state.loadedState && (
+							<View style={styles.activityView}>
+								<ActivityIndicator
+									size="large"
+									color="#00ff00"
+									hidesWhenStopped={true}
+								/>
+							</View>
 						)}
-						keyExtractor={(item) => item.id.toString()}
-						numColumns={3}
-						showsVerticalScrollIndicator={false}
-					/>
+						<FlatList
+							contentContainerStyle={{
+								flexGrow: 1,
+								flexDirection: "column-reverse",
+								justifyContent: "center",
+								alignItems: "center",
+								// height: vh(70),
+							}}
+							data={this.state.categories}
+							renderItem={({ item }) => (
+								<Category
+									catObj={item}
+									handleCatsTogg={this.props.handleCatsTogg}
+									handleLoaded={this.handleLoaded}
+									loaded={this.state.loadedState}
+								/>
+							)}
+							keyExtractor={(item) => item.id.toString()}
+							numColumns={3}
+							showsVerticalScrollIndicator={false}
+						/>
+					</TouchableOpacity>
 				</View>
 			</Modal>
 		);
@@ -288,6 +303,12 @@ const styles = StyleSheet.create({
 		width: vw(70),
 		height: vh(100),
 		backgroundColor: "red",
+	},
+	activityView: {
+		flex: 1,
+		justifyContent: "center",
+		backgroundColor: "maroon",
+		marginTop: vh(25),
 	},
 });
 

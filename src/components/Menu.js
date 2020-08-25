@@ -40,7 +40,7 @@ class Menu extends React.Component {
 				<TouchableOpacity
 					activeOpacity={!this.props.active ? 0.2 : 1}
 					style={[
-						!this.props.active ? styles.catButton : styles.disabledCatButton,
+						!this.props.active ? styles.catButton : styles.activeCatButton,
 					]}
 					onPress={() => this.props.handleCatsTogg()}
 				>
@@ -72,7 +72,7 @@ class Menu extends React.Component {
 						<Icon
 							name="circledown"
 							type="antdesign"
-							color={!this.props.active ? "red" : "midnightblue"}
+							color={!this.props.active ? "red" : "darkslategray"}
 							size={34}
 						/>
 					</View>
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
-	disabledCatButton: {
+	activeCatButton: {
 		position: "relative",
 		height: vh(7.5),
 		width: vw(86),

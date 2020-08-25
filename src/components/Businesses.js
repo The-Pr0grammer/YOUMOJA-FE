@@ -14,12 +14,12 @@ import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
+import { connect } from "react-redux";
 import {
 	fetchBizs,
 	setUserInfo,
 	setIsFetching,
 } from "../redux/actions/bizAction";
-import { connect } from "react-redux";
 // import { getUsers } from "../api/users.js";
 import PropTypes from "prop-types";
 import ListBiz from "./ListBiz.js";
@@ -29,7 +29,6 @@ import Search from "./Search.js";
 import FocusedSearch from "./FocusedSearch.js";
 import Sorter from "./Sorter.js";
 import * as firebase from "firebase";
-import { Alert } from "react-native";
 
 class Businesses extends Component {
 	constructor(props) {

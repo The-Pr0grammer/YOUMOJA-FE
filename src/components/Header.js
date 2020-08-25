@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import TextTicker from "react-native-text-ticker";
+import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
 import {
 	setUserInfo,

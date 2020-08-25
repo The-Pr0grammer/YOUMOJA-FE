@@ -1,3 +1,4 @@
+import React from "react";
 import {
 	StyleSheet,
 	TextInput,
@@ -6,34 +7,40 @@ import {
 	Text,
 	Modal,
 } from "react-native";
-import React from "react";
-import { vh, vw } from "react-native-expo-viewport-units";
+import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements";
-import axios from "axios";
-import { fetchBizs } from "../redux/actions/bizAction";
+import { vh, vw } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
+import { fetchBizs } from "../redux/actions/bizAction";
 import { postComment } from "../redux/actions/bizAction";
 
 class NewComment extends React.Component {
 	state = {
 		text: "",
+		errorMessage: "",
 	};
 
 	handleChangeText = (text) => {
+		text.length > 0 &&
+			this.state.errorMessage &&
+			this.setState({ errorMessage: "" });
 		this.setState({ text });
 	};
 
 	handleSubmit = () => {
-		if (!this.state.text) return;
-		this.props.handleCancel();
-		this.props.handleSuccess();
-		this.props.handleClose();
-		const data = {
-			user_id: 1,
-			business_id: this.props.bizId,
-			content: this.state.text,
-		};
-		this.props.postComment(data).then(() => this.props.fetchBizs());
+		if (/\S/.test(this.state.text)) {
+			this.props.handleCancel();
+			this.props.handleSuccess();
+			this.props.handleClose();
+			const data = {
+				user_id: 1,
+				business_id: this.props.bizId,
+				content: this.state.text,
+			};
+			this.props.postComment(data).then(() => this.props.fetchBizs());
+		} else if (!/\S/.test(this.state.text)) {
+			this.setState({ errorMessage: "Can't be blank" });
+		}
 	};
 
 	render() {
@@ -58,79 +65,65 @@ class NewComment extends React.Component {
 					keyboardAppearance={"dark"}
 					number={280}
 				/>
+				<Text
+					style={{
+						textAlign: "center",
+						color: "red",
+						height: vh(2),
+						marginTop: vh(0.5),
+					}}
+				>
+					{this.state.errorMessage}
+				</Text>
 				<View
 					style={{
 						zIndex: 1,
 						flexDirection: "row",
 					}}
 				>
-					<TouchableOpacity
+					<View style={{ flex: 1 }}>
+						<Button
+							title="Cancel"
+							buttonStyle={{
+								backgroundColor: "transparent",
+								borderRadius: 18,
+							}}
+							style={{
+								position: "relative",
+								// height: vh(6.5),
+								width: vw(30),
+								// marginVertical: vh(1),
+								flexDirection: "row",
+								alignItems: "center",
+								justifyContent: "center",
+								// marginLeft: vw(5),
+							}}
+							titleStyle={{ color: "gray" }}
+							onPress={() => this.props.handleCancel()}
+							// loading={buttonSpinner}
+							// loadingProps={{ color: "green", size: "large" }}
+						/>
+					</View>
+					<Button
+						title="Post"
+						buttonStyle={{
+							backgroundColor: "transparent",
+							borderRadius: 18,
+						}}
 						style={{
 							position: "relative",
-							height: vh(6.5),
-							width: vw(30),
-							backgroundColor: "maroon",
-							borderRadius: 30,
-							marginVertical: vh(1),
+							// height: vh(6.5),
+							width: vw(32),
+							// marginVertical: vh(1),
 							flexDirection: "row",
 							alignItems: "center",
 							justifyContent: "center",
-							marginLeft: vw(5),
 						}}
-						onPress={() => {
-							this.props.handleCancel();
-						}}
-					>
-						<Text
-							style={{
-								fontSize: 18,
-								textAlignVertical: "center",
-							}}
-						>
-							CANCEL
-						</Text>
-						<Icon
-							name="cancel"
-							type="materialcommunityicons"
-							color="black"
-							size={35}
-							style={{ alignSelf: "flex-end" }}
-						/>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						style={{
-							position: "relative",
-							height: vh(6.5),
-							width: vw(30),
-							backgroundColor: "lime",
-							borderRadius: 30,
-							marginVertical: vh(1),
-							flexDirection: "row",
-							alignItems: "center",
-							justifyContent: "center",
-							marginLeft: vw(24.5),
-						}}
-						onPress={() => {
-							this.handleSubmit();
-						}}
-					>
-						<Text
-							style={{
-								fontSize: 18,
-								textAlignVertical: "center",
-							}}
-						>
-							POST
-						</Text>
-						<Icon
-							name="comment"
-							type="materialcommunityicons"
-							color="black"
-							size={35}
-							style={{ alignSelf: "flex-end" }}
-						/>
-					</TouchableOpacity>
+						titleStyle={{ color: "gray" }}
+						onPress={() => this.handleSubmit()}
+						// loading={buttonSpinner}
+						// loadingProps={{ color: "green", size: "large" }}
+					/>
 				</View>
 			</View>
 		);
@@ -141,14 +134,15 @@ export default connect(mapStateToProps, { postComment, fetchBizs })(NewComment);
 
 const styles = StyleSheet.create({
 	container: {
-		paddingHorizontal: 10,
-		paddingVertical: 8,
-		marginTop: vh(1.5),
-		marginBottom: vh(0.5),
+		paddingHorizontal: vw(2.5),
+		paddingVertical: vh(1.25),
+		marginTop: vh(0.5),
+		marginHorizontal: vw(1.5),
 		height: vh(20),
 		position: "relative",
 		zIndex: 1,
-		backgroundColor: "orange",
+		backgroundColor: "rgba(0,0,0,0.7)",
+		borderRadius: 5,
 	},
 	input: { height: vh(10) },
 });

@@ -7,8 +7,8 @@ import {
 	TextInput,
 	UIManager,
 } from "react-native";
-import { PropTypes } from "prop-types";
 import { vh } from "react-native-expo-viewport-units";
+import { PropTypes } from "prop-types";
 
 const { State: TextInputState } = TextInput;
 

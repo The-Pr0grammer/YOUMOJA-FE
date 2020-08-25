@@ -12,7 +12,6 @@ import { changeCat, handleSearch } from "../redux/actions/bizAction";
 
 class Category extends React.Component {
 	render() {
-
 		// this.props.loaded && console.log("AYE🔥");
 
 		return (
@@ -47,11 +46,12 @@ class Category extends React.Component {
 							justifyContent: "center",
 							alignItems: "center",
 							color: "black",
-							fontSize: 18,
+							fontSize: 16,
 							textAlign: "center",
-							backgroundColor: "gold",
+							backgroundColor: "lightslategray",
 							alignSelf: "flex-start",
 							position: "relative",
+							fontFamily: "Marker Felt",
 						}}
 					>
 						{this.props.catObj.cat}

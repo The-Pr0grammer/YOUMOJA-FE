@@ -22,7 +22,7 @@ const BizPageSupport = (props) => {
 						bottom: vh(0.5),
 						alignItems: "center",
 						justifyContent: "center",
-						width: vw(33),
+						width: vw(32),
 						height: vh(10),
 					}}
 					onPress={() => {
@@ -46,6 +46,7 @@ const BizPageSupport = (props) => {
 					position: "relative",
 					alignSelf: "flex-end",
 					backgroundColor: "maroon",
+					backgroundColor: "rgba(0, 0, 0, 0.3)",
 					height: vh(10),
 					width: vw(66),
 					borderBottomWidth: 1,
@@ -53,7 +54,7 @@ const BizPageSupport = (props) => {
 				contentContainerStyle={{
 					position: "relative",
 					height: vh(10),
-					bottom: vh(0.75),
+					// bottom: vh(0.75),
 					// paddingRight: vw(6.6),
 					// paddingLeft: vw(4),
 				}}
@@ -68,52 +69,52 @@ const BizPageSupport = (props) => {
 			>
 				<TouchableOpacity style={styles.badge}>
 					<Icon
-						name="award"
-						type="font-awesome-5"
+						name="certificate"
+						type="material-community"
 						color="green"
-						size={27.5}
-						reverse
-						reverseColor="lawngreen"
+						size={45}
+						// reverse
+						// reverseColor="lawngreen"
 					/>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.badge}>
 					<Icon
-						name="award"
-						type="font-awesome-5"
+						name="certificate"
+						type="material-community"
 						color="blue"
-						size={27.5}
-						reverse
-						reverseColor="dodgerblue"
+						size={45}
+						// reverse
+						// reverseColor="dodgerblue"
 					/>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.badge}>
 					<Icon
-						name="award"
-						type="font-awesome-5"
+						name="certificate"
+						type="material-community"
 						color="firebrick"
-						size={27.5}
-						reverse
-						reverseColor="lightcoral"
+						size={45}
+						// reverse
+						// reverseColor="lightcoral"
 					/>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.badge}>
 					<Icon
-						name="award"
-						type="font-awesome-5"
+						name="certificate"
+						type="material-community"
 						color="slateblue"
-						size={27.5}
-						reverse
-						reverseColor="darkmagenta"
+						size={45}
+						// reverse
+						// reverseColor="darkmagenta"
 					/>
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.badge}>
 					<Icon
-						name="award"
-						type="font-awesome-5"
+						name="certificate"
+						type="material-community"
 						color="gold"
-						size={27.5}
-						reverse
-						reverseColor="darkorange"
+						size={45}
+						// reverse
+						// reverseColor="darkorange"
 					/>
 				</TouchableOpacity>
 			</ScrollView>
@@ -133,6 +134,8 @@ const styles = StyleSheet.create({
 	badge: {
 		height: vh(10),
 		// width: vw(24),
-		paddingHorizontal: vw(3.5),
+		paddingHorizontal: vw(4.5),
+		paddingLeft: vw(5.5),
+		justifyContent: "center",
 	},
 });

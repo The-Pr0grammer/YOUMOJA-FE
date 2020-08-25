@@ -37,7 +37,7 @@ const bizReducer = (state = initialState, action) => {
 			// console.log("$ is", action.payload);
 			return action.payload
 				? { ...state, isFetching: action.payload }
-				: { ...state, isFetching: true };
+				: { ...state, isFetching: false };
 		case FETCHING_BIZS_FAILURE:
 			return { ...state, isFetching: false, errorMessage: action.payload };
 		case FETCHING_BIZS_SUCCESS:
