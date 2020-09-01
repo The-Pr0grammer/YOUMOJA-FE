@@ -10,9 +10,10 @@ import {
 import { Button } from "react-native-elements";
 import { Icon } from "react-native-elements";
 import { vh, vw } from "react-native-expo-viewport-units";
-import { connect } from "react-redux";
-import { fetchBizs } from "../redux/actions/bizAction";
 import { postComment } from "../redux/actions/bizAction";
+import { fetchComments } from "../redux/actions/bizAction";
+import { fetchBizs } from "../redux/actions/bizAction";
+import { connect } from "react-redux";
 
 class NewComment extends React.Component {
 	state = {
@@ -23,8 +24,12 @@ class NewComment extends React.Component {
 	handleChangeText = (text) => {
 		text.length > 0 &&
 			this.state.errorMessage &&
-			this.setState({ errorMessage: "" });
-		this.setState({ text });
+			this.setState({
+				errorMessage: "",
+			});
+		this.setState({
+			text,
+		});
 	};
 
 	handleSubmit = () => {
@@ -33,13 +38,16 @@ class NewComment extends React.Component {
 			this.props.handleSuccess();
 			this.props.handleClose();
 			const data = {
-				user_id: 1,
+				user_id: this.props.userInfo.id,
 				business_id: this.props.bizId,
 				content: this.state.text,
+				score: 1,
 			};
-			this.props.postComment(data).then(() => this.props.fetchBizs());
+			this.props.postComment(data);
 		} else if (!/\S/.test(this.state.text)) {
-			this.setState({ errorMessage: "Can't be blank" });
+			this.setState({
+				errorMessage: "Can't be blank",
+			});
 		}
 	};
 
@@ -81,7 +89,11 @@ class NewComment extends React.Component {
 						flexDirection: "row",
 					}}
 				>
-					<View style={{ flex: 1 }}>
+					<View
+						style={{
+							flex: 1,
+						}}
+					>
 						<Button
 							title="Cancel"
 							buttonStyle={{
@@ -98,7 +110,9 @@ class NewComment extends React.Component {
 								justifyContent: "center",
 								// marginLeft: vw(5),
 							}}
-							titleStyle={{ color: "gray" }}
+							titleStyle={{
+								color: "gray",
+							}}
 							onPress={() => this.props.handleCancel()}
 							// loading={buttonSpinner}
 							// loadingProps={{ color: "green", size: "large" }}
@@ -119,7 +133,9 @@ class NewComment extends React.Component {
 							alignItems: "center",
 							justifyContent: "center",
 						}}
-						titleStyle={{ color: "gray" }}
+						titleStyle={{
+							color: "gray",
+						}}
 						onPress={() => this.handleSubmit()}
 						// loading={buttonSpinner}
 						// loadingProps={{ color: "green", size: "large" }}
@@ -130,7 +146,10 @@ class NewComment extends React.Component {
 	}
 }
 
-export default connect(mapStateToProps, { postComment, fetchBizs })(NewComment);
+export default connect(mapStateToProps, {
+	postComment,
+	fetchBizs,
+})(NewComment);
 
 const styles = StyleSheet.create({
 	container: {
@@ -144,9 +163,14 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(0,0,0,0.7)",
 		borderRadius: 5,
 	},
-	input: { height: vh(10) },
+	input: {
+		height: vh(10),
+	},
 });
 
 function mapStateToProps(state) {
-	return { bizs: state };
+	return {
+		bizs: state,
+		userInfo: state.userInfo,
+	};
 }

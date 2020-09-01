@@ -23,7 +23,7 @@ const BizPageSupport = (props) => {
 						alignItems: "center",
 						justifyContent: "center",
 						width: vw(32),
-						height: vh(10),
+						height: vh(8),
 					}}
 					onPress={() => {
 						Linking.openURL("https://cash.app/$Issagoattt");
@@ -47,13 +47,13 @@ const BizPageSupport = (props) => {
 					alignSelf: "flex-end",
 					backgroundColor: "maroon",
 					backgroundColor: "rgba(0, 0, 0, 0.3)",
-					height: vh(10),
+					height: vh(8),
 					width: vw(66),
 					borderBottomWidth: 1,
 				}}
 				contentContainerStyle={{
 					position: "relative",
-					height: vh(10),
+					height: vh(8),
 					// bottom: vh(0.75),
 					// paddingRight: vw(6.6),
 					// paddingLeft: vw(4),
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "black",
 	},
 	badge: {
-		height: vh(10),
+		height: vh(8),
 		// width: vw(24),
 		paddingHorizontal: vw(4.5),
 		paddingLeft: vw(5.5),

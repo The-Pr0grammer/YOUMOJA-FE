@@ -34,7 +34,7 @@ class Businesses extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			userLikes: [],
+			userHearts: [],
 			page: 1,
 			error: null,
 			searchFocus: false,
@@ -59,19 +59,24 @@ class Businesses extends Component {
 		}
 	};
 
-	componentDidMount() {
-		this.props.setUserInfo({
-			email: "anthonyh202x@gmail.com",
-			emailVerified: true,
-			id: 17,
-			name: "AnthonyTheProgrammer👨🏾‍💻",
-			username: "ADOT",
-		});
+	componentDidMount(props) {
+		let response = axios(`http://localhost:3000/users/${1}`)
+			.then((resp) => this.props.setUserInfo(resp.data))
+			.catch((error) => console.log(error));
+		// this.props.setUserInfo({
+		// 	email: "anthonyh202x@gmail.com",
+		// 	emailVerified: true,
+		// 	id: 1,
+		// 	name: "AnthonyTheProgrammer👨🏾‍💻",
+		// 	username: "ADOT",
+		// 	img_url:
+		// 		"https://img.wallpapersafari.com/phone/640/1136/96/25/ALzlCK.jpg",
+		// });
 
 		// !this.props.userInfo
 		// 	? this.props.navigation.navigate("Login", { message: "Please log in" })
 		// 	: null;
-		this.loadUser(this.props.userInfo.id);
+		// this.loadUser(this.props.userInfo.id);
 		this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
 		// this.loadUsers();
 		// console.log("USER INFO ON LOGIN IS", this.props.userInfo);
@@ -146,9 +151,8 @@ class Businesses extends Component {
 		// );
 		// console.log("isFETCHING", this.props.reduxState.isFetching);
 		// console.log("USERS:", this.state.users[0]);
-		// console.log("THIS.STATE.USER IS", this.state.user);
-		{
-		}
+		// console.log("USER INFO 👤💯", this.props.userInfo);
+		// console.log("USER HEARTS ARE🧡", this.props.reduxState.userHearts[0]);
 		// Alert.prompt("Change Email", "Enter the email you would like to use", [
 		// 	{
 		// 		text: "Cancel",
@@ -222,10 +226,7 @@ class Businesses extends Component {
 							renderItem={({ item }) => (
 								<ListBiz biz={item} navigation={this.props.navigation} />
 							)}
-							extraData={
-								this.props.sorters ||
-								this.props.reduxState.businesses[1].business.hearts
-							}
+							extraData={this.props.sorters}
 							legacyImplementation={true}
 						/>
 					)}
@@ -320,7 +321,7 @@ function mapStateToProps(state) {
 		userInfo: state.userInfo,
 		isFetching: state.isFetching,
 		sorters: {
-			likesSort: state.likesSort,
+			heartsSort: state.heartsSort,
 			badgesSort: state.badgesSort,
 			locationSort: state.locationSort,
 		},
@@ -338,7 +339,7 @@ function mapStateToProps(state) {
 					biz.business.city.toUpperCase().includes(state.search.toUpperCase())
 			)
 			.sort((a, b) => {
-				return state.likesSort
+				return state.heartsSort
 					? b.business.hearts - a.business.hearts
 					: b.business.name < a.business.name;
 			}),

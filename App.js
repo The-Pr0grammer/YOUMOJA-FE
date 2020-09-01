@@ -18,6 +18,7 @@ import EmailConfirmation from "./src/components/EmailConfirmation.js";
 import WelcomeSplash from "./src/components/WelcomeSplash.js";
 import ResetPassword from "./src/components/ResetPassword.js";
 import Profile from "./src/components/Profile.js";
+import PeerProfile from "./src/components/PeerProfile.js";
 import * as firebase from "firebase";
 
 const createStoreWithMiddleWare = applyMiddleware(thunk)(createStore);
@@ -222,6 +223,13 @@ function Main({ navigation }) {
 			<Stack.Screen
 				name="BizPage"
 				component={BizPage}
+				options={{
+					headerShown: false,
+				}}
+			/>
+			<Stack.Screen
+				name="PeerProfile"
+				component={PeerProfile}
 				options={{
 					headerShown: false,
 				}}

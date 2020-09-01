@@ -20,7 +20,7 @@ class ListBizStats extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			userLikes: [],
+			userHearts: [],
 			page: 1,
 			error: null,
 			search: "",
@@ -37,11 +37,11 @@ class ListBizStats extends React.Component {
 		});
 	}
 
-	fetchLikes = () => {
+	fetchHearts = () => {
 		axios
 			.get(`http://localhost:3000/users/1`)
 			.then((response) => {
-				this.setState({ userLikes: response.data.user_likes });
+				this.setState({ userHearts: response.data.user_hearts });
 			})
 			.catch((error) => {
 				this.setState({ error: error });
@@ -66,7 +66,7 @@ class ListBizStats extends React.Component {
 				console.log(error.response);
 			});
 		axios
-			.post(`http://localhost:3000/user_likes`, {
+			.post(`http://localhost:3000/user_hearts`, {
 				user_id: 1,
 				business_id: this.props.biz.business.id,
 			})
@@ -85,7 +85,7 @@ class ListBizStats extends React.Component {
 					height: vh(30),
 					width: vw(33),
 					backgroundColor: "black",
-					opacity: 0.65,
+					opacity: 0.75,
 				}}
 			>
 				<TouchableOpacity
@@ -107,7 +107,7 @@ class ListBizStats extends React.Component {
 						position: "absolute",
 						textAlign: "center",
 						fontSize: 25,
-						color: "gold",
+						color: "lightslategray",
 						fontWeight: "bold",
 						top: vh(6),
 						height: vh(5),
@@ -133,7 +133,7 @@ class ListBizStats extends React.Component {
 					<Icon
 						name="chat"
 						type="materialcommunityicons"
-						color="tomato"
+						color="olivedrab"
 						size={37}
 					/>
 				</TouchableOpacity>
@@ -143,7 +143,7 @@ class ListBizStats extends React.Component {
 						position: "absolute",
 						textAlign: "center",
 						fontSize: 25,
-						color: "gold",
+						color: "lightslategrey",
 						fontWeight: "bold",
 						top: vh(15),
 						height: vh(5),

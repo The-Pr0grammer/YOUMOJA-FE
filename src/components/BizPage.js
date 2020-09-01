@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, Dimensions } from "react-native";
+import {
+	View,
+	StyleSheet,
+	Image,
+	Dimensions,
+	TouchableOpacity,
+} from "react-native";
 import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
@@ -9,17 +15,19 @@ import Header from "./Header.js";
 import CommentList from "./CommentList.js";
 import BizPageDash from "./BizPageDash.js";
 import BizPageSupport from "./BizPageSupport.js";
+import { useNavigation } from "@react-navigation/native";
 
 const BizPage = (props) => {
 	const [bizInfo, setBizinfo] = useState({});
 	const [comments, setComments] = useState([]);
+	const navigation = useNavigation();
+	// console.log(props.route.params.userInfo.img_url);
 
 	return (
 		<View style={styles.container}>
 			<View
 				style={{
 					flex: 1,
-					top: vh(10),
 					flexDirection: "column",
 				}}
 			>
@@ -30,16 +38,47 @@ const BizPage = (props) => {
 			</View>
 
 			<View style={styles.bizCon}>
-				<TextTicker
-					duration={3200}
-					loop
-					bounce
-					repeatSpacer={25}
-					marqueeDelay={1600}
-					style={styles.bizSumm}
-				>
-					{props.route.params["biz"].business.summary}
-				</TextTicker>
+				<View style={{ flexDirection: "row", justifyContent: "center" }}>
+					<View
+						style={{
+							backgroundColor: "rgba(40, 40, 40, 0.5)",
+							borderLeftWidth: 4,
+							width: vh(8.5),
+							height: vh(6.8),
+							alignItems: "center",
+							justifyContent: "center",
+						}}
+					>
+						<TouchableOpacity
+							onPress={() => {
+								console.log(props.route.params.userInfo);
+								props.navigation.navigate("PeerProfile", {
+									prevScreen: "BizPage",
+									userShowInfo: props.route.params.userInfo,
+								});
+							}}
+						>
+							<Image
+								resizeMode={"cover"}
+								source={{
+									uri: props.route.params.userInfo.img_url,
+								}}
+								style={styles.profilePic}
+							></Image>
+						</TouchableOpacity>
+					</View>
+					<TextTicker
+						shouldAnimateTreshold={vw(8)}
+						duration={6400}
+						loop
+						bounce
+						repeatSpacer={25}
+						marqueeDelay={3200}
+						style={styles.bizSumm}
+					>
+						{props.route.params["biz"].business.summary}
+					</TextTicker>
+				</View>
 				<View style={styles.cardView}>
 					<Image
 						style={styles.img}
@@ -49,12 +88,15 @@ const BizPage = (props) => {
 					/>
 					<BizPageDash business={props.route.params["biz"].business} />
 				</View>
-				<BizPageSupport business={props.route.params["biz"].business} />
+				<View style={styles.bizSupport}>
+					<BizPageSupport business={props.route.params["biz"].business} />
+				</View>
 			</View>
 			<View style={styles.commentCon}>
 				<CommentList
 					bizId={props.route.params["biz"].business.id}
-					comments={comments}
+					navigation={navigation}
+					// comments={comments}
 				/>
 			</View>
 		</View>
@@ -67,13 +109,15 @@ const styles = StyleSheet.create({
 	container: {
 		height: "100%",
 		flexDirection: "column",
+		// backgroundColor: "black",
 	},
 	bizCon: {
 		position: "relative",
 		width: vw(100),
-		height: vh(5),
+		height: vh(7.3),
 		backgroundColor: "black",
-		bottom: vh(85),
+		bottom: vh(83),
+		borderTopWidth: 2.5,
 	},
 	bizSumm: {
 		position: "relative",
@@ -81,7 +125,15 @@ const styles = StyleSheet.create({
 		fontFamily: "Marker Felt",
 		fontSize: 18,
 		color: "lightslategray",
-		height: vh(5),
+		height: vh(6),
+		backgroundColor: "black",
+		marginBottom: vh(0.8),
+		top: vh(2),
+	},
+	bizSupport: {
+		position: "relative",
+		// padding: vw(1.25),
+		backgroundColor: "lightslategray",
 	},
 	cardView: {
 		position: "relative",
@@ -99,6 +151,12 @@ const styles = StyleSheet.create({
 	},
 	commentCon: {
 		position: "relative",
-		bottom: vh(81),
+		bottom: vh(80.75),
+	},
+	profilePic: {
+		// zIndex: 1,
+		borderRadius: 22,
+		height: vh(6),
+		width: vw(11),
 	},
 });

@@ -1,22 +1,29 @@
 {
     "workbench.colorCustomizations": {
-        "activityBar.activeBackground": "#65c89b",
-        "activityBar.activeBorder": "#945bc4",
-        "activityBar.background": "#65c89b",
+        "activityBar.activeBackground": "#f9b038",
+        "activityBar.activeBorder": "#047c4e",
+        "activityBar.background": "#f9b038",
         "activityBar.foreground": "#15202b",
         "activityBar.inactiveForeground": "#15202b99",
-        "activityBarBadge.background": "#945bc4",
+        "activityBarBadge.background": "#047c4e",
         "activityBarBadge.foreground": "#e7e7e7",
-        "statusBar.background": "#42b883",
+        "statusBar.background": "#f69c08",
         "statusBar.foreground": "#15202b",
-        "statusBarItem.hoverBackground": "#359268",
-        "titleBar.activeBackground": "#42b883",
+        "statusBarItem.hoverBackground": "#c57d06",
+        "titleBar.activeBackground": "#f69c08",
         "titleBar.activeForeground": "#15202b",
-        "titleBar.inactiveBackground": "#42b88399",
+        "titleBar.inactiveBackground": "#f69c0899",
         "titleBar.inactiveForeground": "#15202b99"
     },
-    "peacock.color": "#42b883",
+    "peacock.color": "#f69c08",
     "workbench.colorTheme": "Juicy Contrast (rainglow)",
     "editor.formatOnSave": true,
-    "prettier.useTabs": true
+    "prettier.useTabs": true,
+    "editor.minimap.size": "fill",
+    "prettier.tabWidth": 2,
+    "beautify.config": "",
+    "workbench.editorAssociations": [
+
+    ],
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

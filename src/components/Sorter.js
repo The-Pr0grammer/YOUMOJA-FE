@@ -6,7 +6,7 @@ const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
 import { connect } from "react-redux";
 import {
-	sortByLikesTogg,
+	sortByHeartsTogg,
 	sortByBadgesTogg,
 	sortByLocationTogg,
 } from "../redux/actions/bizAction";
@@ -18,10 +18,10 @@ class Sorter extends React.Component {
 			<View style={styles.container}>
 				<TouchableOpacity
 					onPress={() => {
-						this.props.sortByLikesTogg();
+						this.props.sortByHeartsTogg();
 					}}
 					style={[
-						this.props.sorters.likesSort ? styles.litBox : styles.sortBox1,
+						this.props.sorters.heartsSort ? styles.litBox : styles.sortBox1,
 					]}
 				>
 					<Icon name="heart" type="antdesign" color="lightcoral" size={32} />
@@ -62,7 +62,7 @@ class Sorter extends React.Component {
 }
 
 export default connect(mapStateToProps, {
-	sortByLikesTogg,
+	sortByHeartsTogg,
 	sortByBadgesTogg,
 	sortByLocationTogg,
 })(Sorter);
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
 	return {
 		sorters: {
-			likesSort: state.likesSort,
+			heartsSort: state.heartsSort,
 			badgesSort: state.badgesSort,
 			locationSort: state.locationSort,
 		},

@@ -77,27 +77,30 @@ const Header = (props) => {
 						// right: vw(5),
 					}}
 				>
-					<TextTicker
-						shouldAnimateTreshold={25}
-						duration={6400}
-						loop
-						bounce
-						repeatSpacer={25}
-						marqueeDelay={3200}
-						// bouncePadding={{ right: 25 }}
-						style={{
-							textAlign: "center",
-							flex: 1,
-							fontWeight: "bold",
-							fontFamily: "Marker Felt",
-							fontSize: 22,
-							color: "olivedrab",
-							// backgroundColor: "navy",
-							paddingVertical: vh(4.5),
-						}}
-					>
-						{props.name}
-					</TextTicker>
+					{!props.loading && (
+						<TextTicker
+							shouldAnimateTreshold={vw(2)}
+							duration={6400}
+							loop
+							bounce
+							repeatSpacer={32}
+							// marqueeDelay={3200}
+							// bouncePadding={{ right: 25 }}
+							style={{
+								textAlign: "center",
+								flex: 1,
+								fontWeight: "bold",
+								fontFamily: "Marker Felt",
+								fontSize: 22,
+								color: "olivedrab",
+								// backgroundColor: "navy",
+								paddingVertical: vh(4.5),
+								width: vw(50),
+							}}
+						>
+							{props.name}
+						</TextTicker>
+					)}
 				</View>
 
 				{/* <View
@@ -145,7 +148,8 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		backgroundColor: "darkslategray",
 		shadowColor: "transparent",
-		bottom: vh(10),
+		zIndex: 1,
+		// bottom: vh(10),
 	},
 });
 

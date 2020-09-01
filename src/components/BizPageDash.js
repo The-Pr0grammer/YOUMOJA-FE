@@ -29,7 +29,7 @@ const BizPageDash = (props) => {
 				console.log(error.response);
 			});
 		axios
-			.post(`http://localhost:3000/user_likes`, {
+			.post(`http://localhost:3000/user_hearts`, {
 				user_id: props.userInfo.id,
 				business_id: props.business.id,
 			})
@@ -59,7 +59,7 @@ const BizPageDash = (props) => {
 					position: "absolute",
 					textAlign: "center",
 					fontSize: 25,
-					color: "lightcoral",
+					color: "lightslategray",
 					fontWeight: "bold",
 					top: vh(16),
 					height: vh(10),

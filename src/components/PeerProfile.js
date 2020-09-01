@@ -11,18 +11,15 @@ import {
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Button, Icon } from "react-native-elements";
-import TextTicker from "react-native-text-ticker";
 import { FontAwesome } from "@expo/vector-icons";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
 import { setUserInfo, setIsFetching } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 import Header from "./Header.js";
-import ProfileStats from "./ProfileStats.js";
-import ProfileHearts from "./ProfileHearts.js";
-import axios from "axios";
+import { set } from "react-native-reanimated";
 
-const Profile = (props) => {
+const PeerProfile = (props) => {
 	const navigation = useNavigation();
 	const [active, toggleActive] = useState("");
 	const [userShow, setUserShow] = useState("");
@@ -31,7 +28,7 @@ const Profile = (props) => {
 
 	setTimeout(() => setLoading(false), 250);
 
-	// isFocused ? console.log("🔍♥👀focused") : console.log("unfocused");
+	isFocused ? console.log("🔍♥👀focused") : console.log("unfocused");
 	// !isFocused &&
 	// 	NavigationActions.setParams({
 	// 		params: { title: "Hello" },
@@ -43,14 +40,13 @@ const Profile = (props) => {
 			!loading && setLoading(true);
 
 			// console.log("PROFILE PARAMS ARE🎯", props.route.params.userShowInfo);
-
-			setUserShow(props.userInfo);
+			setUserShow(props.route.params.userShowInfo);
 		};
 	});
 
-	// console.log("userSHOW IS 🐛✋🏾");
-	// console.log("♻️", loading);
-	// console.log("userinfo:::::", props.userInfo);
+	console.log("userSHOW IS 🐛✋🏾");
+	console.log("♻️", loading);
+	// console.log("userinfo:::::", props.route.params.userShowInfo);
 	return (
 		<View style={styles.container}>
 			<Header
@@ -59,23 +55,6 @@ const Profile = (props) => {
 				refresh={true}
 				loading={loading}
 			/>
-			{loading && (
-				<View
-					style={{
-						// flex: 1,
-						height: vh(90),
-						width: vw(100),
-						justifyContent: "center",
-						backgroundColor: "maroon",
-					}}
-				>
-					<ActivityIndicator
-						size="large"
-						color="lime"
-						hidesWhenStopped={true}
-					></ActivityIndicator>
-				</View>
-			)}
 			<View
 				style={{
 					zIndex: 2,
@@ -83,9 +62,9 @@ const Profile = (props) => {
 					justifyContent: "center",
 					width: vw(100),
 					display: "flex",
-					flexDirection: "row",
+					flexDirection: "column",
 					marginTop: vh(0.25),
-					backgroundColor: "black",
+					// bottom: vh(10),
 				}}
 			>
 				<TouchableOpacity
@@ -102,47 +81,57 @@ const Profile = (props) => {
 						size={34}
 					/>
 				</TouchableOpacity>
-				<TextTicker
-					shouldAnimateTreshold={vw(1)}
-					duration={6400}
-					loop
-					bounce
-					repeatSpacer={36}
-					// marqueeDelay={3200}
-					// bouncePadding={{ right: vw(2) }}
+			</View>
+			{loading && (
+				<View style={{ height: vh(50), justifyContent: "center" }}>
+					<ActivityIndicator
+						size="large"
+						color="lime"
+						hidesWhenStopped={true}
+					></ActivityIndicator>
+				</View>
+			)}
+			{!loading && (
+				<View
 					style={{
-						textAlign: "center",
-						flex: 1,
-						fontWeight: "bold",
-						fontFamily: "Marker Felt",
-						fontSize: 18,
-						color: "olivedrab",
-						backgroundColor: "black",
-						paddingVertical: vh(3),
-						width: vw(40),
+						top: vh(10),
+						height: vh(32),
+						width: vw(100),
+						borderWidth: 2,
+						position: "absolute",
+						alignSelf: "flex-start",
+						backgroundColor: "rgba(0,100,0,0.8)",
+						justifyContent: "center",
+						alignItems: "center",
+						zIndex: 1,
+						flexDirection: "column",
+						// bottom: vh(17.6),
 					}}
 				>
-					{userShow.username}
-				</TextTicker>
-			</View>
-
-			<ScrollView
-				contentContainerStyle={{ height: vh(100) }}
+					<Image
+						resizeMode={"cover"}
+						source={{
+							uri: userShow.img_url,
+						}}
+						style={styles.profilePic}
+					></Image>
+				</View>
+			)}
+			<View
 				style={{
-					// flex: 1,
-					backgroundColor: "black",
-					flexDirection: "column",
-					zIndex: 1,
-					display: "relative",
+					position: "absolute",
+					flex: 1,
+					height: vh(100),
+					width: vw(100),
+					opacity: 0.1,
 				}}
-				//START OF STATS
 			>
-				<ProfileStats userShow={props.userInfo} />
-				<ProfileHearts
-					userShow={props.userInfo}
-					//PROFHEARTS
-				/>
-			</ScrollView>
+				<ImageBackground
+					resizeMode="stretch"
+					style={styles.background}
+					source={require("../images/BlackDollarsMatter.jpeg")}
+				></ImageBackground>
+			</View>
 		</View>
 	);
 };
@@ -150,7 +139,7 @@ const Profile = (props) => {
 export default connect(mapStateToProps, {
 	setUserInfo,
 	setIsFetching,
-})(Profile);
+})(PeerProfile);
 
 const styles = StyleSheet.create({
 	container: {
@@ -158,14 +147,15 @@ const styles = StyleSheet.create({
 		height: vh(100),
 		alignItems: "center",
 		backgroundColor: "black",
-		// marginTop: vh(10),
+		// top: vh(10),
 	},
 	background: {
 		flex: 1,
-		height: vh(100),
+		height: vh(90),
 		width: vw(100),
 		alignItems: "center",
 		resizeMode: "center",
+		top: vh(10),
 	},
 	menuButton: {
 		position: "relative",
@@ -193,21 +183,7 @@ const styles = StyleSheet.create({
 		width: vw(45),
 		opacity: 1.0,
 		zIndex: 2,
-		top: vh(1),
-	},
-	badge: {
-		height: vh(8),
-		// width: vw(24),
-		paddingRight: vw(9.4),
-		paddingLeft: vw(13),
-		justifyContent: "center",
-	},
-	list: {
-		position: "absolute",
-		// marginTop: vh(21.8),
-		height: vh(68.6),
-		width: vw(100),
-		// opacity: 1.0,
+		bottom: vh(2),
 	},
 });
 

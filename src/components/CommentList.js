@@ -10,7 +10,7 @@ import React from "react";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { Icon } from "react-native-elements";
 import { connect } from "react-redux";
-import { fetchComments } from "../redux/actions/bizAction";
+import { fetchComments, sortByScoresTogg } from "../redux/actions/bizAction";
 import Comment from "./Comment.js";
 import NewComment from "./NewComment.js";
 import SuccessModal from "./SuccessModal.js";
@@ -23,10 +23,13 @@ class CommentList extends React.Component {
 			newCommentTogg: false,
 			successTogg: false,
 			expandTogg: false,
+			// scoreTogg: true,
+			sortedComms: [],
 		};
 	}
 	componentDidMount() {
 		this.props.fetchComments(this.props.bizId);
+		this.props.sortByScoresTogg(true);
 		// setTimeout(
 		// 	() => this.flatList.scrollToIndex({ animated: false, index: 3 }),
 		// 	1000
@@ -34,28 +37,36 @@ class CommentList extends React.Component {
 	}
 
 	handleCancel = () => {
-		this.setState({ newCommentTogg: false });
+		this.setState({
+			newCommentTogg: false,
+		});
 	};
 
 	handleSuccess = () => {
 		setTimeout(() => {
-			this.setState({ successTogg: true });
+			this.setState({
+				successTogg: true,
+			});
 		}, 750);
 	};
 
 	handleClose = () => {
 		setTimeout(() => {
-			this.setState({ successTogg: false });
+			this.setState({
+				successTogg: false,
+			});
 		}, 2400);
 	};
 
 	handleDismiss = () => {
-		this.setState({ successTogg: false });
+		this.setState({
+			successTogg: false,
+		});
 	};
 
-	updateComments = (newComment) => {
-		this.setState({ comments: [newComment, ...this.state.comments] });
-	};
+	// updateComments = (newComment) => {
+	// 	this.setState({ comments: [newComment, ...this.state.comments] });
+	// };
 
 	// handleScroll = (e) => {
 	// 	console.log(e.nativeEvent.contentOffset.y);
@@ -70,6 +81,9 @@ class CommentList extends React.Component {
 	render() {
 		// console.log(this.props.isFetching);
 		// console.log(this.state.expandTogg);
+		// console.log(this.state.scoreTogg);
+		// console.log(this.props.comments);
+		// console.log(this.props.scoresSort);
 
 		return (
 			<View
@@ -109,15 +123,16 @@ class CommentList extends React.Component {
 								// borderWidth: 3.5,
 								justifyContent: "center",
 								alignItems: "center",
+								opacity: 0.9,
 							}}
 							onPress={() => {
-								this.setState({ newCommentTogg: true });
+								!this.props.scoresSort && this.props.sortByScoresTogg();
 							}}
 						>
 							<FontAwesome
 								name="caret-square-o-up"
 								size={28}
-								color="black"
+								color={this.props.scoresSort ? "gold" : "black"}
 								style={styles.add}
 							/>
 						</TouchableOpacity>
@@ -129,15 +144,16 @@ class CommentList extends React.Component {
 								width: vw(12),
 								// borderWidth: 3.5,
 								justifyContent: "center",
+								opacity: 0.9,
 							}}
 							onPress={() => {
-								this.setState({ newCommentTogg: true });
+								this.props.scoresSort && this.props.sortByScoresTogg();
 							}}
 						>
 							<Icon
 								name="clockcircle"
 								type="antdesign"
-								color="black"
+								color={!this.props.scoresSort ? "gold" : "black"}
 								size={26}
 								style={styles.add}
 							/>
@@ -156,7 +172,7 @@ class CommentList extends React.Component {
 						}}
 					>
 						COMMENTS
-						{!this.props.isFetching && `(${this.props.bizs.comments.length})`}
+						{!this.props.isFetching && `(${this.props.comments.length})`}
 					</Text>
 					{this.state.successTogg == false && (
 						<TouchableOpacity
@@ -166,15 +182,18 @@ class CommentList extends React.Component {
 								width: vw(15),
 								marginLeft: vw(13),
 								marginTop: vh(0.5),
+								opacity: this.state.expandTogg ? 0.8 : 0.8,
 							}}
 							onPress={() => {
-								this.setState({ expandTogg: !this.state.expandTogg });
+								this.setState({
+									expandTogg: !this.state.expandTogg,
+								});
 							}}
 						>
 							<Icon
 								name="arrows-expand"
 								type="foundation"
-								color="black"
+								color={this.state.expandTogg ? "gold" : "black"}
 								size={30}
 								style={styles.add}
 							/>
@@ -187,10 +206,12 @@ class CommentList extends React.Component {
 							position: "relative",
 							alignSelf: "center",
 							height: vh(5.5),
-							width: 45,
+							opacity: 0.85,
 						}}
 						onPress={() => {
-							this.setState({ newCommentTogg: true });
+							this.setState({
+								newCommentTogg: true,
+							});
 						}}
 					>
 						<Icon
@@ -202,7 +223,6 @@ class CommentList extends React.Component {
 						/>
 					</TouchableOpacity>
 				)}
-
 				<View>
 					{this.state.newCommentTogg && (
 						<NewComment
@@ -224,11 +244,19 @@ class CommentList extends React.Component {
 						}}
 						// contentContainerStyle={{ height: 1000 }}
 						// style={{ height: 100, flexGrow: 1 }}
-						style={{ marginTop: vh(1) }}
-						data={this.props.bizs.comments}
-						renderItem={({ item }) => <Comment comment={item} />}
+						style={{
+							marginTop: vh(1),
+						}}
+						data={this.props.sortedComments}
+						renderItem={({ item }) => (
+							<Comment
+								comment={item}
+								bizId={this.props.bizId}
+								navigation={this.props.navigation}
+							/>
+						)}
 						keyExtractor={(item) => item.id.toString()}
-						extraData={this.props.bizs.comments}
+						extraData={this.props.scoresSort}
 						// onScroll={(e) => this.handleScroll(e)}
 						// getItemLayout={this.getItemLayout}
 					/>
@@ -247,7 +275,10 @@ class CommentList extends React.Component {
 	}
 }
 
-export default connect(mapStateToProps, { fetchComments })(CommentList);
+export default connect(mapStateToProps, {
+	fetchComments,
+	sortByScoresTogg,
+})(CommentList);
 
 const styles = StyleSheet.create({
 	commList: {
@@ -281,5 +312,15 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-	return { bizs: state, isFetching: state.isFetching };
+	return {
+		reduxState: state,
+		scoresSort: state.scoresSort,
+		isFetching: state.isFetching,
+		comments: state.comments,
+		sortedComments: state.comments
+			.sort((a, b) => a.id > b.id)
+			.sort((a, b) => {
+				return state.scoresSort && a.score < b.score;
+			}),
+	};
 }
