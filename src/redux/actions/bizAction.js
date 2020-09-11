@@ -1,4 +1,5 @@
 import {
+	SET_IS_FETCHING,
 	FETCHING_BIZS_REQUEST,
 	FETCHING_BIZS_SUCCESS,
 	FETCHING_BIZS_FAILURE,
@@ -13,12 +14,16 @@ import {
 	SORT_BY_HEARTS_TOGG,
 	SORT_BY_BADGES_TOGG,
 	SORT_BY_LOCATION_TOGG,
-	SET_USER_INFO,
-	SET_IS_FETCHING,
-	HANDLE_REFRESH,
 	SORT_BY_SCORES_TOGG,
+	HANDLE_REFRESH,
+	SET_USER_INFO,
 } from "./types";
 import axios from "axios";
+
+export const setIsFetching = (togg) => ({
+	type: SET_IS_FETCHING,
+	payload: togg,
+});
 
 export const fetchingBizsRequest = (activityIndicator = true) => ({
 	type: FETCHING_BIZS_REQUEST,
@@ -66,7 +71,7 @@ export const fetchBizs = (activityIndicator) => {
 	return async (dispatch) => {
 		dispatch(fetchingBizsRequest(activityIndicator));
 		try {
-			let response = await axios(`http://localhost:3000/user_bizs`);
+			let response = await axios(`http://127.0.0.1:3000/user_bizs`);
 			// let json = await response.json();
 			dispatch(fetchingBizsSuccess(response.data));
 		} catch (error) {
@@ -79,7 +84,7 @@ export const fetchComments = (id, activityIndicator) => {
 	return async (dispatch) => {
 		dispatch(fetchingCommentsRequest(activityIndicator));
 		try {
-			let response = await axios(`http://localhost:3000/businesses/${id}`);
+			let response = await axios(`http://127.0.0.1:3000/businesses/${id}`);
 			// let json = await response.json();
 			dispatch(fetchingCommentsSuccess(response.data.comments));
 		} catch (error) {
@@ -93,7 +98,7 @@ export const postComment = (comment) => {
 		dispatch(postingCommentRequest());
 		try {
 			let response = await axios
-				.post(`http://localhost:3000/comments`, {
+				.post(`http://127.0.0.1:3000/comments`, {
 					comment,
 				})
 				.then((res) => {
@@ -123,13 +128,8 @@ export const sortByBadgesTogg = () => ({ type: SORT_BY_BADGES_TOGG });
 
 export const sortByLocationTogg = () => ({ type: SORT_BY_LOCATION_TOGG });
 
-export const setUserInfo = (user) => ({
-	type: SET_USER_INFO,
-	payload: user,
-});
-
-export const setIsFetching = (togg) => ({
-	type: SET_IS_FETCHING,
+export const sortByScoresTogg = (togg) => ({
+	type: SORT_BY_SCORES_TOGG,
 	payload: togg,
 });
 
@@ -137,7 +137,7 @@ export const handleRefresh = () => ({
 	type: HANDLE_REFRESH,
 });
 
-export const sortByScoresTogg = (togg) => ({
-	type: SORT_BY_SCORES_TOGG,
-	payload: togg,
+export const setUserInfo = (user) => ({
+	type: SET_USER_INFO,
+	payload: user,
 });

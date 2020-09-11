@@ -59,7 +59,7 @@ function EmailConfirmation(props) {
 		setErrorMessage("");
 		await axios({
 			method: "PATCH",
-			url: `http://localhost:3000/users/${props.userInfo.id}`,
+			url: `http://127.0.0.1:3000/users/${props.userInfo.id}`,
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json",

@@ -5,6 +5,7 @@ import {
 	TouchableOpacity,
 	FlatList,
 	ActivityIndicator,
+	Keyboard,
 } from "react-native";
 import React from "react";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
@@ -23,6 +24,7 @@ class CommentList extends React.Component {
 			newCommentTogg: false,
 			successTogg: false,
 			expandTogg: false,
+			commExpand: false,
 			// scoreTogg: true,
 			sortedComms: [],
 		};
@@ -37,8 +39,14 @@ class CommentList extends React.Component {
 	}
 
 	handleCancel = () => {
+		this.state.commExpand &&
+			this.setState({
+				commExpand: false,
+				expandTogg: false,
+			});
 		this.setState({
 			newCommentTogg: false,
+			// expandTogg: false,
 		});
 	};
 
@@ -64,6 +72,12 @@ class CommentList extends React.Component {
 		});
 	};
 
+	handleExpand = () => {
+		this.setState({
+			expandTogg: true,
+		});
+	};
+
 	// updateComments = (newComment) => {
 	// 	this.setState({ comments: [newComment, ...this.state.comments] });
 	// };
@@ -81,9 +95,10 @@ class CommentList extends React.Component {
 	render() {
 		// console.log(this.props.isFetching);
 		// console.log(this.state.expandTogg);
-		// console.log(this.state.scoreTogg);
 		// console.log(this.props.comments);
 		// console.log(this.props.scoresSort);
+		// console.log(this.state.scoreTogg);
+		// console.log(this.state.commExpand);
 
 		return (
 			<View
@@ -91,6 +106,7 @@ class CommentList extends React.Component {
 					this.state.expandTogg ? styles.expandedCommList : styles.commList
 				}
 			>
+				{this.state.expandTogg && <View style={styles.expandedBg}></View>}
 				<View
 					style={{
 						alignItems: "center",
@@ -100,7 +116,7 @@ class CommentList extends React.Component {
 					<View
 						style={{
 							alignSelf: "flex-start",
-							backgroundColor: "lightslategray",
+							backgroundColor: "rgba(0,0,0,0.7)",
 							width: vw(25),
 							height: vh(5),
 							marginTop: vh(0.3),
@@ -132,7 +148,7 @@ class CommentList extends React.Component {
 							<FontAwesome
 								name="caret-square-o-up"
 								size={28}
-								color={this.props.scoresSort ? "gold" : "black"}
+								color={this.props.scoresSort ? "gold" : "lightslategray"}
 								style={styles.add}
 							/>
 						</TouchableOpacity>
@@ -153,7 +169,7 @@ class CommentList extends React.Component {
 							<Icon
 								name="clockcircle"
 								type="antdesign"
-								color={!this.props.scoresSort ? "gold" : "black"}
+								color={!this.props.scoresSort ? "gold" : "lightslategray"}
 								size={26}
 								style={styles.add}
 							/>
@@ -166,39 +182,42 @@ class CommentList extends React.Component {
 							fontSize: 16,
 							fontFamily: "Marker Felt",
 							// backgroundColor: "magenta",
-							// width: vw(50),
 							alignSelf: "center",
-							color: "lightslategray",
+							color: "olivedrab",
 						}}
 					>
 						COMMENTS
 						{!this.props.isFetching && `(${this.props.comments.length})`}
 					</Text>
-					{this.state.successTogg == false && (
-						<TouchableOpacity
-							style={{
-								position: "relative",
-								alignSelf: "flex-end",
-								width: vw(15),
-								marginLeft: vw(13),
-								marginTop: vh(0.5),
-								opacity: this.state.expandTogg ? 0.8 : 0.8,
-							}}
-							onPress={() => {
-								this.setState({
-									expandTogg: !this.state.expandTogg,
-								});
-							}}
-						>
-							<Icon
-								name="arrows-expand"
-								type="foundation"
-								color={this.state.expandTogg ? "gold" : "black"}
-								size={30}
-								style={styles.add}
-							/>
-						</TouchableOpacity>
-					)}
+
+					<TouchableOpacity
+						style={{
+							position: "relative",
+							alignSelf: "flex-end",
+							width: vw(15),
+							marginLeft: vw(13),
+							marginTop: vh(0.5),
+							opacity: this.state.expandTogg ? 0.8 : 0.8,
+						}}
+						onPress={() => {
+							this.state.expandTogg &&
+								// this.setState({ newCommentTogg: false });
+								Keyboard.dismiss();
+
+							this.setState({
+								expandTogg: !this.state.expandTogg,
+								commExpand: false,
+							});
+						}}
+					>
+						<Icon
+							name="arrows-expand"
+							type="foundation"
+							color={this.state.expandTogg ? "gold" : "lightslategray"}
+							size={30}
+							style={styles.add}
+						/>
+					</TouchableOpacity>
 				</View>
 				{this.state.newCommentTogg == false && (
 					<TouchableOpacity
@@ -209,15 +228,17 @@ class CommentList extends React.Component {
 							opacity: 0.85,
 						}}
 						onPress={() => {
+							!this.state.expandTogg && this.setState({ commExpand: true });
 							this.setState({
 								newCommentTogg: true,
+								expandTogg: true,
 							});
 						}}
 					>
 						<Icon
 							name="plus-circle"
 							type="feather"
-							color="black"
+							color="lightslategray"
 							size={37}
 							style={styles.add}
 						/>
@@ -231,6 +252,7 @@ class CommentList extends React.Component {
 							handleSuccess={this.handleSuccess}
 							handleClose={this.handleClose}
 							updateComments={this.updateComments}
+							handleExpand={this.handleExpand}
 						/>
 					)}
 				</View>
@@ -286,7 +308,7 @@ const styles = StyleSheet.create({
 		width: vw(100),
 		height: vh(100),
 		top: vh(36.5), //36.5
-		backgroundColor: "darkslategray",
+		backgroundColor: "rgba(0, 0, 0, 0.95)",
 		flexDirection: "column",
 		position: "absolute",
 		paddingBottom: vh(54.4), //54.4THIS FIXED THE NOT SCROLLING TO BOTTOM ISSUE AFTER A DAY OF DEBUGGING
@@ -304,6 +326,16 @@ const styles = StyleSheet.create({
 		paddingBottom: vh(9), //EXPANDED
 		borderWidth: 2.5,
 		borderColor: "black",
+		zIndex: 2,
+	},
+	expandedBg: {
+		// flex: 1,
+		width: vw(100),
+		height: vh(100),
+		backgroundColor: "rgba(0, 0, 0, 0.9)",
+		flexDirection: "column",
+		position: "absolute",
+		paddingBottom: vh(9),
 	},
 	activityView: {
 		flex: 1,

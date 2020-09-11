@@ -262,7 +262,7 @@ const Login = (props) => {
 								// backgroundColor: "rgba(0, 0, 0, 0.8)",
 							}}
 						>
-							Don't have an account? Sign up.
+							Don't have an account? Sign up 🔑
 						</Text>
 					</TouchableWithoutFeedback>
 					<TouchableWithoutFeedback
@@ -284,7 +284,7 @@ const Login = (props) => {
 								// backgroundColor: "rgba(0, 0, 0, 0.8)",
 							}}
 						>
-							Forgot password?
+							Forgot password? 💭
 						</Text>
 					</TouchableWithoutFeedback>
 				</View>

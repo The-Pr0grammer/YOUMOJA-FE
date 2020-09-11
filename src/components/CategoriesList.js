@@ -248,6 +248,13 @@ class CategoriesList extends React.Component {
 						paddingBottom: vh(17.3),
 					}}
 				>
+					{/* <View style={{ position: "absolute" }}>
+						<ImageBackground
+							source={require("../images/MoneyFalling.gif")}
+							style={styles.bg}
+						></ImageBackground>
+					</View> //LIL WAYNE INTRO*/}
+
 					<TouchableOpacity
 						style={{ backgroundColor: "transparent", height: vh(83.3) }}
 						onPress={() => this.props.handleCatsTogg()}
@@ -308,7 +315,17 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		backgroundColor: "maroon",
-		marginTop: vh(25),
+		marginTop: vh(40),
+	},
+	bg: {
+		flex: 1,
+		resizeMode: "cover",
+		opacity: 0.2,
+		padding: 0,
+		borderWidth: 0,
+		width: vw(100),
+		height: vh(100),
+		justifyContent: "center",
 	},
 });
 

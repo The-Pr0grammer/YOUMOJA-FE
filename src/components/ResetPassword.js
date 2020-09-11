@@ -77,7 +77,7 @@ const ResetPassword = (props) => {
 							},
 						},
 					}}
-				/>{" "}
+				/>
 				<View
 					style={{
 						position: "absolute",
@@ -91,9 +91,9 @@ const ResetPassword = (props) => {
 						resizeMode="stretch"
 						style={styles.background}
 						source={require("../images/BlackDollarsMatter.jpeg")}
-					></ImageBackground>{" "}
-				</View>{" "}
-			</View>{" "}
+					></ImageBackground>
+				</View>
+			</View>
 		</KeyboardAvoidingView>
 	);
 };

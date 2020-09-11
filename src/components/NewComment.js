@@ -72,6 +72,8 @@ class NewComment extends React.Component {
 					inlineImagePadding={5}
 					keyboardAppearance={"dark"}
 					number={280}
+					autoFocus={true}
+					onFocus={() => this.props.handleExpand()}
 				/>
 				<Text
 					style={{

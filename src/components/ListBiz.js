@@ -32,7 +32,7 @@ class ListBiz extends React.Component {
 	componentDidMount() {}
 
 	render() {
-		// console.log(this.props.biz.user);
+		// this.props.type == "Profile" && console.log(this.props.biz.user.name);
 		// console.log(this.props.biz.business.categories);
 		return (
 			<View style={styles.container}>
@@ -64,10 +64,10 @@ class ListBiz extends React.Component {
 				>
 					<TouchableOpacity
 						onPress={() => {
-							// console.log(this.props.biz.user);
 							this.props.navigation.navigate("BizPage", {
 								biz: this.props.biz,
 								userInfo: this.props.biz.user,
+								lastScreen: this.props.lastScreen,
 							});
 						}}
 					>

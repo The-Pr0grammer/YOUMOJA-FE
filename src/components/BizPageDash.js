@@ -5,18 +5,27 @@ import {
 	TouchableOpacity,
 	Linking,
 	StyleSheet,
+	Share,
 } from "react-native";
 import { Icon } from "react-native-elements";
+import { Ionicons } from "@expo/vector-icons";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import axios from "axios";
+import * as Sharing from "expo-sharing";
+import * as WebBrowser from "expo-web-browser";
+import * as ExpoLinking from "expo-linking";
 
 const BizPageDash = (props) => {
+	let redirectUrl = ExpoLinking.makeUrl("BizPage", {
+		hello: "world",
+		goodbye: "now",
+	});
 	const [hearts, setHearts] = useState(0);
 	const incHearts = () => {
 		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
 		axios
 			.patch(
-				`http://localhost:3000/businesses/${props.business.id}`,
+				`http://127.0.0.1:3000/businesses/${props.business.id}`,
 				{
 					hearts: hearts + 1,
 				},
@@ -29,7 +38,7 @@ const BizPageDash = (props) => {
 				console.log(error.response);
 			});
 		axios
-			.post(`http://localhost:3000/user_hearts`, {
+			.post(`http://127.0.0.1:3000/user_hearts`, {
 				user_id: props.userInfo.id,
 				business_id: props.business.id,
 			})
@@ -73,25 +82,25 @@ const BizPageDash = (props) => {
 			<TouchableOpacity
 				style={{
 					position: "absolute",
-					alignSelf: "flex-start",
+					alignSelf: "flex-end",
 					height: vh(5),
 					width: vw(13),
 					marginHorizontal: "2%",
-					marginVertical: "4%",
+					marginVertical: "16%",
 					zIndex: 1,
 				}}
 				onPress={() => {
-					Linking.openURL(props.business.twitter);
+					WebBrowser.openBrowserAsync("https://twitter.com");
 				}}
 			>
-				<Icon name="twitter" type="feather" color="rgb(0,172,238)" size={35} />
+				<Icon name="twitter" type="feather" color="rgb(0,172,238)" size={30} />
 			</TouchableOpacity>
 
 			<TouchableOpacity
 				style={{
 					position: "absolute",
 					alignSelf: "flex-end",
-					top: vh(23.5),
+					top: vh(21.6),
 					height: vh(5),
 					width: vw(13),
 					marginHorizontal: "2%",
@@ -104,27 +113,7 @@ const BizPageDash = (props) => {
 					name="phone-call"
 					type="feather"
 					color="mediumseagreen"
-					size={34}
-				/>
-			</TouchableOpacity>
-
-			<TouchableOpacity
-				style={{
-					position: "absolute",
-					alignSelf: "flex-end",
-					height: vh(5),
-					width: vw(13),
-					marginVertical: "4%",
-				}}
-				onPress={() => {
-					Linking.openURL(props.business.facebook);
-				}}
-			>
-				<Icon
-					name="facebook-box"
-					type="material-community"
-					color="rgb(59,89,152)"
-					size={38}
+					size={28}
 				/>
 			</TouchableOpacity>
 
@@ -132,7 +121,47 @@ const BizPageDash = (props) => {
 				style={{
 					position: "absolute",
 					alignSelf: "flex-start",
-					top: vh(23.5),
+					height: vh(5),
+					width: vw(13),
+					marginVertical: "15%",
+				}}
+				onPress={() => {
+					WebBrowser.openBrowserAsync("https://facebook.com");
+				}}
+			>
+				<Icon
+					name="facebook-box"
+					type="material-community"
+					color="rgb(59,89,152)"
+					size={32}
+				/>
+			</TouchableOpacity>
+
+			<TouchableOpacity
+				style={{
+					position: "absolute",
+					alignSelf: "center",
+					height: vh(5),
+					width: vw(13),
+					marginVertical: "12%",
+				}}
+				onPress={() => {
+					Linking.openURL(props.business.instagram);
+				}}
+			>
+				<Icon
+					name="instagram"
+					type="material-community"
+					color="rgb(195, 42, 163)"
+					size={32}
+				/>
+			</TouchableOpacity>
+
+			<TouchableOpacity
+				style={{
+					position: "absolute",
+					alignSelf: "flex-start",
+					top: vh(21.5),
 					height: vh(5),
 					width: vw(13),
 					marginHorizontal: "2%",
@@ -141,7 +170,29 @@ const BizPageDash = (props) => {
 					Linking.openURL(props.business.website);
 				}}
 			>
-				<Icon name="laptop" type="entypo" color="whitesmoke" size={35} />
+				<Icon name="laptop" type="entypo" color="whitesmoke" size={30} />
+			</TouchableOpacity>
+			<TouchableOpacity
+				style={{
+					position: "absolute",
+					alignSelf: "center",
+					top: vh(22.25),
+					height: vh(5),
+					width: vw(13),
+					marginHorizontal: "2%",
+					alignItems: "center",
+				}}
+				onPress={async () => {
+					console.log("REDIRECT URL IS.........", redirectUrl);
+					Share.share(
+						{
+							title: "testerrrrrr press this",
+							url: redirectUrl,
+						} //SHARERRRRRRR
+					);
+				}}
+			>
+				<Ionicons name="md-share-alt" size={35} color="green" />
 			</TouchableOpacity>
 		</View>
 	);

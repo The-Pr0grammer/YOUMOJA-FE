@@ -39,7 +39,7 @@ class ListBizStats extends React.Component {
 
 	fetchHearts = () => {
 		axios
-			.get(`http://localhost:3000/users/1`)
+			.get(`http://127.0.0.1:3000/users/1`)
 			.then((response) => {
 				this.setState({ userHearts: response.data.user_hearts });
 			})
@@ -53,7 +53,7 @@ class ListBizStats extends React.Component {
 		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
 		axios
 			.patch(
-				`http://localhost:3000/businesses/${this.props.biz.business.id}`,
+				`http://127.0.0.1:3000/businesses/${this.props.biz.business.id}`,
 				{
 					hearts: this.state.hearts + 1,
 				},
@@ -66,9 +66,8 @@ class ListBizStats extends React.Component {
 				console.log(error.response);
 			});
 		axios
-			.post(`http://localhost:3000/user_hearts`, {
-				user_id: 1,
-				business_id: this.props.biz.business.id,
+			.post(`http://127.0.0.1:3000/user_hearts`, {
+				user_heart: { user_id: 1, user_biz_id: this.props.biz.id },
 			})
 			.then(function (response) {
 				// console.log(response);
@@ -76,6 +75,7 @@ class ListBizStats extends React.Component {
 	};
 
 	render() {
+		// console.log(this.props.biz.id);
 		return (
 			<View
 				style={{
@@ -85,7 +85,7 @@ class ListBizStats extends React.Component {
 					height: vh(30),
 					width: vw(33),
 					backgroundColor: "black",
-					opacity: 0.75,
+					opacity: 0.95,
 				}}
 			>
 				<TouchableOpacity

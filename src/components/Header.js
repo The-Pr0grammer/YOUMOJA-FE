@@ -13,6 +13,8 @@ import {
 } from "../redux/actions/bizAction";
 
 const Header = (props) => {
+	// console.log(props.lastScreen);
+
 	return (
 		<View style={styles.container}>
 			<View
@@ -45,14 +47,20 @@ const Header = (props) => {
 						}}
 						icon={<Icon name="angle-left" size={40} color="black" />}
 						type="clear"
-						onPress={() => {
-							props.refresh && props.fetchBizs();
-							props.refresh && props.handleRefresh();
-							props.navigation.goBack();
-							props.setIsFetching(true);
-							setTimeout(() => {
-								props.setIsFetching(false);
-							}, 100);
+						onPress={async () => {
+							if (props.lastScreen == "MyBusinesses") {
+								props.handleAddBusinessTogg();
+							} else {
+								props.refresh && props.handleRefresh();
+								props.lastScreen == "Profile" &&
+									props.navigation.navigate("Profile");
+								props.navigation.goBack();
+								props.setIsFetching(true);
+								await props.fetchBizs();
+								setTimeout(() => {
+									props.setIsFetching(false);
+								}, 100);
+							}
 						}}
 						titleStyle={{
 							color: "olivedrab",

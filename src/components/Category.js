@@ -24,7 +24,7 @@ class Category extends React.Component {
 				}}
 				onPress={() => {
 					this.props.changeCat(this.props.catObj.cat);
-					this.props.handleSearch("");
+					// this.props.handleSearch("");
 					this.props.handleCatsTogg();
 				}}
 			>
@@ -45,10 +45,10 @@ class Category extends React.Component {
 							width: vw(32),
 							justifyContent: "center",
 							alignItems: "center",
-							color: "black",
+							color: "olivedrab",
 							fontSize: 16,
 							textAlign: "center",
-							backgroundColor: "lightslategray",
+							backgroundColor: "rgba(0,0,0,0.85)",
 							alignSelf: "flex-start",
 							position: "relative",
 							fontFamily: "Marker Felt",

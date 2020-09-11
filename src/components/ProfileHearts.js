@@ -35,8 +35,8 @@ const ProfileHearts = (props) => {
 	// 		setUserShow(props.userInfo);
 	// 	};
 	// });
-	
-	// console.log("HEARTS IS",props.userHearts)
+
+	// console.log("HEARTS IS🤎♥️🧡", props.userHearts[0]);
 	return (
 		<View // START OF BIZLIST
 			style={{
@@ -46,21 +46,27 @@ const ProfileHearts = (props) => {
 				// position: "absolute",
 				backgroundColor: "maroon", //MAROON
 				zIndex: 1,
-				// top: vh(7.9),
+				top: vh(1.5), // POSITION 📈
 			}}
 		>
+			<Text style={styles.title}>LIKES({props.userHeartBizs.length})</Text>
+
 			<FlatList
+				indicatorStyle="white"
 				horizontal={true}
-				style={styles.list}
+				// style={styles.list}
 				contentContainerStyle={{
-					backgroundColor: "rgba(0, 0, 0, 0.6)",
+					backgroundColor: "rgba(0, 0, 0, 0.9)",
 					alignItems: "left",
 					justifyContent: "left",
+					// height: vh(47),
+
+					// position: "relative",
 				}}
-				data={props.userHearts}
+				data={props.userHeartBizs}
 				keyExtractor={(item) => item.id.toString()}
 				renderItem={({ item }) => (
-					<ListBiz biz={item} navigation={navigation} />
+					<ListBiz biz={item} navigation={navigation} lastScreen={"Profile"} />
 				)}
 				// extraData={props.userHearts}
 				legacyImplementation={true}
@@ -75,48 +81,6 @@ export default connect(mapStateToProps, {
 })(ProfileHearts);
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		height: vh(100),
-		alignItems: "center",
-		backgroundColor: "black",
-		// marginTop: vh(10),
-	},
-	background: {
-		flex: 1,
-		height: vh(90),
-		width: vw(100),
-		alignItems: "center",
-		resizeMode: "center",
-	},
-	menuButton: {
-		position: "relative",
-		height: vh(7.5),
-		width: vw(16),
-		backgroundColor: "brown",
-		zIndex: 2,
-		opacity: 0.9,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	disabledButton: {
-		position: "relative",
-		height: vh(7.5),
-		width: vw(16),
-		backgroundColor: "lavender",
-		zIndex: 2,
-		opacity: 0.9,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	profilePic: {
-		borderRadius: 82,
-		height: vh(25),
-		width: vw(45),
-		opacity: 1.0,
-		zIndex: 2,
-		top: vh(1),
-	},
 	badge: {
 		height: vh(8),
 		// width: vw(24),
@@ -124,11 +88,23 @@ const styles = StyleSheet.create({
 		paddingLeft: vw(13),
 		justifyContent: "center",
 	},
+	title: {
+		textAlign: "center",
+		// flex: 1,
+		fontWeight: "bold",
+		fontFamily: "Marker Felt",
+		fontSize: 24,
+		backgroundColor: "black",
+		color: "olivedrab",
+		width: vw(100),
+		justifyContent: "center",
+		height: vh(5),
+	},
 });
 
 function mapStateToProps(state) {
 	return {
-		userHearts: state.userHearts,
+		userHeartBizs: state.userHearts.map((uh) => uh.user_biz),
 		userInfo: state.userInfo,
 	};
 }

@@ -29,9 +29,10 @@ const initialState = {
 	heartsSort: false,
 	badgesSort: false,
 	locationSort: false,
+	scoresSort: true,
 	userInfo: {},
 	userHearts: [],
-	scoresSort: true,
+	userBizs: [],
 };
 
 const bizReducer = (state = initialState, action) => {
@@ -134,7 +135,7 @@ const bizReducer = (state = initialState, action) => {
 				locationSort: !state.locationSort,
 			};
 		case SET_USER_INFO:
-			console.log("reducing➗🔇")
+			// console.log("reducing➗🔇");
 			return {
 				...state,
 				userInfo: {
@@ -145,6 +146,7 @@ const bizReducer = (state = initialState, action) => {
 					img_url: action.payload.img_url,
 				},
 				userHearts: action.payload.user_hearts,
+				userBizs: action.payload.user_bizs,
 			};
 		case SET_IS_FETCHING:
 			// console.log("reducing isFetching");

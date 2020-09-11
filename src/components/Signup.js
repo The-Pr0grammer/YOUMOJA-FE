@@ -129,6 +129,15 @@ const CreateAccount = (props) => {
 								textAlign: "center",
 							},
 						},
+						username: {
+							label: "Username",
+							validators: [validateContent, usernameCheck, lengthCap],
+							inputProps: {
+								placeholder: "choose a username",
+								placeholderTextColor: "#D50000",
+								textAlign: "center",
+							},
+						},
 						email: {
 							label: "Email",
 							validators: [validateContent, emailCheck],
@@ -137,15 +146,6 @@ const CreateAccount = (props) => {
 								autoCapitalize: "none",
 								keyboardType: "email-address",
 								placeholder: "enter your email address",
-								placeholderTextColor: "#D50000",
-								textAlign: "center",
-							},
-						},
-						username: {
-							label: "Username",
-							validators: [validateContent, usernameCheck, lengthCap],
-							inputProps: {
-								placeholder: "choose a username",
 								placeholderTextColor: "#D50000",
 								textAlign: "center",
 							},

@@ -183,6 +183,60 @@ const Form = ({
 					</View>
 				</View>
 			)}
+
+			{type == "NewBusiness" && (
+				<View
+					style={{
+						flex: 1,
+						position: "relative",
+						alignItems: "center",
+						justifyContent: "center",
+						zIndex: 1,
+						top: vh(16),
+					}}
+				>
+					{fieldKeys.map((key) => {
+						return (
+							<Field
+								key={key}
+								fieldName={key}
+								field={fields[key]}
+								error={validationErrors[key]}
+								clearError={() => setErrorMessage("")}
+								onChangeText={onChangeValue}
+								value={values[key]}
+							/>
+						);
+					})}
+
+					<View style={{ top: vh(2) }}>
+						<Button
+							title={"Post Business"}
+							buttonStyle={{
+								backgroundColor: "transparent",
+								borderRadius: 18,
+							}}
+							// style={[styles.createButton]}
+							titleStyle={{ color: "gray" }}
+							onPress={submit}
+							// loading={buttonSpinner}
+							// loadingProps={{ color: "green", size: "large" }}
+						/>
+						<Button
+							title={"Cancel"}
+							buttonStyle={{
+								backgroundColor: "transparent",
+								borderRadius: 18,
+							}}
+							// style={[styles.createButton]}
+							titleStyle={{ color: "gray" }}
+							onPress={submit}
+							// loading={buttonSpinner}
+							// loadingProps={{ color: "green", size: "large" }}
+						/>
+					</View>
+				</View>
+			)}
 		</View>
 	);
 };

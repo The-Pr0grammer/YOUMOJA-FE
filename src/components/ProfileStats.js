@@ -57,12 +57,13 @@ const ProfileStats = (props) => {
 						borderWidth: 2,
 						position: "absolute",
 						alignSelf: "flex-start",
-						backgroundColor: "rgba(0,0,0,0.9)", //LEFT
+						backgroundColor: "black", //LEFT
 						justifyContent: "center",
 						alignItems: "center",
 						zIndex: 1,
 						flexDirection: "column",
 						// bottom: vh(17.6),
+						opacity: 0.95,
 					}}
 				>
 					<ScrollView
@@ -152,7 +153,7 @@ const ProfileStats = (props) => {
 							fontSize: 20,
 							top: vh(9),
 							fontFamily: "Marker Felt",
-							color: "olivedrab",
+							color: "lightslategray",
 						}}
 					>
 						1M
@@ -257,7 +258,7 @@ const ProfileStats = (props) => {
 							fontSize: 20,
 							top: vh(24.4),
 							fontFamily: "Marker Felt",
-							color: "olivedrab",
+							color: "lightslategray",
 						}}
 					>
 						1M
@@ -290,12 +291,13 @@ const ProfileStats = (props) => {
 						borderWidth: 2,
 						position: "absolute",
 						alignSelf: "flex-end",
-						backgroundColor: "rgba(0,0,0,0.9)", //RIGHT
+						backgroundColor: "black", //RIGHT
 						// justifyContent: "center",
 						alignItems: "center",
 						zIndex: 1,
 						flexDirection: "column",
 						// bottom: vh(17.6),
+						opacity: 0.95,
 					}}
 				>
 					<TouchableOpacity
@@ -318,7 +320,7 @@ const ProfileStats = (props) => {
 							fontSize: 20,
 							fontFamily: "Marker Felt",
 							top: vh(1.5),
-							color: "olivedrab",
+							color: "lightslategray",
 						}}
 					>
 						777K
@@ -358,7 +360,7 @@ const ProfileStats = (props) => {
 							fontSize: 20,
 							fontFamily: "Marker Felt",
 							top: vh(9),
-							color: "olivedrab",
+							color: "lightslategray",
 						}}
 					>
 						555K
@@ -386,7 +388,7 @@ const ProfileStats = (props) => {
 						// borderWidth: 2,
 						position: "relative",
 						alignSelf: "center",
-						backgroundColor: "rgba(0,0,0,0.9)", //BLACK
+						backgroundColor: "rgba(0,0,0,0.95)", //BLACK
 						justifyContent: "center",
 						alignItems: "center",
 						zIndex: 1,
@@ -418,7 +420,7 @@ const ProfileStats = (props) => {
 							fontFamily: "Marker Felt",
 							fontSize: 19,
 							fontFamily: "Papyrus",
-							color: "olivedrab",
+							color: "darkslategray",
 							marginHorizontal: vw(1.5),
 							// backgroundColor: "gold",
 						}}
@@ -489,10 +491,10 @@ const styles = StyleSheet.create({
 	profilePic: {
 		borderRadius: 82,
 		height: vh(25),
-		width: vw(45),
+		width: vw(42),
 		opacity: 1.0,
 		zIndex: 2,
-		top: vh(1),
+		top: vh(0.03),
 	},
 	badge: {
 		height: vh(8),

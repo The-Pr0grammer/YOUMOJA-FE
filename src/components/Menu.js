@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 class Menu extends React.Component {
 	render() {
-		// console.log(this.props.category);
+		// console.log(this.props.category.length);
 		return (
 			<View
 				style={{
@@ -32,7 +32,7 @@ class Menu extends React.Component {
 					<Icon
 						name="menu"
 						type="feather"
-						color={!this.props.active ? "red" : "grey"}
+						color={!this.props.active ? "red" : "black"}
 						size={34}
 					/>
 				</TouchableOpacity>
@@ -41,6 +41,9 @@ class Menu extends React.Component {
 					activeOpacity={!this.props.active ? 0.2 : 1}
 					style={[
 						!this.props.active ? styles.catButton : styles.activeCatButton,
+						!this.props.active &&
+							this.props.category.length > 0 &&
+							styles.chosenCat,
 					]}
 					onPress={() => this.props.handleCatsTogg()}
 				>
@@ -72,7 +75,7 @@ class Menu extends React.Component {
 						<Icon
 							name="circledown"
 							type="antdesign"
-							color={!this.props.active ? "red" : "darkslategray"}
+							color={!this.props.active ? "lightslategray" : "gold"}
 							size={34}
 						/>
 					</View>
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
 		position: "relative",
 		height: vh(7.5),
 		width: vw(16),
-		backgroundColor: "lavender",
+		backgroundColor: "darkslategray",
 		zIndex: 2,
 		opacity: 0.9,
 		justifyContent: "center",
@@ -109,7 +112,7 @@ const styles = StyleSheet.create({
 		position: "relative",
 		height: vh(7.5),
 		width: vw(86),
-		backgroundColor: "salmon",
+		backgroundColor: "maroon",
 		flexDirection: "row",
 		zIndex: 1,
 		opacity: 0.9,
@@ -120,7 +123,18 @@ const styles = StyleSheet.create({
 		position: "relative",
 		height: vh(7.5),
 		width: vw(86),
-		backgroundColor: "gold",
+		backgroundColor: "crimson",
+		flexDirection: "row",
+		zIndex: 1,
+		opacity: 0.9,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	chosenCat: {
+		position: "relative",
+		height: vh(7.5),
+		width: vw(86),
+		backgroundColor: "crimson",
 		flexDirection: "row",
 		zIndex: 1,
 		opacity: 0.9,

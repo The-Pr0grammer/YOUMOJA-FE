@@ -48,7 +48,7 @@ class Comment extends PureComponent {
 			// console.log("posting vote", vote);
 			await axios
 				.post(
-					`http://localhost:3000/comment_votes`,
+					`http://127.0.0.1:3000/comment_votes`,
 					{
 						user_id: this.props.userInfo.id,
 						comment_id: this.props.comment.id,
@@ -76,7 +76,7 @@ class Comment extends PureComponent {
 				);
 		} else if (this.state.vote == vote) {
 			await axios
-				.delete(`http://localhost:3000/comment_votes/${this.state.voteId}`)
+				.delete(`http://127.0.0.1:3000/comment_votes/${this.state.voteId}`)
 				.then(async (res) => {
 					this.setState({
 						voteId: null,
@@ -93,7 +93,7 @@ class Comment extends PureComponent {
 		} else if (vote == 1) {
 			// console.log("updating vote UP", vote);
 			await axios
-				.patch(`http://localhost:3000/comment_votes/${this.state.voteId}`, {
+				.patch(`http://127.0.0.1:3000/comment_votes/${this.state.voteId}`, {
 					vote: 1,
 				})
 				.then((res) => {
@@ -113,7 +113,7 @@ class Comment extends PureComponent {
 		} else if (vote == -1) {
 			// console.log("updating vote DOWN", vote);
 			await axios
-				.patch(`http://localhost:3000/comment_votes/${this.state.voteId}`, {
+				.patch(`http://127.0.0.1:3000/comment_votes/${this.state.voteId}`, {
 					vote: -1,
 				})
 				.then((res) => {
@@ -141,7 +141,7 @@ class Comment extends PureComponent {
 		if (vote == 1) {
 			await axios({
 				method: "PATCH",
-				url: `http://localhost:3000/comments/${this.props.comment.id}`,
+				url: `http://127.0.0.1:3000/comments/${this.props.comment.id}`,
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",
@@ -163,7 +163,7 @@ class Comment extends PureComponent {
 		} else if (vote == -1) {
 			await axios({
 				method: "PATCH",
-				url: `http://localhost:3000/comments/${this.props.comment.id}`,
+				url: `http://127.0.0.1:3000/comments/${this.props.comment.id}`,
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",
@@ -243,7 +243,7 @@ class Comment extends PureComponent {
 					<Text style={styles.moment}> {this.relativeTime} </Text>
 				</View>
 				{/* <View style={styles.commentAndScoreView}> */}
-				<Text style={styles.comment}> {this.props.comment.content} </Text>
+				<Text style={styles.comment}>{this.props.comment.content}</Text>
 				<View style={styles.CommScore}>
 					<TouchableOpacity
 						style={{
@@ -261,7 +261,7 @@ class Comment extends PureComponent {
 						<FontAwesome
 							name="caret-square-o-up"
 							size={28}
-							color={this.state.vote == 1 ? "gold" : "black"}
+							color={this.state.vote == 1 ? "gold" : "lightslategray"}
 						/>
 					</TouchableOpacity>
 					<Text
@@ -293,7 +293,7 @@ class Comment extends PureComponent {
 						<FontAwesome
 							name="caret-square-o-down"
 							size={28}
-							color={this.state.vote == -1 ? "gold" : "black"}
+							color={this.state.vote == -1 ? "gold" : "lightslategray"}
 						/>
 					</TouchableOpacity>
 				</View>
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
 		paddingVertical: vh(0.5),
 		paddingRight: vw(1),
 		marginBottom: vh(1),
-		backgroundColor: "lightslategray",
+		backgroundColor: "rgba(0,0,0,0.7)",
 		borderWidth: 2,
 		borderColor: "black",
 		borderRadius: 3,
@@ -331,10 +331,12 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-start",
 		fontFamily: "Marker Felt",
 		fontSize: 20,
-		marginTop: vh(0.5),
+		marginTop: vh(1),
 		marginLeft: vh(0.7),
 		fontFamily: "Papyrus",
-		paddingRight: vw(15),
+		// paddingLeft: vw(15),
+		color: "olivedrab",
+
 		// backgroundColor: "purple",
 	},
 	username: {
@@ -345,6 +347,7 @@ const styles = StyleSheet.create({
 		marginLeft: vw(1.5),
 		fontFamily: "Georgia",
 		fontSize: 16,
+		color: "lightslategray",
 	},
 	profilePic: {
 		// zIndex: 1,
@@ -367,7 +370,7 @@ const styles = StyleSheet.create({
 	commentAndScoreView: {
 		flexDirection: "column",
 	},
-	moment: { fontSize: 12 },
+	moment: { fontSize: 12, color: "olivedrab" },
 });
 
 function mapStateToProps(state) {

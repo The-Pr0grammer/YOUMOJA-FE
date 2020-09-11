@@ -5,6 +5,7 @@ import {
 	Image,
 	Dimensions,
 	TouchableOpacity,
+	Share
 } from "react-native";
 import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
@@ -21,7 +22,7 @@ const BizPage = (props) => {
 	const [bizInfo, setBizinfo] = useState({});
 	const [comments, setComments] = useState([]);
 	const navigation = useNavigation();
-	// console.log(props.route.params.userInfo.img_url);
+	// console.log(props.route.params.lastScreen);
 
 	return (
 		<View style={styles.container}>
@@ -34,6 +35,7 @@ const BizPage = (props) => {
 				<Header
 					name={props.route.params["biz"].business.name}
 					navigation={props.navigation}
+					lastScreen={props.route.params.lastScreen}
 				/>
 			</View>
 
@@ -69,7 +71,7 @@ const BizPage = (props) => {
 					</View>
 					<TextTicker
 						shouldAnimateTreshold={vw(8)}
-						duration={6400}
+						duration={9600}
 						loop
 						bounce
 						repeatSpacer={25}
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
 	container: {
 		height: "100%",
 		flexDirection: "column",
-		// backgroundColor: "black",
+		backgroundColor: "darkslategray",
 	},
 	bizCon: {
 		position: "relative",
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
 		padding: vw(1.25),
 		fontFamily: "Marker Felt",
 		fontSize: 18,
-		color: "lightslategray",
+		color: "olivedrab",
 		height: vh(6),
 		backgroundColor: "black",
 		marginBottom: vh(0.8),
@@ -144,7 +146,7 @@ const styles = StyleSheet.create({
 	},
 	img: {
 		position: "absolute",
-		width: vw(60),
+		width: vw(58.6),
 		height: vh(30),
 		opacity: 1.0,
 		alignSelf: "flex-start",

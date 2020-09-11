@@ -50,6 +50,7 @@ const BizPageSupport = (props) => {
 					height: vh(8),
 					width: vw(66),
 					borderBottomWidth: 1,
+					opacity: props.purpose == "NewBusiness" ? 0.1 : 1,
 				}}
 				contentContainerStyle={{
 					position: "relative",
@@ -127,6 +128,7 @@ export default BizPageSupport;
 const styles = StyleSheet.create({
 	container: {
 		borderWidth: 1,
+		borderBottomColor: "black",
 		width: vw(100),
 		position: "relative",
 		backgroundColor: "black",

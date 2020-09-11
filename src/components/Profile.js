@@ -7,7 +7,6 @@ import {
 	ImageBackground,
 	TouchableOpacity,
 	ActivityIndicator,
-	Image,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Button, Icon } from "react-native-elements";
@@ -20,6 +19,8 @@ import { useNavigation } from "@react-navigation/native";
 import Header from "./Header.js";
 import ProfileStats from "./ProfileStats.js";
 import ProfileHearts from "./ProfileHearts.js";
+import MyBusinesses from "./MyBusinesses.js";
+import NewBusiness from "./NewBusiness";
 import axios from "axios";
 
 const Profile = (props) => {
@@ -28,8 +29,9 @@ const Profile = (props) => {
 	const [userShow, setUserShow] = useState("");
 	const [loading, setLoading] = useState(true);
 	const isFocused = useIsFocused();
+	const [addBusinessTogg, setAddBusinessTogg] = useState(false);
 
-	setTimeout(() => setLoading(false), 250);
+	setTimeout(() => setLoading(false), 1000);
 
 	// isFocused ? console.log("🔍♥👀focused") : console.log("unfocused");
 	// !isFocused &&
@@ -40,17 +42,24 @@ const Profile = (props) => {
 
 	useLayoutEffect(() => {
 		return () => {
+			// navigation.navigate("Profile");
 			!loading && setLoading(true);
-
-			// console.log("PROFILE PARAMS ARE🎯", props.route.params.userShowInfo);
-
+			// let response = () =>
+			// 	axios(`http://192.168.1.183:3000/users/${props.userInfo.id}`)
+			// 		.then((resp) => this.props.setUserShow(resp.data))
+			// 		.catch((error) => console.log(error));
+			// response();
 			setUserShow(props.userInfo);
 		};
 	});
 
+	const handleAddBusinessTogg = () => {
+		setAddBusinessTogg(!addBusinessTogg);
+	};
 	// console.log("userSHOW IS 🐛✋🏾");
 	// console.log("♻️", loading);
 	// console.log("userinfo:::::", props.userInfo);
+	console.log("NEW BIZ TOGG IS 🆕:::::", addBusinessTogg);
 	return (
 		<View style={styles.container}>
 			<Header
@@ -58,6 +67,7 @@ const Profile = (props) => {
 				navigation={navigation}
 				refresh={true}
 				loading={loading}
+				lastScreen={"Home"}
 			/>
 			{loading && (
 				<View
@@ -66,7 +76,7 @@ const Profile = (props) => {
 						height: vh(90),
 						width: vw(100),
 						justifyContent: "center",
-						backgroundColor: "maroon",
+						backgroundColor: "rgba(0,0,0,0.9)",
 					}}
 				>
 					<ActivityIndicator
@@ -74,6 +84,13 @@ const Profile = (props) => {
 						color="lime"
 						hidesWhenStopped={true}
 					></ActivityIndicator>
+					<View style={{ position: "absolute" }}>
+						<ImageBackground
+							source={require("../images/BlackLivesMatter.gif")}
+							style={styles.bg}
+							imageStyle={{ resizeMode: "stretch" }}
+						></ImageBackground>
+					</View>
 				</View>
 			)}
 			<View
@@ -120,6 +137,7 @@ const Profile = (props) => {
 						backgroundColor: "black",
 						paddingVertical: vh(3),
 						width: vw(40),
+						// opacity: 0.75,
 					}}
 				>
 					{userShow.username}
@@ -127,7 +145,7 @@ const Profile = (props) => {
 			</View>
 
 			<ScrollView
-				contentContainerStyle={{ height: vh(100) }}
+				contentContainerStyle={{ paddingBottom: vh(15) }}
 				style={{
 					// flex: 1,
 					backgroundColor: "black",
@@ -138,6 +156,15 @@ const Profile = (props) => {
 				//START OF STATS
 			>
 				<ProfileStats userShow={props.userInfo} />
+				{
+					addBusinessTogg && (
+						<NewBusiness handleAddBusinessTogg={handleAddBusinessTogg} />
+					) //NEW BUSINESS
+				}
+				<MyBusinesses
+					userId={props.userInfo.id}
+					handleAddBusinessTogg={handleAddBusinessTogg}
+				/>
 				<ProfileHearts
 					userShow={props.userInfo}
 					//PROFHEARTS
@@ -155,6 +182,7 @@ export default connect(mapStateToProps, {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		width: vw(100),
 		height: vh(100),
 		alignItems: "center",
 		backgroundColor: "black",
@@ -208,6 +236,15 @@ const styles = StyleSheet.create({
 		height: vh(68.6),
 		width: vw(100),
 		// opacity: 1.0,
+	},
+	bg: {
+		// position: "absolute",
+		// resizeMode: "cover",
+		opacity: 0.2,
+		borderWidth: 0,
+		width: vw(100),
+		height: vh(85),
+		justifyContent: "center",
 	},
 });
 

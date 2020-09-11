@@ -1,5 +1,5 @@
 import React from "react";
-import { View, MaskedViewComponent } from "react-native";
+import { View, MaskedViewComponent, Text } from "react-native";
 import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -20,7 +20,9 @@ import ResetPassword from "./src/components/ResetPassword.js";
 import Profile from "./src/components/Profile.js";
 import PeerProfile from "./src/components/PeerProfile.js";
 import * as firebase from "firebase";
+import * as Linking from "expo-linking";
 
+const prefix = Linking.makeUrl("/");
 const createStoreWithMiddleWare = applyMiddleware(thunk)(createStore);
 const store = createStoreWithMiddleWare(bizReducer);
 const Stack = createStackNavigator();
@@ -143,7 +145,7 @@ function DrawerNav({ navigation }) {
 					fontSize: 24,
 				},
 			}}
-			initialRouteName="Home"
+			initialRouteName="Profile"
 			drawerType="slide"
 			drawerContentOptions={{
 				activeBackgroundColor: "maroon",
@@ -264,9 +266,17 @@ class App extends React.Component {
 		super(props);
 	}
 	render() {
+		console.log("PREFIX LINK IS🔆 🔆 🔆", prefix);
+		const linking = {
+			prefixes: [prefix],
+		};
+
 		return (
 			<Provider store={store}>
-				<NavigationContainer>
+				<NavigationContainer
+					linking={linking}
+					fallback={<Text>Loading...</Text>}
+				>
 					<AppNav></AppNav>
 				</NavigationContainer>
 			</Provider>

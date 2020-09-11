@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
 import {
 	View,
 	FlatList,
@@ -8,6 +7,7 @@ import {
 	Dimensions,
 	ActivityIndicator,
 	Text,
+	Linking,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Icon } from "react-native-elements";
@@ -28,6 +28,7 @@ import Menu from "./Menu.js";
 import Search from "./Search.js";
 import FocusedSearch from "./FocusedSearch.js";
 import Sorter from "./Sorter.js";
+import axios from "axios";
 import * as firebase from "firebase";
 
 class Businesses extends Component {
@@ -47,7 +48,7 @@ class Businesses extends Component {
 
 	loadUser = async (id) => {
 		try {
-			let response = await axios(`http://localhost:3000/users/${id}`);
+			let response = await axios(`http://127.0.0.1:3000/users/${id}`);
 			// console.log("response is", response )
 			this.props.setUserInfo({
 				...this.props.userInfo,
@@ -60,7 +61,9 @@ class Businesses extends Component {
 	};
 
 	componentDidMount(props) {
-		let response = axios(`http://localhost:3000/users/${1}`)
+		Linking.addEventListener("url", this.handleOpenURL);
+
+		let response = axios(`http://127.0.0.1:3000/users/${1}`)
 			.then((resp) => this.props.setUserInfo(resp.data))
 			.catch((error) => console.log(error));
 		// this.props.setUserInfo({
@@ -122,8 +125,13 @@ class Businesses extends Component {
 	// };
 
 	componentWillUnmount() {
+		Linking.removeEventListener("url", this.handleOpenURL);
 		// this.setState({ hasLoadedUsers: false, users: [] })
 		// return this.didFocusSubscription.remove()
+	}
+
+	handleOpenURL(event) {
+		console.log("event is", event);
 	}
 
 	handleCatsTogg = () => {
@@ -142,7 +150,7 @@ class Businesses extends Component {
 		const { isFocused } = this.props;
 		{
 			// isFocused && console.log("focused");
-			// this.props.fetchBizs();
+			// isFocused && this.props.fetchBizs();
 		}
 		let emptyCheck = this.props.filteredBizs.length;
 		// console.log(
@@ -173,6 +181,12 @@ class Businesses extends Component {
 						color="#00ff00"
 						hidesWhenStopped={true}
 					/>
+					<View style={{ position: "absolute" }}>
+						<ImageBackground
+							source={require("../images/BlackPowerSplash.gif")}
+							style={styles.bg}
+						></ImageBackground>
+					</View>
 				</View>
 			)) ||
 			(!this.props.reduxState.isFetching && (
@@ -201,7 +215,7 @@ class Businesses extends Component {
 						></ImageBackground>
 					)}
 					{emptyCheck < 1 && this.props.reduxState.isFetching == false && (
-						<View>
+						<View style={{ backgroundColor: "black", flex: 1 }}>
 							<Icon
 								name="binoculars"
 								type="font-awesome"
@@ -210,6 +224,12 @@ class Businesses extends Component {
 								style={{ marginTop: vh(5) }}
 							/>
 							<Text style={styles.empty}>NO RESULTS</Text>
+							<View style={{ position: "absolute" }}>
+								<ImageBackground
+									source={require("../images/NoResults.gif")}
+									style={styles.emptyBg}
+								></ImageBackground>
+							</View>
 						</View>
 					)}
 
@@ -224,7 +244,11 @@ class Businesses extends Component {
 							data={this.props.filteredBizs}
 							keyExtractor={(item) => item.id.toString()}
 							renderItem={({ item }) => (
-								<ListBiz biz={item} navigation={this.props.navigation} />
+								<ListBiz
+									biz={item}
+									navigation={this.props.navigation}
+									lastScreen={"Home"}
+								/>
 							)}
 							extraData={this.props.sorters}
 							legacyImplementation={true}
@@ -265,12 +289,24 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 	},
 	bg: {
+		flex: 1,
 		resizeMode: "cover",
 		opacity: 0.3,
 		padding: 0,
 		borderWidth: 0,
 		width: vw(100),
 		height: vh(85),
+		justifyContent: "center",
+	},
+	emptyBg: {
+		backgroundColor: "olivedrab",
+		resizeMode: "cover",
+		opacity: 0.25,
+		padding: 0,
+		borderWidth: 0,
+		width: vw(100),
+		height: vh(70),
+		justifyContent: "center",
 	},
 	list: {
 		position: "absolute",
@@ -281,8 +317,9 @@ const styles = StyleSheet.create({
 	},
 	activityView: {
 		flex: 1,
+		height: vh(100),
 		justifyContent: "center",
-		backgroundColor: "maroon",
+		backgroundColor: "rgba(0,0,0,0.92)",
 	},
 	upperDiv: {
 		flexDirection: "column",
@@ -306,7 +343,7 @@ const styles = StyleSheet.create({
 	},
 	empty: {
 		backgroundColor: "transparent",
-		color: "lightslategray",
+		color: "olivedrab",
 		fontSize: 64,
 		fontFamily: "Marker Felt",
 		alignSelf: "center",
