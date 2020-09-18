@@ -266,7 +266,6 @@ export default connect(mapStateToProps, {
 	setIsFetching,
 })(function (props) {
 	const isFocused = useIsFocused();
-
 	return <Businesses {...props} isFocused={isFocused} />;
 });
 
@@ -344,6 +343,7 @@ const styles = StyleSheet.create({
 		zIndex: 4,
 	},
 	empty: {
+		paddingTop: vh(2.5),
 		backgroundColor: "transparent",
 		color: "olivedrab",
 		fontSize: 64,
@@ -351,6 +351,7 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		textAlign: "center",
 		width: vw(64),
+		// lineHeight: vh(12),
 	},
 });
 
