@@ -5,7 +5,7 @@ import {
 	Image,
 	Dimensions,
 	TouchableOpacity,
-	Share
+	Share,
 } from "react-native";
 import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
@@ -17,6 +17,7 @@ import CommentList from "./CommentList.js";
 import BizPageDash from "./BizPageDash.js";
 import BizPageSupport from "./BizPageSupport.js";
 import { useNavigation } from "@react-navigation/native";
+import FitImage from "react-native-fit-image";
 
 const BizPage = (props) => {
 	const [bizInfo, setBizinfo] = useState({});
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
 	},
 	img: {
 		position: "absolute",
-		width: vw(58.6),
+		width: vw(59),
 		height: vh(30),
 		opacity: 1.0,
 		alignSelf: "flex-start",
@@ -157,8 +158,9 @@ const styles = StyleSheet.create({
 	},
 	profilePic: {
 		// zIndex: 1,
-		borderRadius: 22,
-		height: vh(6),
+		borderRadius: 100,
 		width: vw(11),
+		height: undefined,
+		aspectRatio: 135 / 135,
 	},
 });

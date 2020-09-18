@@ -10,13 +10,15 @@ import {
 	setIsFetching,
 	handleRefresh,
 	fetchBizs,
-} from "../redux/actions/bizAction";
+} from "../redux/actions/bizAction"
 
 const Header = (props) => {
 	// console.log(props.lastScreen);
 
 	return (
-		<View style={styles.container}>
+		<View
+			style={[props.type == "Search" ? styles.searchContainer : styles.container]}
+		>
 			<View
 				style={{
 					position: "relative",
@@ -152,6 +154,17 @@ const styles = StyleSheet.create({
 		// flex: 1,
 		position: "relative",
 		height: vh(10),
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: "darkslategray",
+		shadowColor: "transparent",
+		zIndex: 1,
+		// bottom: vh(10),
+	},
+	searchContainer: {
+		// flex: 1,
+		position: "relative",
+		height: vh(9.6),
 		alignItems: "center",
 		justifyContent: "center",
 		backgroundColor: "darkslategray",

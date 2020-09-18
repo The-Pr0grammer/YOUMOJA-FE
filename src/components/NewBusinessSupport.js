@@ -10,11 +10,15 @@ import {
 import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import axios from "axios";
+import { urlCheck } from "./forms/validation";
+import * as WebBrowser from "expo-web-browser";
 
 const NewBusinessSupport = (props) => {
+	const [browserResult, setBrowserResult] = useState(0);
+	// console.log(props.support);
 	return (
 		<View style={styles.container}>
-			<View style={{ flex: 1 }}>
+			<View style={{ flex: 1, zIndex: 5 }}>
 				<TouchableOpacity
 					style={{
 						borderColor: "black",
@@ -25,8 +29,20 @@ const NewBusinessSupport = (props) => {
 						width: vw(32),
 						height: vh(8),
 					}}
-					onPress={() => {
-						Linking.openURL("https://cash.app/$Issagoattt");
+					onPress={async () => {
+						WebBrowser.dismissBrowser();
+						// props.setVisibility(!props.visibility);
+						// props.setVisibility(false);
+						const check = urlCheck(props.support);
+
+						if (check == "clear") {
+							await setBrowserResult(
+								WebBrowser.openBrowserAsync(props.support)
+							);
+							console.log(browserResult);
+						} else {
+							props.setErrorMessage(check);
+						}
 					}}
 				>
 					<Icon
@@ -34,6 +50,8 @@ const NewBusinessSupport = (props) => {
 						type="font-awesome-5"
 						color="green"
 						size={40}
+						opacity={props.support ? 1 : 0.2}
+
 						// reverse
 						// reverseColor="lawngreen"
 					/>
@@ -50,14 +68,14 @@ const NewBusinessSupport = (props) => {
 					height: vh(8),
 					width: vw(66),
 					borderBottomWidth: 1,
-					opacity: props.purpose == "NewBusiness" ? 0.04 : 1,
+					opacity: props.purpose == "NewBusiness" ? 0.01 : 1,
 				}}
 				contentContainerStyle={{
 					position: "relative",
 					height: vh(8),
 					// bottom: vh(0.75),
 					// paddingRight: vw(6.6),
-					// paddingLeft: vw(4),
+					paddingLeft: vw(8),
 				}}
 				automaticallyAdjustInsets={false}
 				horizontal={true}
@@ -138,7 +156,7 @@ const styles = StyleSheet.create({
 		height: vh(8),
 		// width: vw(24),
 		paddingHorizontal: vw(4.5),
-		paddingLeft: vw(12),
+		paddingLeft: vw(10),
 		justifyContent: "center",
 	},
 });

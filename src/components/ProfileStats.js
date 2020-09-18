@@ -278,7 +278,7 @@ const ProfileStats = (props) => {
 					</Text>
 				</View>
 				<Image
-					resizeMode={"cover"}
+					resizeMode={"stretch"}
 					source={{
 						uri: props.userShow.img_url,
 					}}
@@ -489,12 +489,13 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	profilePic: {
-		borderRadius: 82,
-		height: vh(25),
-		width: vw(42),
+		borderRadius: 102,
+		width: "47%",
 		opacity: 1.0,
 		zIndex: 2,
-		top: vh(0.03),
+		// top: vh(0.03),
+		height: undefined,
+		aspectRatio: 135 / 135,
 	},
 	badge: {
 		height: vh(8),

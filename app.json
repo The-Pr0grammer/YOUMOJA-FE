@@ -1,5 +1,17 @@
 {
 	"expo": {
-		"scheme": "youmoja"
+		"name": "Youmoja",
+		"icon": "./src/images/icon.png",
+		"version": "1.0.0",
+		"slug": "youmoja",
+		"scheme": "youmoja",
+		"ios": {
+			"bundleIdentifier": "com.youmoja.youmoja",
+			"buildNumber": "1.0.0"
+		},
+		"android": {
+			"package": "com.youmoja.youmoja",
+			"versionCode": 1
+		}
 	}
 }

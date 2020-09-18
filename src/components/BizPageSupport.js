@@ -127,7 +127,7 @@ export default BizPageSupport;
 
 const styles = StyleSheet.create({
 	container: {
-		borderWidth: 1,
+		borderWidth: 2,
 		borderBottomColor: "black",
 		width: vw(100),
 		position: "relative",

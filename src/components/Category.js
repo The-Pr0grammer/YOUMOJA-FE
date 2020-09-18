@@ -29,7 +29,7 @@ class Category extends React.Component {
 				}}
 			>
 				<ImageBackground
-					imageStyle={{ resizeMode: "stretch", marginTop: vh(3) }}
+					imageStyle={{ resizeMode: "cover", marginTop: vh(3) }}
 					source={this.props.catObj.bg}
 					style={{
 						flex: 1,

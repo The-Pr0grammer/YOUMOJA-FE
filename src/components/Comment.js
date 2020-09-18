@@ -8,6 +8,7 @@ import { fetchUserInfo, fetchComments } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
 import axios from "axios";
 import moment from "moment";
+import FitImage from "react-native-fit-image";
 
 class Comment extends PureComponent {
 	constructor(props) {
@@ -351,11 +352,12 @@ const styles = StyleSheet.create({
 	},
 	profilePic: {
 		// zIndex: 1,
-		borderRadius: vw(20),
-		height: vh(6),
+		borderRadius: vw(100),
 		width: vw(11),
 		alignSelf: "flex-end",
 		marginLeft: vh(0.7),
+		height: undefined,
+		aspectRatio: 135 / 135,
 	},
 	CommScore: {
 		flexDirection: "row",

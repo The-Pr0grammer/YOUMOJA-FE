@@ -11,8 +11,8 @@ import {
 	ScrollView,
 	KeyboardAvoidingView,
 } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import { Icon, Button } from "react-native-elements";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
@@ -28,19 +28,21 @@ import {
 	validateContent,
 	validateLength,
 	passwordMatch,
-	emailCheck,
 	lengthCap,
-	usernameCheck,
 	nameCheck,
 	passwordCheck,
+	urlCheck,
+	phoneNumberCheck,
 } from "./forms/validation";
 import { useNavigation } from "@react-navigation/native";
 
 const NewBusiness = (props) => {
-	const [bizSummary, setBizSummary] = useState("Business Summary");
-	const [comments, setComments] = useState([]);
+	const [inputs, setInputs] = useState({
+		name: "Business Name",
+		summary: "Business Summary",
+	});
 	const [errorMessage, setErrorMessage] = useState("");
-	const [input, setInput] = useState("");
+	const [visibility, setVisibility] = useState(true);
 	const navigation = useNavigation();
 	const business = {
 		id: 1,
@@ -67,14 +69,22 @@ const NewBusiness = (props) => {
 	};
 	// console.log(props.route.params.lastScreen);
 
-	const createAccount = (email, name, opaque, opaque_two, username) => {
-		return post("/users", {
-			user: { email, name, opaque, opaque_two, username },
-		});
+	const postBusiness = (email, name, opaque, opaque_two, username) => {
+		console.log("submitting✅...");
+
+		// return post("/users", {
+		// 	user: { email, name, opaque, opaque_two, username },
+		// });
+	};
+
+	const handleChange = (key, value) => {
+		setErrorMessage("");
+		setInputs({ ...inputs, [key]: value });
+		console.log("INPUTS ARE 🎮 is", inputs);
 	};
 
 	return (
-		<Modal style={styles.container}>
+		<Modal visible={visibility} style={styles.container}>
 			<View
 				style={{
 					// flex: 1,
@@ -84,7 +94,7 @@ const NewBusiness = (props) => {
 				}}
 			>
 				<Header
-					name={"Business Name"}
+					name={inputs.name}
 					navigation={navigation}
 					refresh={true}
 					// loading={spinner}
@@ -92,14 +102,17 @@ const NewBusiness = (props) => {
 					handleAddBusinessTogg={props.handleAddBusinessTogg}
 				/>
 			</View>
-			<KeyboardAvoidingView behavior="padding" style={styles.container}>
+			<KeyboardAvoidingView behavior="height">
 				<ScrollView
+					// decelerationRate={0.75}
 					bounces={false}
 					contentContainerStyle={{
-						// flex: 1,
-						height: vh(132.5),
+						flexGrow: 1,
+						height: vh(170),
 						backgroundColor: "lightslategray",
-						top: vh(0),
+						borderWidth: 2.5,
+						borderColor: "black",
+						// top: vh(0.25),
 					}}
 					// style={styles.scrollCon}
 				>
@@ -133,116 +146,120 @@ const NewBusiness = (props) => {
 								style={styles.bizSumm}
 							>
 								{
-									bizSummary
+									inputs.summary
 									//BIZ SUMMARY
 								}
 							</TextTicker>
 						</View>
 						<View style={styles.cardView}>
-							<View
-								style={{
-									position: "relative",
-									backgroundColor: "purple",
-									width: vw(30),
-									// height: vh(15),
-									// zIndex: 3,
-									flexDirection: "column",
-								}}
-							>
-								<TouchableOpacity styles={{ flexDirection: "column-reverse" }}>
-									<Image
-										//IMAGES
-										style={styles.img}
-										source={require("../images/Upload.png")}
-									/>
-									<Text
-										style={{
-											position: "absolute",
-											textAlign: "center",
-											// backgroundColor: "red",
-											width: vw(59),
-											top: vh(26),
-											fontFamily: "Marker Felt",
-											fontSize: 18,
-											// alignSelf:"flex-end"
-										}}
-									>
-										Upload Images
-									</Text>
-								</TouchableOpacity>
-							</View>
-							<NewBusinessDash business={business} />
+							<NewBusinessDash
+								business={business}
+								inputs={inputs}
+								setVisibility={setVisibility}
+								visibility={visibility}
+								setErrorMessage={setErrorMessage}
+							/>
 						</View>
 						<View style={styles.bizSupport}>
-							<NewBusinessSupport business={business} purpose={"NewBusiness"} />
+							<NewBusinessSupport
+								business={business}
+								purpose={"NewBusiness"}
+								support={inputs.support}
+								setErrorMessage={setErrorMessage}
+							/>
 						</View>
 					</View>
+
 					<View style={styles.commentCon}>
 						<CommentList
 							bizId={0}
 							navigation={navigation}
+							newBusiness={true}
 							// comments={comments}
 						/>
 					</View>
 					<View style={styles.inputDiv}>
 						<View style={styles.inputDash}>
-							<Text style={styles.errorMessage}>Example error message</Text>
+							<Text style={styles.errorMessage}>{errorMessage}</Text>
 							<Form
-								action={createAccount}
+								action={postBusiness}
 								afterSubmit={handleResult}
+								handleChange={handleChange}
 								// buttonText="Create Account"
 								// buttonSpinner={spinner}
 								type="NewBusiness"
 								fields={{
 									name: {
 										label: "Name",
-										validators: [validateContent, nameCheck],
+										validators: [validateContent],
 										inputProps: {
 											autoCapitalize: "words",
-											placeholder: "Who are you?",
+											placeholder: "What's the name of your business?",
 											placeholderTextColor: "#D50000",
 											textAlign: "center",
 										},
 									},
-									username: {
-										label: "Username",
-										validators: [validateContent, usernameCheck, lengthCap],
+									summary: {
+										label: "Summary",
+										validators: [validateContent],
 										inputProps: {
-											placeholder: "choose a username",
+											placeholder: "Enter a summary for your business",
 											placeholderTextColor: "#D50000",
 											textAlign: "center",
 										},
 									},
-									email: {
-										label: "Email",
-										validators: [validateContent, emailCheck],
+									facebook: {
+										label: "Facebook",
+										validators: [urlCheck],
 										inputProps: {
-											keyboardType: "email-address",
 											autoCapitalize: "none",
-											keyboardType: "email-address",
-											placeholder: "enter your email address",
+											placeholder: "Business Facebook url",
 											placeholderTextColor: "#D50000",
 											textAlign: "center",
 										},
 									},
-									password: {
-										label: "Password",
-										validators: [validateContent, validateLength],
+									instagram: {
+										label: "Instagram",
+										validators: [urlCheck],
 										inputProps: {
-											textContentType: "newPassword",
-											secureTextEntry: true,
-											placeholder: "choose a password",
+											placeholder: "Business Instagram url",
 											placeholderTextColor: "#D50000",
 											textAlign: "center",
 										},
 									},
-									passwordConf: {
-										label: "Confirm Password",
-										validators: [validateContent, passwordMatch],
+									twitter: {
+										label: "Twitter",
+										validators: [urlCheck],
 										inputProps: {
-											textContentType: "newPassword",
-											secureTextEntry: true,
-											placeholder: "confirm your password",
+											placeholder: "Business Twitter url",
+											placeholderTextColor: "#D50000",
+											textAlign: "center",
+										},
+									},
+									website: {
+										label: "Website",
+										validators: [urlCheck],
+										inputProps: {
+											placeholder: "Business website url",
+											placeholderTextColor: "#D50000",
+											textAlign: "center",
+										},
+									},
+									number: {
+										label: "Contact",
+										validators: [phoneNumberCheck],
+										inputProps: {
+											keyboardType: "phone-pad",
+											placeholder: "Enter a telephone number for this business",
+											placeholderTextColor: "#D50000",
+											textAlign: "center",
+										},
+									},
+									support: {
+										label: "Support",
+										validators: [urlCheck],
+										inputProps: {
+											placeholder: "Enter a url to support this business",
 											placeholderTextColor: "#D50000",
 											textAlign: "center",
 										},
@@ -290,7 +307,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		height: "100%",
 		flexDirection: "column",
-		backgroundColor: "maroon",
+		backgroundColor: "black",
 	},
 	bizCon: {
 		position: "relative",
@@ -333,19 +350,14 @@ const styles = StyleSheet.create({
 		backgroundColor: "darkslategray",
 		// alignItems: "center",
 	},
-	img: {
-		position: "absolute",
-		width: vw(58),
-		height: vh(28),
-		opacity: 1.0,
-		// left: vw(10),
-		backgroundColor: "darkslategray",
-		// borderRightWidth: 5,
-	},
+
 	commentCon: {
 		position: "relative",
-		bottom: vh(36.95),
-		opacity: 0.5,
+		// bottom: vh(2),
+		opacity: 0.1,
+		bottom: vh(36.5),
+		backgroundColor: "black",
+		flexDirection: "column",
 	},
 	profilePic: {
 		// zIndex: 1,
@@ -354,32 +366,28 @@ const styles = StyleSheet.create({
 		width: vw(11),
 	},
 	inputDiv: {
+		flex: 1,
 		position: "relative",
-		bottom: vh(34.75),
 		opacity: 1,
 		backgroundColor: "black",
 		zIndex: 1,
+		bottom: vh(1),
 		// paddingTop: vh(5),
 	},
 	inputDash: {
-		flex: 1,
-		width: vw(100),
-		height: vh(100),
-		top: vh(33.5), //36.5
-		backgroundColor: "rgba(0, 0, 0, 0.95)",
-		flexDirection: "column",
 		position: "absolute",
-		paddingBottom: vh(54.4),
-		paddingTop: vh(2),
-		borderWidth: 2.5,
-		borderColor: "black",
-		// justifyContent: "center",
+		flexDirection: "column",
 		alignItems: "center",
-		alignSelf: "flex-end",
+		width: vw(100),
+		paddingBottom: vh(55),
+		paddingTop: vh(3.5),
+		borderColor: "black",
+		backgroundColor: "rgba(0, 0, 0, 0.95)",
 	},
+
 	errorMessage: {
 		height: vh(3),
-		width: vw(85),
+		width: vw(90),
 		position: "relative",
 		color: "red",
 		textAlign: "center",

@@ -11,19 +11,23 @@ const Field = ({
 	error,
 	clearError,
 }) => {
+	// console.log(fieldName);
 	return (
 		<View style={styles.inputContainer}>
 			<Text style={styles.label}>{field.label}</Text>
 			<TextInput
-				style={styles.input}
+				multiline={fieldName == "summary" && true}
+				style={[field.label !== "Summary" ? styles.input : styles.summaryInput]}
 				{...field.inputProps}
 				value={value}
 				onChangeText={(text) => onChangeText(fieldName, text)}
 				blurOnSubmit={false}
-				onSubmitEditing={() => Keyboard.dismiss()}
+				onSubmitEditing={() => {
+					field.label !== "Summary" && Keyboard.dismiss();
+					console.log("field name is 😁", field.label);
+				}}
 				onFocus={clearError}
 			/>
-
 
 			<Text style={styles.error}>{error}</Text>
 		</View>
@@ -37,10 +41,21 @@ const styles = StyleSheet.create({
 		height: vh(6.5),
 		width: vh(45.5),
 		borderRadius: 30,
-		paddingHorizontal: vw(5),
+		paddingHorizontal: vw(3),
 		backgroundColor: "maroon",
+		lineHeight: vh(2.5),
+	},
+	summaryInput: {
+		height: vh(6.5),
+		width: vh(45.5),
+		borderRadius: 30,
+		paddingHorizontal: vw(5),
+		paddingTop: vw(3.5),
+		backgroundColor: "maroon",
+		lineHeight: vh(2.5),
 	},
 	inputContainer: {
+		flex: 1,
 		paddingTop: vh(0.7),
 		alignItems: "center",
 		width: vh(47.5),
@@ -58,5 +73,5 @@ const styles = StyleSheet.create({
 		color: "red",
 		alignSelf: "flex-start",
 	},
-	error: { textAlign: "center", color: "red", width: vw(80) },
+	error: { textAlign: "center", color: "red", width: vw(85), flex: 1 },
 });

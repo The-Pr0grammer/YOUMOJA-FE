@@ -4,6 +4,8 @@ import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { SearchBar } from "react-native-elements";
 import { connect } from "react-redux";
 import { handleSearch } from "../redux/actions/bizAction";
+import Menu from "./Menu.js";
+import Header from "./Header.js";
 
 class Search extends React.Component {
 	constructor(props) {
@@ -34,10 +36,14 @@ class Search extends React.Component {
 		return (
 			<Modal transparent={true}>
 				<TouchableOpacity
-					style={{ backgroundColor: "rgba(0, 0, 0, 0.65)", height: vh(100) }}
+					style={{ backgroundColor: "rgba(0, 0, 0, 0.65)", flex: 1 }}
 					onPress={() => this.props.handleSearchFocus()}
 				>
 					<View style={styles.searchDiv}>
+						<View style={{ zIndex: -4 }}>
+							<Header type="Search"/>
+							<Menu />
+						</View>
 						<SearchBar
 							ref={(search) => (this.search = search)}
 							round
@@ -68,11 +74,11 @@ export default connect(mapStateToProps, { handleSearch })(Search);
 
 const styles = StyleSheet.create({
 	searchDiv: {
-		position: "absolute",
+		position: "relative",
 		zIndex: 2,
 		opacity: 1.0,
-		marginTop: vh(17.35),
 		width: "100%",
+		// bottom: vh(0.85),
 	},
 });
 

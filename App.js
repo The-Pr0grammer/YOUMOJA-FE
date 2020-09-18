@@ -145,7 +145,7 @@ function DrawerNav({ navigation }) {
 					fontSize: 24,
 				},
 			}}
-			initialRouteName="Profile"
+			initialRouteName="Home"
 			drawerType="slide"
 			drawerContentOptions={{
 				activeBackgroundColor: "maroon",

@@ -259,8 +259,10 @@ class CommentList extends React.Component {
 				{this.state.successTogg && (
 					<SuccessModal handleDismiss={this.handleDismiss} />
 				)}
-				{!this.props.isFetching && (
+				{/* {console.log(this.props.newBusiness)} */}
+				{!this.props.isFetching && !this.props.newBusiness && (
 					<FlatList
+						horizontal={this.props.newBusiness && true}
 						ref={(ref) => {
 							this.flatList = ref;
 						}}
@@ -282,6 +284,19 @@ class CommentList extends React.Component {
 						// onScroll={(e) => this.handleScroll(e)}
 						// getItemLayout={this.getItemLayout}
 					/>
+				)}
+				{this.props.newBusiness && (
+					<View
+						style={{
+							flex: 1,
+							// alignSelf: "flex-end",
+							top: vh(10),
+							position: "absolute",
+							backgroundColor: "black",
+							height: vh(120),
+							width: vw(100),
+						}}
+					></View> //NEW BUINESS FILLER
 				)}
 				{this.props.isFetching && (
 					<View style={styles.activityView}>

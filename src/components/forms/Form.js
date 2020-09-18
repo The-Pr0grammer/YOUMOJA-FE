@@ -29,6 +29,7 @@ const Form = ({
 	afterSubmit,
 	type,
 	buttonSpinner,
+	handleChange,
 }) => {
 	useFocusEffect(
 		React.useCallback(() => {
@@ -45,6 +46,7 @@ const Form = ({
 		getInitialState(fieldKeys)
 	);
 	const onChangeValue = (key, value) => {
+		handleChange(key, value);
 		const newState = { ...values, [key]: value };
 		setValues(newState);
 
@@ -118,6 +120,7 @@ const Form = ({
 									error={validationErrors[key]}
 									onChangeText={onChangeValue}
 									value={values[key]}
+									// handleChange={props.handleChange}
 								/>
 							);
 						})}
@@ -192,7 +195,7 @@ const Form = ({
 						alignItems: "center",
 						justifyContent: "center",
 						zIndex: 1,
-						top: vh(16),
+						// top: vh(36.75),
 					}}
 				>
 					{fieldKeys.map((key) => {
@@ -209,21 +212,16 @@ const Form = ({
 						);
 					})}
 
-					<View style={{ top: vh(2) }}>
+					<View
+						style={{
+							flex: 1,
+							// marginTop: vh(4),
+							// backgroundColor: "green",
+							// height: vh(10),
+						}}
+					>
 						<Button
 							title={"Post Business"}
-							buttonStyle={{
-								backgroundColor: "transparent",
-								borderRadius: 18,
-							}}
-							// style={[styles.createButton]}
-							titleStyle={{ color: "gray" }}
-							onPress={submit}
-							// loading={buttonSpinner}
-							// loadingProps={{ color: "green", size: "large" }}
-						/>
-						<Button
-							title={"Cancel"}
 							buttonStyle={{
 								backgroundColor: "transparent",
 								borderRadius: 18,

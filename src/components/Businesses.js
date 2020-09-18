@@ -251,7 +251,7 @@ class Businesses extends Component {
 								/>
 							)}
 							extraData={this.props.sorters}
-							legacyImplementation={true}
+							// legacyImplementation={true}
 						/>
 					)}
 				</View>
@@ -283,7 +283,9 @@ Businesses.propTypes = {
 
 const styles = StyleSheet.create({
 	container: {
+		position: "absolute",
 		flex: 1,
+		height: "100%",
 		width: "100%",
 		backgroundColor: "black",
 		flexDirection: "column",
@@ -310,7 +312,7 @@ const styles = StyleSheet.create({
 	},
 	list: {
 		position: "absolute",
-		marginTop: vh(21.8),
+		top: vh(21.8),
 		height: vh(68.6),
 		width: vw(100),
 		// opacity: 1.0,

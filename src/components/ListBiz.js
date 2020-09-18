@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		borderWidth: 2,
 		borderBottomWidth: 0,
+		lineHeight:vh(3.5)
 	},
 	bizSummView: {
 		position: "relative",

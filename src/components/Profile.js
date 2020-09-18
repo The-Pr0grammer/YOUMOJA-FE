@@ -23,6 +23,7 @@ import MyBusinesses from "./MyBusinesses.js";
 import NewBusiness from "./NewBusiness";
 import axios from "axios";
 
+
 const Profile = (props) => {
 	const navigation = useNavigation();
 	const [active, toggleActive] = useState("");
@@ -45,7 +46,7 @@ const Profile = (props) => {
 			// navigation.navigate("Profile");
 			!loading && setLoading(true);
 			// let response = () =>
-			// 	axios(`http://192.168.1.183:3000/users/${props.userInfo.id}`)
+			// 	axios(`http://127.0.0.1:3000/users/${props.userInfo.id}`)
 			// 		.then((resp) => this.props.setUserShow(resp.data))
 			// 		.catch((error) => console.log(error));
 			// response();
@@ -59,9 +60,11 @@ const Profile = (props) => {
 	// console.log("userSHOW IS 🐛✋🏾");
 	// console.log("♻️", loading);
 	// console.log("userinfo:::::", props.userInfo);
-	console.log("NEW BIZ TOGG IS 🆕:::::", addBusinessTogg);
+	// console.log("NEW BIZ TOGG IS 🆕:::::", addBusinessTogg);
 	return (
 		<View style={styles.container}>
+			{/* {isFocused && addBusinessTogg && setVisibility(true)} */}
+
 			<Header
 				name={userShow.name}
 				navigation={navigation}
@@ -215,14 +218,14 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
-	profilePic: {
-		borderRadius: 82,
-		height: vh(25),
-		width: vw(45),
-		opacity: 1.0,
-		zIndex: 2,
-		top: vh(1),
-	},
+	// profilePic: {
+	// 	borderRadius: 82,
+	// 	height: vh(25),
+	// 	width: vw(45),
+	// 	opacity: 1.0,
+	// 	zIndex: 2,
+	// 	top: vh(1),
+	// },
 	badge: {
 		height: vh(8),
 		// width: vw(24),

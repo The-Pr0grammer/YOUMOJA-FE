@@ -178,8 +178,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	profilePic: {
-		borderRadius: 82,
-		height: vh(25),
+		borderRadius: 100,
+		height: vh(21),
 		width: vw(45),
 		opacity: 1.0,
 		zIndex: 2,

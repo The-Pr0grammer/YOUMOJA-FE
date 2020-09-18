@@ -80,6 +80,26 @@ export const validateField = (validators, value, values, key) => {
 	return error;
 };
 
+export const urlCheck = (url) => {
+	if (
+		/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(
+			url
+		)
+	) {
+		return "clear";
+	} else {
+		return "Enter a valid url ie https://twitter.com/Y0UM0JA";
+	}
+};
+
+export const phoneNumberCheck = (number) => {
+	if (/^\d{10}$/.test(number)) {
+		return "clear";
+	} else {
+		return "Enter a 10 digit telephone number";
+	}
+};
+
 export const validateFields = (fields, values) => {
 	// console.log("Values are:", values);
 	// console.log("Fields are:", fields);

@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
 		width: vw(100),
 		justifyContent: "center",
 		height: vh(5),
+		lineHeight: vh(5),
 	},
 });
 
