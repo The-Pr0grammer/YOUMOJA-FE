@@ -16,6 +16,9 @@ import Comment from "./Comment.js";
 import NewComment from "./NewComment.js";
 import SuccessModal from "./SuccessModal.js";
 import { FontAwesome } from "@expo/vector-icons";
+import GestureRecognizer, {
+	swipeDirections,
+} from "react-native-swipe-gestures";
 
 class CommentList extends React.Component {
 	constructor(props) {
@@ -78,6 +81,19 @@ class CommentList extends React.Component {
 		});
 	};
 
+	onSwipeUp(gestureState) {
+		this.setState({
+			expandTogg: true,
+		});
+		console.log("SWIPING💳");
+	}
+
+	onSwipeDown(gestureState) {
+		this.setState({
+			expandTogg: false,
+		});
+		console.log("SWIPING💳");
+	}
 	// updateComments = (newComment) => {
 	// 	this.setState({ comments: [newComment, ...this.state.comments] });
 	// };
@@ -99,167 +115,186 @@ class CommentList extends React.Component {
 		// console.log(this.props.scoresSort);
 		// console.log(this.state.scoreTogg);
 		// console.log(this.state.commExpand);
-
+		const config = {
+			velocityThreshold: 0.2,
+			directionalOffsetThreshold: 70,
+		};
 		return (
 			<View
 				style={
 					this.state.expandTogg ? styles.expandedCommList : styles.commList
 				}
 			>
-				{this.state.expandTogg && <View style={styles.expandedBg}></View>}
-				<View
-					style={{
-						alignItems: "center",
-						flexDirection: "row",
-					}}
+				<GestureRecognizer
+					// onSwipe={(direction, state) => this.onSwipe(direction, state)}
+					onSwipeUp={(state) => this.onSwipeUp(state)}
+					onSwipeDown={(state) => this.onSwipeDown(state)}
+					config={config}
+					style={
+						{
+							// flex: 1,
+							// backgroundColor: "red",
+							// zIndex: 10,
+						}
+					}
 				>
+					{this.state.expandTogg && <View style={styles.expandedBg}></View>}
+					<Text>{this.state.myText}</Text>
+
 					<View
 						style={{
-							alignSelf: "flex-start",
-							backgroundColor: "rgba(0,0,0,0.7)",
-							width: vw(25),
-							height: vh(5),
-							marginTop: vh(0.3),
-							marginLeft: vw(3),
-							borderWidth: 2.2,
+							alignItems: "center",
 							flexDirection: "row",
-							paddingTop: vh(0.3),
-							// paddingLeft: vh(0.1),
-							display: "flex",
-							borderRadius: 18,
 						}}
 					>
-						<TouchableOpacity
+						<View
 							style={{
-								// flex: 1,
-								position: "relative",
-								alignSelf: "center",
-								height: vh(7),
-								width: vw(12),
-								// borderWidth: 3.5,
-								justifyContent: "center",
-								alignItems: "center",
-								opacity: 0.9,
-							}}
-							onPress={() => {
-								!this.props.scoresSort && this.props.sortByScoresTogg();
+								alignSelf: "flex-start",
+								backgroundColor: "rgba(0,0,0,0.7)",
+								width: vw(25),
+								height: vh(5),
+								marginTop: vh(0.3),
+								marginLeft: vw(3),
+								borderWidth: 2.2,
+								flexDirection: "row",
+								paddingTop: vh(0.3),
+								// paddingLeft: vh(0.1),
+								display: "flex",
+								borderRadius: 18,
 							}}
 						>
-							<FontAwesome
-								name="caret-square-o-up"
-								size={28}
-								color={this.props.scoresSort ? "gold" : "lightslategray"}
-								style={styles.add}
-							/>
-						</TouchableOpacity>
+							<TouchableOpacity
+								style={{
+									// flex: 1,
+									position: "relative",
+									alignSelf: "center",
+									height: vh(7),
+									width: vw(12),
+									// borderWidth: 3.5,
+									justifyContent: "center",
+									alignItems: "center",
+									opacity: 0.9,
+								}}
+								onPress={() => {
+									!this.props.scoresSort && this.props.sortByScoresTogg();
+								}}
+							>
+								<FontAwesome
+									name="caret-square-o-up"
+									size={28}
+									color={this.props.scoresSort ? "gold" : "lightslategray"}
+									style={styles.add}
+								/>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={{
+									position: "relative",
+									alignSelf: "center",
+									height: vh(7),
+									width: vw(12),
+									// borderWidth: 3.5,
+									justifyContent: "center",
+									opacity: 0.9,
+								}}
+								onPress={() => {
+									this.props.scoresSort && this.props.sortByScoresTogg();
+								}}
+							>
+								<Icon
+									name="clockcircle"
+									type="antdesign"
+									color={!this.props.scoresSort ? "gold" : "lightslategray"}
+									size={26}
+									style={styles.add}
+								/>
+							</TouchableOpacity>
+						</View>
+						<Text
+							style={{
+								flex: 1,
+								textAlign: "center",
+								fontSize: 16,
+								fontFamily: "Marker Felt",
+								// backgroundColor: "magenta",
+								alignSelf: "center",
+								color: "olivedrab",
+							}}
+						>
+							COMMENTS
+							{!this.props.isFetching && `(${this.props.comments.length})`}
+						</Text>
+
 						<TouchableOpacity
 							style={{
 								position: "relative",
-								alignSelf: "center",
-								height: vh(7),
-								width: vw(12),
-								// borderWidth: 3.5,
-								justifyContent: "center",
-								opacity: 0.9,
+								alignSelf: "flex-end",
+								width: vw(15),
+								marginLeft: vw(13),
+								marginTop: vh(0.5),
+								opacity: this.state.expandTogg ? 0.8 : 0.8,
 							}}
 							onPress={() => {
-								this.props.scoresSort && this.props.sortByScoresTogg();
+								this.state.expandTogg &&
+									// this.setState({ newCommentTogg: false });
+									Keyboard.dismiss();
+
+								this.setState({
+									expandTogg: !this.state.expandTogg,
+									commExpand: false,
+								});
 							}}
 						>
 							<Icon
-								name="clockcircle"
-								type="antdesign"
-								color={!this.props.scoresSort ? "gold" : "lightslategray"}
-								size={26}
+								name="arrows-expand"
+								type="foundation"
+								color={this.state.expandTogg ? "gold" : "lightslategray"}
+								size={30}
 								style={styles.add}
 							/>
 						</TouchableOpacity>
 					</View>
-					<Text
-						style={{
-							flex: 1,
-							textAlign: "center",
-							fontSize: 16,
-							fontFamily: "Marker Felt",
-							// backgroundColor: "magenta",
-							alignSelf: "center",
-							color: "olivedrab",
-						}}
-					>
-						COMMENTS
-						{!this.props.isFetching && `(${this.props.comments.length})`}
-					</Text>
-
-					<TouchableOpacity
-						style={{
-							position: "relative",
-							alignSelf: "flex-end",
-							width: vw(15),
-							marginLeft: vw(13),
-							marginTop: vh(0.5),
-							opacity: this.state.expandTogg ? 0.8 : 0.8,
-						}}
-						onPress={() => {
-							this.state.expandTogg &&
-								// this.setState({ newCommentTogg: false });
-								Keyboard.dismiss();
-
-							this.setState({
-								expandTogg: !this.state.expandTogg,
-								commExpand: false,
-							});
-						}}
-					>
-						<Icon
-							name="arrows-expand"
-							type="foundation"
-							color={this.state.expandTogg ? "gold" : "lightslategray"}
-							size={30}
-							style={styles.add}
-						/>
-					</TouchableOpacity>
-				</View>
-				{this.state.newCommentTogg == false && (
-					<TouchableOpacity
-						style={{
-							position: "relative",
-							alignSelf: "center",
-							height: vh(5.5),
-							opacity: 0.85,
-						}}
-						onPress={() => {
-							!this.state.expandTogg && this.setState({ commExpand: true });
-							this.setState({
-								newCommentTogg: true,
-								expandTogg: true,
-							});
-						}}
-					>
-						<Icon
-							name="plus-circle"
-							type="feather"
-							color="lightslategray"
-							size={37}
-							style={styles.add}
-						/>
-					</TouchableOpacity>
-				)}
-				<View>
-					{this.state.newCommentTogg && (
-						<NewComment
-							bizId={this.props.bizId}
-							handleCancel={this.handleCancel}
-							handleSuccess={this.handleSuccess}
-							handleClose={this.handleClose}
-							updateComments={this.updateComments}
-							handleExpand={this.handleExpand}
-						/>
+					{this.state.newCommentTogg == false && (
+						<TouchableOpacity
+							style={{
+								position: "relative",
+								alignSelf: "center",
+								height: vh(5.5),
+								opacity: 0.85,
+							}}
+							onPress={() => {
+								!this.state.expandTogg && this.setState({ commExpand: true });
+								this.setState({
+									newCommentTogg: true,
+									expandTogg: true,
+								});
+							}}
+						>
+							<Icon
+								name="plus-circle"
+								type="feather"
+								color="lightslategray"
+								size={37}
+								style={styles.add}
+							/>
+						</TouchableOpacity>
 					)}
-				</View>
-				{this.state.successTogg && (
-					<SuccessModal handleDismiss={this.handleDismiss} />
-				)}
-				{/* {console.log(this.props.newBusiness)} */}
+					<View>
+						{this.state.newCommentTogg && (
+							<NewComment
+								bizId={this.props.bizId}
+								handleCancel={this.handleCancel}
+								handleSuccess={this.handleSuccess}
+								handleClose={this.handleClose}
+								updateComments={this.updateComments}
+								handleExpand={this.handleExpand}
+							/>
+						)}
+					</View>
+					{this.state.successTogg && (
+						<SuccessModal handleDismiss={this.handleDismiss} />
+					)}
+				</GestureRecognizer>
+
 				{!this.props.isFetching && !this.props.newBusiness && (
 					<FlatList
 						horizontal={this.props.newBusiness && true}

@@ -77,8 +77,8 @@ const MyBusinesses = (props) => {
 				// style={styles.list}
 				contentContainerStyle={{
 					backgroundColor: "rgba(0, 0, 0, 0.9)",
-					alignItems: "left",
-					justifyContent: "left",
+					justifyContent: "flex-start",
+					alignItems: "flex-start",
 					// height: vh(47),
 
 					// position: "relative",

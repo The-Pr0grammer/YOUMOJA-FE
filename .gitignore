@@ -129,3 +129,5 @@ buck-out/
 # Expo
 .expo/*
 web-build/
+
+public/uploads

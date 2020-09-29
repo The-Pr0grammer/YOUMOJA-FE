@@ -135,7 +135,7 @@ const bizReducer = (state = initialState, action) => {
 				locationSort: !state.locationSort,
 			};
 		case SET_USER_INFO:
-			// console.log("reducing➗🔇");
+			console.log("reducing➗🔇", action.payload);
 			return {
 				...state,
 				userInfo: {
@@ -144,6 +144,9 @@ const bizReducer = (state = initialState, action) => {
 					name: action.payload.name,
 					username: action.payload.username,
 					img_url: action.payload.img_url,
+					emailVerified: action.payload.emailVerified,
+					opaque: action.payload.opaque,
+					timeSent: action.payload.timeSent,
 				},
 				userHearts: action.payload.user_hearts,
 				userBizs: action.payload.user_bizs,

@@ -82,15 +82,16 @@ const ResetPassword = (props) => {
 					style={{
 						position: "absolute",
 						flex: 1,
-						height: vh(100),
+						height: 400,
 						width: vw(100),
 						opacity: 0.1,
+						bottom: vh(1),
 					}}
 				>
 					<ImageBackground
 						resizeMode="stretch"
 						style={styles.background}
-						source={require("../images/BlackDollarsMatter.jpeg")}
+						source={require("../images/black-economic-empowerment-onyx-truth-620x400.png")}
 					></ImageBackground>
 				</View>
 			</View>
@@ -108,20 +109,24 @@ const styles = StyleSheet.create({
 		height: vh(100),
 		alignItems: "center",
 		backgroundColor: "black",
+		justifyContent: "center",
 	},
 	inner: {
 		flex: 1,
 		padding: vh(10),
 		justifyContent: "space-around",
 		alignItems: "center",
-		marginBottom: vh(8),
+		// marginBottom: vh(8),
+		justifyContent: "center",
 	},
 	background: {
 		flex: 1,
-		height: vh(100),
-		width: vw(100),
 		alignItems: "center",
 		resizeMode: "center",
+		height: undefined,
+		width: vw(100),
+		aspectRatio: 135 / 135,
+		opacity: 1,
 	},
 });
 

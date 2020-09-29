@@ -238,8 +238,8 @@ class Businesses extends Component {
 							style={styles.list}
 							contentContainerStyle={{
 								backgroundColor: "rgba(0, 0, 0, 0)",
-								alignItems: "left",
-								justifyContent: "left",
+								alignItems: "flex-start",
+								justifyContent: "flex-start",
 							}}
 							data={this.props.filteredBizs}
 							keyExtractor={(item) => item.id.toString()}

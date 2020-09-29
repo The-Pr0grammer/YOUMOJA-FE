@@ -15,15 +15,135 @@ import axios from "axios";
 import { urlCheck, phoneNumberCheck } from "./forms/validation";
 import * as WebBrowser from "expo-web-browser";
 import * as ExpoLinking from "expo-linking";
+import ImagePicker from "react-native-image-crop-picker";
+import RNFetchBlob from "rn-fetch-blob";
 
 const NewBusinessDash = (props) => {
-	let redirectUrl = ExpoLinking.makeUrl("BizPage", {
-		hello: "world",
-		goodbye: "now",
-	});
+	// let redirectUrl = ExpoLinking.makeUrl("BizPage", {
+	// 	hello: "world",
+	// 	goodbye: "now",
+	// });
 	const [hearts, setHearts] = useState(0);
 	const [browserResult, setBrowserResult] = useState("");
-	// const [images, setImages] = useState([]);
+
+	const [images, setImages] = useState([]);
+
+	const handlePicker = () => {
+		ImagePicker.openPicker({
+			// multiple: true,
+			// waitAnimationEnd: false,
+			// includeExif: true,
+			// maxFiles: 5,
+			// compressImageQuality: 0.8,
+			// mediaType: "photo",
+			multiple: true,
+			cropping: true,
+			includeBase64: true,
+			compressImageMaxHeight: 1080,
+			compressImageMaxWidth: 1080,
+		})
+			.then((resp) => {
+				let formatResp = resp.map((image) => {
+					return {
+						name: image.filename,
+						size: image.size,
+						mime: image.mime,
+						sourecURL: image.sourceURL,
+					};
+				});
+				console.log("🎛🎛🎛 formatted image data from newbizdash", formatResp);
+
+				setImages(resp);
+				props.setInputs({ ...props.inputs, images: resp });
+				// console.log("IMAGES PICKED::::", resp);
+				// console.log("IMAGES 📸✨", images);
+
+				images.map((item, index) => {
+					console.log(
+						"IMAGES 👀🌃👀🌃👀🌃",
+						JSON.stringify(item.sourceURL.replace("file://", ""))
+					);
+				});
+				// onSubmit();
+			})
+			.catch((e) => console.log(e));
+	};
+
+	const showPickedImages = () => {
+		if (props.inputs.images) {
+			// console.log(
+			// 	"✨props.inputs.images from newbizdash",
+			// 	props.inputs.images[0]
+			// );
+			return (
+				<Image
+					source={{ uri: props.inputs.images[0].path }}
+					style={styles.pickedImg}
+				/>
+			);
+		} else {
+			return (
+				<TouchableOpacity
+					styles={{
+						flexDirection: "column-reverse",
+						height: vh(30),
+						width: vw(30),
+					}}
+					onPress={handlePicker}
+				>
+					<Image
+						//IMAGES
+						style={styles.img}
+						source={require("../images/Upload.png")}
+					/>
+					<Text
+						style={{
+							position: "absolute",
+							textAlign: "center",
+							backgroundColor: "red",
+							width: vw(59),
+							top: vh(26),
+							fontFamily: "Marker Felt",
+							fontSize: 18,
+							// alignSelf:"flex-end"
+						}}
+					>
+						Add Photos
+					</Text>
+				</TouchableOpacity>
+			);
+		}
+	};
+	// const onSubmit = () => {
+	// 	console.log("IMAGES IS 🖼", images);
+	// 	let postData = [
+	// 		{ name: "name", data: "Tester" },
+	// 		{ name: "summary", data: "tester" },
+	// 	];
+
+	// 	for (image of images) {
+	// 		postData.push({
+	// 			name: "biz_images[]",
+	// 			filename: `${image.filename}`,
+	// 			type: image.mime,
+	// 			YERRRR: `RNFetchBlob-file://${image.sourceURL.replace("file://", "")}`,
+	// 		});
+	// 	}
+
+	// 	RNFetchBlob.fetch(
+	// 		"POST",
+	// 		`http://127.0.0.1:3000/businesses`,
+	// 		{
+	// 			// Authorization: `${environment["API_KEY"]}`,
+	// 			// "Content-Type": undefined,
+	// 		},
+	// 		postData
+	// 	)
+	// 		.then((resp) => console.log("RESPONSE FROM SERVER", resp))
+	// 		.catch((err) => {
+	// 			console.log("Error creating new post: ", err);
+	// 		});
+	// };
 
 	// const incHearts = () => {
 	// 	this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
@@ -66,10 +186,10 @@ const NewBusinessDash = (props) => {
 					alignSelf: "flex-start",
 				}}
 			>
-				<TouchableOpacity
+				{/* <TouchableOpacity
 					styles={{ flexDirection: "column-reverse" }}
 					onPress={() => {
-						// takePics();
+						handlePicker();
 					}}
 				>
 					<Image
@@ -91,7 +211,8 @@ const NewBusinessDash = (props) => {
 					>
 						Upload Images
 					</Text>
-				</TouchableOpacity>
+				</TouchableOpacity> */}
+				{showPickedImages()}
 			</View>
 			<View style={styles.touchables}>
 				<View
@@ -338,6 +459,15 @@ const styles = StyleSheet.create({
 		position: "relative",
 		width: vw(58),
 		height: vh(28),
+		opacity: 1.0,
+		// left: vw(10),
+		backgroundColor: "darkslategray",
+		// borderRightWidth: 5,
+	},
+	pickedImg: {
+		position: "relative",
+		width: vw(58),
+		height: vh(30),
 		opacity: 1.0,
 		// left: vw(10),
 		backgroundColor: "darkslategray",

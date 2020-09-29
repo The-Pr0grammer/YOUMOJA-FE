@@ -84,7 +84,9 @@ export const fetchComments = (id, activityIndicator) => {
 	return async (dispatch) => {
 		dispatch(fetchingCommentsRequest(activityIndicator));
 		try {
-			let response = await axios(`http://127.0.0.1:3000/businesses/${id}`);
+			let response = await axios(`http://127.0.0.1:3000/businesses/${id}`, {
+				business: { id: `${id}` },
+			});
 			// let json = await response.json();
 			dispatch(fetchingCommentsSuccess(response.data.comments));
 		} catch (error) {

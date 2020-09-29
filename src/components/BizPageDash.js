@@ -16,10 +16,10 @@ import * as WebBrowser from "expo-web-browser";
 import * as ExpoLinking from "expo-linking";
 
 const BizPageDash = (props) => {
-	let redirectUrl = ExpoLinking.makeUrl("BizPage", {
-		hello: "world",
-		goodbye: "now",
-	});
+	// let redirectUrl = ExpoLinking.makeUrl("BizPage", {
+	// 	hello: "world",
+	// 	goodbye: "now",
+	// });
 	const [hearts, setHearts] = useState(0);
 	const incHearts = () => {
 		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));

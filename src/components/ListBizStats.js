@@ -55,7 +55,10 @@ class ListBizStats extends React.Component {
 			.patch(
 				`http://127.0.0.1:3000/businesses/${this.props.biz.business.id}`,
 				{
-					hearts: this.state.hearts + 1,
+					business: {
+						id: this.props.biz.business.id,
+						hearts: this.state.hearts + 1,
+					},
 				},
 				{ headers: { "Content-Type": "application/json" } }
 			)

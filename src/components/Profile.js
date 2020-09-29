@@ -154,7 +154,6 @@ const Profile = (props) => {
 					backgroundColor: "black",
 					flexDirection: "column",
 					zIndex: 1,
-					display: "relative",
 				}}
 				//START OF STATS
 			>

@@ -46,7 +46,7 @@ const Form = ({
 		getInitialState(fieldKeys)
 	);
 	const onChangeValue = (key, value) => {
-		handleChange(key, value);
+		handleChange && handleChange(key, value);
 		const newState = { ...values, [key]: value };
 		setValues(newState);
 
@@ -59,14 +59,17 @@ const Form = ({
 		return fieldKeys.sort().map((key) => values[key]);
 	};
 	const submit = async () => {
+		const result = await action(...getValues());
+		await afterSubmit(result);
+
 		Keyboard.dismiss();
 		setErrorMessage("");
 		setValidationErrors(getInitialState(fieldKeys));
 
 		const errors = validateFields(fields, values);
 		if (hasValidationError(errors)) {
-			// console.log(errors);
-			return setValidationErrors(errors);
+			console.log(errors);
+			return setValidationErrors(errors); //VALIDATIONSSSSSSS
 		}
 		try {
 			const result = await action(...getValues());
@@ -106,7 +109,7 @@ const Form = ({
 							zIndex: 1,
 							// backgroundColor: "blue",
 							// backgroundColor: "rgba(0, 0, 0, 0.8)",
-							width: vw(85),
+							width: vw(95),
 							height: vh(70),
 							marginTop: vh(0.1),
 						}}
@@ -263,8 +266,10 @@ const styles = StyleSheet.create({
 		marginBottom: vh(2.2),
 	},
 	loginError: {
+		// flex: 1,
 		marginBottom: vh(1),
 		height: vh(3),
+		// backgroundColor: "red",
 		width: vw(85),
 		position: "relative",
 		color: "red",

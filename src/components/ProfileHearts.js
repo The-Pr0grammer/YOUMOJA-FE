@@ -57,8 +57,8 @@ const ProfileHearts = (props) => {
 				// style={styles.list}
 				contentContainerStyle={{
 					backgroundColor: "rgba(0, 0, 0, 0.9)",
-					alignItems: "left",
-					justifyContent: "left",
+					alignItems: "flex-start",
+					justifyContent: "flex-start",
 					// height: vh(47),
 
 					// position: "relative",

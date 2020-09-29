@@ -18,7 +18,7 @@ import { Alert } from "react-native";
 import moment from "moment";
 
 function EmailConfirmation(props) {
-	// console.log("USER INFO IS", props.userInfo);
+	console.log("USER INFO IS", props.userInfo);
 	const navigation = useNavigation();
 	const [errorMessage, setErrorMessage] = useState("");
 	let check;
@@ -51,6 +51,7 @@ function EmailConfirmation(props) {
 
 	// check = setInterval(confirmationCheck, 3500);
 	const reauthenticate = (opaque) => {
+		console.log(opaque);
 		const user = firebase.auth().currentUser;
 		const cred = firebase.auth.EmailAuthProvider.credential(user.email, opaque);
 		return user.reauthenticateWithCredential(cred);
@@ -79,13 +80,12 @@ function EmailConfirmation(props) {
 				handleEmailChange(response.data.email);
 			})
 			.catch((error) => {
-				const rsp = JSON.stringify(error.response.data);
-				console.log(rsp.length);
-				if (rsp.length == 36) {
-					setErrorMessage("That email is already registered.");
-				} else if (rsp.length == 33) {
-					setErrorMessage("Enter a valid email.");
-				}
+				console.log(error);
+				// if (rsp.length == 36) {
+				// 	setErrorMessage("That email is already registered.");
+				// } else if (rsp.length == 33) {
+				// 	setErrorMessage("Enter a valid email.");
+				// }
 			});
 	};
 	const changeEmailAlert = () => {
@@ -104,8 +104,10 @@ function EmailConfirmation(props) {
 		]);
 	};
 	const handleEmailChange = (newEmail) => {
+		console.log(props.userInfo);
 		reauthenticate(props.userInfo.opaque).then(async () => {
 			const currentTime = moment().utcOffset("-04:00");
+			// console.log("Current time is ⌚️", currentTime);
 			const user = firebase.auth().currentUser;
 			user
 				.updateEmail(newEmail)
@@ -180,7 +182,7 @@ function EmailConfirmation(props) {
 			<View
 				style={{
 					height: vh(24),
-					top: vh(30.75),
+					top: vh(35.75),
 				}}
 			>
 				<ScrollView scrollEnabled={true}>
@@ -300,6 +302,7 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		zIndex: -1,
 		top: vh(49.5),
+		// backgroundColor: "purple",
 	},
 });
 

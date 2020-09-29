@@ -39,7 +39,7 @@ export default Field;
 const styles = StyleSheet.create({
 	input: {
 		height: vh(6.5),
-		width: vh(45.5),
+		width: vw(90),
 		borderRadius: 30,
 		paddingHorizontal: vw(3),
 		backgroundColor: "maroon",
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
 	},
 	summaryInput: {
 		height: vh(6.5),
-		width: vh(45.5),
+		width: vw(90),
 		borderRadius: 30,
 		paddingHorizontal: vw(5),
 		paddingTop: vw(3.5),
@@ -55,10 +55,10 @@ const styles = StyleSheet.create({
 		lineHeight: vh(2.5),
 	},
 	inputContainer: {
-		flex: 1,
+		// flex: 1,
 		paddingTop: vh(0.7),
 		alignItems: "center",
-		width: vh(47.5),
+		width: vw(90),
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
@@ -73,5 +73,5 @@ const styles = StyleSheet.create({
 		color: "red",
 		alignSelf: "flex-start",
 	},
-	error: { textAlign: "center", color: "red", width: vw(85), flex: 1 },
+	error: { textAlign: "center", color: "red", width: vw(85) },
 });

@@ -62,6 +62,7 @@ const Login = (props) => {
 		// console.log(result);
 		let test = false;
 		spinnerTogg(true);
+		console.log("🎱🎱🎱", result);
 		if (result.ok && result.data) {
 			// await setToken(result.data.auth_token);
 			try {
@@ -89,7 +90,7 @@ const Login = (props) => {
 									}),
 										5000;
 								});
-								console.log("Verified😎", user.email);
+								console.log("Not Verified🚫", user.email);
 							} else {
 								setErrorMessage(""),
 									props.setUserInfo({
@@ -173,7 +174,7 @@ const Login = (props) => {
 							style={{
 								height: vh(20),
 								width: vw(75),
-								resizeMode: "cover",
+								resizeMode: "contain",
 							}}
 							source={require("../images/name.png")}
 						></Image>

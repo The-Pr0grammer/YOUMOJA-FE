@@ -10,14 +10,16 @@ import {
 	setIsFetching,
 	handleRefresh,
 	fetchBizs,
-} from "../redux/actions/bizAction"
+} from "../redux/actions/bizAction";
 
 const Header = (props) => {
 	// console.log(props.lastScreen);
 
 	return (
 		<View
-			style={[props.type == "Search" ? styles.searchContainer : styles.container]}
+			style={[
+				props.type == "Search" ? styles.searchContainer : styles.container,
+			]}
 		>
 			<View
 				style={{
@@ -42,7 +44,7 @@ const Header = (props) => {
 				>
 					<Button
 						containerStyle={{
-							top: vh(1),
+							top: vh(2),
 							width: vw(22),
 							zIndex: 2,
 							paddingLeft: vw(5),
@@ -106,6 +108,7 @@ const Header = (props) => {
 								// backgroundColor: "navy",
 								paddingVertical: vh(4.5),
 								width: vw(50),
+								lineHeight: vh(5),
 							}}
 						>
 							{props.name}
