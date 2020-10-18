@@ -18,12 +18,46 @@ import BizPageDash from "./BizPageDash.js";
 import BizPageSupport from "./BizPageSupport.js";
 import { useNavigation } from "@react-navigation/native";
 import FitImage from "react-native-fit-image";
+import Carousel, { PaginationLight } from "react-native-x2-carousel";
 
 const BizPage = (props) => {
 	const [bizInfo, setBizinfo] = useState({});
 	const [comments, setComments] = useState([]);
 	const navigation = useNavigation();
 	// console.log(props.route.params.lastScreen);
+	console.log("URLLLLLLLLLLL", props.route.params["biz"].business.images);
+
+	renderImages = () => {
+		let strings = props.route.params["biz"].business.images.map(
+			(image, index) => {
+				return { id: index, data: image };
+			}
+		);
+
+		console.log("image strings in bIzPaGe📸🧵::::", strings);
+		return (
+			<Carousel
+				pagination={PaginationLight}
+				renderItem={renderItem}
+				data={strings}
+				loop={true}
+				autoplay={true}
+				autoplayInterval={3200}
+			/>
+		);
+	};
+
+	renderItem = (data, index) => (
+		<View key={index} style={styles.imgsView}>
+			<Image
+				//IMAGES
+				style={styles.imgs}
+				source={{
+					uri: `http://127.0.0.1:3000/${data.data}`,
+				}}
+			/>
+		</View>
+	);
 
 	return (
 		<View style={styles.container}>
@@ -83,12 +117,29 @@ const BizPage = (props) => {
 					</TextTicker>
 				</View>
 				<View style={styles.cardView}>
-					<Image
-						style={styles.img}
-						source={{
-							uri: props.route.params["biz"].business.image_url,
+					<View
+						style={{
+							flex: 1,
+							position: "absolute",
+							// backgroundColor: "darkslategray",
+							width: vw(64),
+							height: vh(30),
+							// zIndex: 3,
+							flexDirection: "column",
+							alignSelf: "flex-start",
 						}}
-					/>
+					>
+						{props.route.params["biz"].business.images && renderImages()}
+
+						{props.route.params["biz"].business.img_url && (
+							<Image
+								style={styles.img}
+								source={{
+									uri: props.route.params["biz"].business.img_url,
+								}}
+							/>
+						)}
+					</View>
 					<BizPageDash business={props.route.params["biz"].business} />
 				</View>
 				<View style={styles.bizSupport}>
@@ -162,5 +213,20 @@ const styles = StyleSheet.create({
 		width: vw(11),
 		height: undefined,
 		aspectRatio: 135 / 135,
+	},
+	imgs: {
+		position: "relative",
+		width: vw(60),
+		height: vh(30),
+		opacity: 1.0,
+		backgroundColor: "darkslategray",
+		// borderRightWidth: 5,
+	},
+	imgsView: {
+		position: "relative",
+		width: vw(62),
+		height: vh(38),
+		opacity: 1.0,
+		backgroundColor: "black",
 	},
 });

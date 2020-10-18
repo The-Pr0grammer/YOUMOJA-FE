@@ -60,7 +60,7 @@ const Form = ({
 	};
 	const submit = async () => {
 		const result = await action(...getValues());
-		await afterSubmit(result);
+		// await afterSubmit(result);
 
 		Keyboard.dismiss();
 		setErrorMessage("");

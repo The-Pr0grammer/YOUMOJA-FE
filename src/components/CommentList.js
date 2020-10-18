@@ -221,7 +221,9 @@ class CommentList extends React.Component {
 							}}
 						>
 							COMMENTS
-							{!this.props.isFetching && `(${this.props.comments.length})`}
+							{!this.props.isFetching && this.props.comments.length === 0
+								? `(0)`
+								: `(${this.props.comments.length})`}
 						</Text>
 
 						<TouchableOpacity
@@ -399,10 +401,12 @@ function mapStateToProps(state) {
 		scoresSort: state.scoresSort,
 		isFetching: state.isFetching,
 		comments: state.comments,
-		sortedComments: state.comments
-			.sort((a, b) => a.id > b.id)
-			.sort((a, b) => {
-				return state.scoresSort && a.score < b.score;
-			}),
+		sortedComments:
+			state.comments &&
+			state.comments
+				.sort((a, b) => a.id > b.id)
+				.sort((a, b) => {
+					return state.scoresSort && a.score < b.score;
+				}),
 	};
 }

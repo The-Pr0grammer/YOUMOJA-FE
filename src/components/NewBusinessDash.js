@@ -7,35 +7,31 @@ import {
 	StyleSheet,
 	Share,
 	Image,
+	FlatList,
 } from "react-native";
 import { Icon } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
-import axios from "axios";
 import { urlCheck, phoneNumberCheck } from "./forms/validation";
 import * as WebBrowser from "expo-web-browser";
-import * as ExpoLinking from "expo-linking";
 import ImagePicker from "react-native-image-crop-picker";
-import RNFetchBlob from "rn-fetch-blob";
+import Carousel, { PaginationLight } from "react-native-x2-carousel";
+import ImageView from "react-native-image-view";
+import axios from "axios";
+// import * as ExpoLinking from "expo-linking";
 
 const NewBusinessDash = (props) => {
-	// let redirectUrl = ExpoLinking.makeUrl("BizPage", {
-	// 	hello: "world",
-	// 	goodbye: "now",
-	// });
 	const [hearts, setHearts] = useState(0);
 	const [browserResult, setBrowserResult] = useState("");
-
 	const [images, setImages] = useState([]);
-
 	const handlePicker = () => {
 		ImagePicker.openPicker({
 			// multiple: true,
 			// waitAnimationEnd: false,
 			// includeExif: true,
-			// maxFiles: 5,
 			// compressImageQuality: 0.8,
 			// mediaType: "photo",
+			maxFiles: 5,
 			multiple: true,
 			cropping: true,
 			includeBase64: true,
@@ -43,16 +39,6 @@ const NewBusinessDash = (props) => {
 			compressImageMaxWidth: 1080,
 		})
 			.then((resp) => {
-				let formatResp = resp.map((image) => {
-					return {
-						name: image.filename,
-						size: image.size,
-						mime: image.mime,
-						sourecURL: image.sourceURL,
-					};
-				});
-				console.log("🎛🎛🎛 formatted image data from newbizdash", formatResp);
-
 				setImages(resp);
 				props.setInputs({ ...props.inputs, images: resp });
 				// console.log("IMAGES PICKED::::", resp);
@@ -75,10 +61,21 @@ const NewBusinessDash = (props) => {
 			// 	"✨props.inputs.images from newbizdash",
 			// 	props.inputs.images[0]
 			// );
+
+			let strings = props.inputs.images.map((image, index) => {
+				return { id: index, data: image.path };
+			});
+
+			console.log("image strings in newbiz📸🧵::::", strings);
+
 			return (
-				<Image
-					source={{ uri: props.inputs.images[0].path }}
-					style={styles.pickedImg}
+				<Carousel
+					pagination={PaginationLight}
+					renderItem={renderItem}
+					data={strings}
+					loop={true}
+					autoplay={true}
+					autoplayInterval={3200}
 				/>
 			);
 		} else {
@@ -95,16 +92,17 @@ const NewBusinessDash = (props) => {
 						//IMAGES
 						style={styles.img}
 						source={require("../images/Upload.png")}
+						resizeMode="stretch"
 					/>
 					<Text
 						style={{
 							position: "absolute",
 							textAlign: "center",
-							backgroundColor: "red",
 							width: vw(59),
 							top: vh(26),
 							fontFamily: "Marker Felt",
 							fontSize: 18,
+							// backgroundColor: "red",
 							// alignSelf:"flex-end"
 						}}
 					>
@@ -114,36 +112,18 @@ const NewBusinessDash = (props) => {
 			);
 		}
 	};
-	// const onSubmit = () => {
-	// 	console.log("IMAGES IS 🖼", images);
-	// 	let postData = [
-	// 		{ name: "name", data: "Tester" },
-	// 		{ name: "summary", data: "tester" },
-	// 	];
 
-	// 	for (image of images) {
-	// 		postData.push({
-	// 			name: "biz_images[]",
-	// 			filename: `${image.filename}`,
-	// 			type: image.mime,
-	// 			YERRRR: `RNFetchBlob-file://${image.sourceURL.replace("file://", "")}`,
-	// 		});
-	// 	}
-
-	// 	RNFetchBlob.fetch(
-	// 		"POST",
-	// 		`http://127.0.0.1:3000/businesses`,
-	// 		{
-	// 			// Authorization: `${environment["API_KEY"]}`,
-	// 			// "Content-Type": undefined,
-	// 		},
-	// 		postData
-	// 	)
-	// 		.then((resp) => console.log("RESPONSE FROM SERVER", resp))
-	// 		.catch((err) => {
-	// 			console.log("Error creating new post: ", err);
-	// 		});
-	// };
+	const renderItem = (data, index) => (
+		<View key={index} style={styles.pickedImgView}>
+			<Image
+				//IMAGES
+				style={styles.pickedImg}
+				source={{
+					uri: data.data,
+				}}
+			/>
+		</View>
+	);
 
 	// const incHearts = () => {
 	// 	this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
@@ -179,40 +159,15 @@ const NewBusinessDash = (props) => {
 					flex: 1,
 					position: "absolute",
 					backgroundColor: "darkslategray",
-					width: vw(58),
+					width: vw(60),
 					height: vh(30),
 					// zIndex: 3,
 					flexDirection: "column",
 					alignSelf: "flex-start",
 				}}
 			>
-				{/* <TouchableOpacity
-					styles={{ flexDirection: "column-reverse" }}
-					onPress={() => {
-						handlePicker();
-					}}
-				>
-					<Image
-						//IMAGES
-						style={styles.img}
-						source={require("../images/Upload.png")}
-					/>
-					<Text
-						style={{
-							position: "absolute",
-							textAlign: "center",
-							// backgroundColor: "red",
-							width: vw(59),
-							top: vh(26),
-							fontFamily: "Marker Felt",
-							fontSize: 18,
-							// alignSelf:"flex-end"
-						}}
-					>
-						Upload Images
-					</Text>
-				</TouchableOpacity> */}
 				{showPickedImages()}
+				{/* IMAGES 🌃 🖼 📸 🎠*/}
 			</View>
 			<View style={styles.touchables}>
 				<View
@@ -453,11 +408,11 @@ const styles = StyleSheet.create({
 		width: vw(40),
 		height: vh(30),
 		alignSelf: "flex-end",
-		opacity: 0.93,
+		opacity: 0.99,
 	},
 	img: {
 		position: "relative",
-		width: vw(58),
+		width: vw(59.6),
 		height: vh(28),
 		opacity: 1.0,
 		// left: vw(10),
@@ -466,11 +421,18 @@ const styles = StyleSheet.create({
 	},
 	pickedImg: {
 		position: "relative",
-		width: vw(58),
-		height: vh(30),
+		width: vw(60),
+		height: vh(38),
 		opacity: 1.0,
 		// left: vw(10),
 		backgroundColor: "darkslategray",
 		// borderRightWidth: 5,
+	},
+	pickedImgView: {
+		position: "relative",
+		width: vw(62),
+		height: vh(38),
+		opacity: 1.0,
+		backgroundColor: "black",
 	},
 });

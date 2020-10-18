@@ -16,7 +16,8 @@ const DEVICE_HEIGHT = Dimensions.get("window").height;
 // import { connect } from "react-redux";
 // import { bindActionCreators } from "redux";
 // import { getComments } from "../actions/commentsAction";
-import ListBizStats from "./ListBizStats.js";
+import ListBizDash from "./ListBizDash.js";
+import Carousel, { PaginationLight } from "react-native-x2-carousel";
 
 class ListBiz extends React.Component {
 	constructor(props) {
@@ -31,14 +32,54 @@ class ListBiz extends React.Component {
 
 	componentDidMount() {}
 
+	renderImages = () => {
+		let strings = this.props.biz.business.images.map((image, index) => {
+			return { id: index, data: image };
+		});
+
+		console.log("image strings in listbiz📸🧵::::", strings);
+		return (
+			<Carousel
+				// pagination={PaginationLight}
+				renderItem={this.renderItem}
+				data={strings}
+				loop={true}
+				autoplay={true}
+				autoplayInterval={3200}
+			/>
+		);
+	};
+
+	renderItem = (data, index) => (
+		<View key={index} style={styles.imgsView}>
+			<Image
+				//IMAGES
+				style={styles.imgs}
+				source={{
+					uri: `http://127.0.0.1:3000/${data.data}`,
+				}}
+			/>
+		</View>
+	);
+
 	render() {
 		// this.props.type == "Profile" && console.log(this.props.biz.user.name);
-		// console.log(this.props.biz.business.categories);
+		// this.props.biz.business.images && console.log(this.props.biz.business.images[0]);
+		console.log(this.props.biz);
 		return (
 			<View style={styles.container}>
-				<Text style={styles.bizName}>{this.props.biz.business.name}</Text>
-				<View style={styles.bizSummView}>
-					{/* <TextTicker
+				<TouchableOpacity
+					onPress={() => {
+						this.props.navigation.navigate("BizPage", {
+							biz: this.props.biz,
+							userInfo: this.props.biz.user,
+							lastScreen: this.props.lastScreen,
+						});
+					}}
+				>
+					<Text style={styles.bizName}>{this.props.biz.business.name}</Text>
+					<View style={styles.bizSummView}>
+						{/* <TextTicker
 						style={styles.bizSumm}
 						loop
 						bounce
@@ -48,36 +89,43 @@ class ListBiz extends React.Component {
 					>
 						{this.props.biz.business.summary}
 					</TextTicker> */}
-				</View>
-				<Card
-					containerStyle={{
-						position: "relative",
-						margin: 0,
-						width: vw(100),
-						padding: 0,
-						borderWidth: 2,
-						borderTopWidth: 0,
-						borderColor: "black",
-						flexDirection: "column",
-						backgroundColor: "transparent",
-					}}
-				>
-					<TouchableOpacity
-						onPress={() => {
-							this.props.navigation.navigate("BizPage", {
-								biz: this.props.biz,
-								userInfo: this.props.biz.user,
-								lastScreen: this.props.lastScreen,
-							});
+					</View>
+					<Card
+						containerStyle={{
+							position: "relative",
+							margin: 0,
+							width: vw(100),
+							padding: 0,
+							borderWidth: 2,
+							borderTopWidth: 0,
+							borderColor: "black",
+							flexDirection: "column",
+							backgroundColor: "transparent",
 						}}
 					>
-						<Image
-							style={styles.img}
-							source={{ uri: this.props.biz.business.image_url }}
-						/>
-					</TouchableOpacity>
-					<ListBizStats biz={this.props.biz} />
-				</Card>
+						<View
+							style={{
+								flex: 1,
+								position: "absolute",
+								// backgroundColor: "darkslategray",
+								width: vw(64),
+								height: vh(30),
+								// zIndex: 3,
+								flexDirection: "column",
+								alignSelf: "flex-start",
+							}}
+						>
+							{this.props.biz.business.images && this.renderImages()}
+							{!this.props.biz.business.images && (
+								<Image
+									style={styles.img}
+									source={{ uri: this.props.biz.business.img_url }}
+								/>
+							)}
+						</View>
+						<ListBizDash biz={this.props.biz} />
+					</Card>
+				</TouchableOpacity>
 			</View>
 		);
 	}
@@ -110,7 +158,7 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		borderWidth: 2,
 		borderBottomWidth: 0,
-		lineHeight:vh(3.5)
+		lineHeight: vh(3.5),
 	},
 	bizSummView: {
 		position: "relative",
@@ -125,5 +173,20 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		color: "aqua",
 		paddingHorizontal: vw(2),
+	},
+	imgs: {
+		position: "relative",
+		width: vw(67),
+		height: vh(34),
+		opacity: 1.0,
+		backgroundColor: "darkslategray",
+		// borderRightWidth: 5,
+	},
+	imgsView: {
+		position: "relative",
+		width: vw(68),
+		height: vh(36),
+		opacity: 1.0,
+		backgroundColor: "black",
 	},
 });

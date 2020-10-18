@@ -86,7 +86,7 @@ export const urlCheck = (url) => {
 			url
 		)
 	) {
-		return "clear";
+		return;
 	} else {
 		return "Enter a valid url ie https://twitter.com/Y0UM0JA";
 	}
@@ -94,7 +94,7 @@ export const urlCheck = (url) => {
 
 export const phoneNumberCheck = (number) => {
 	if (/^\d{10}$/.test(number)) {
-		return "clear";
+		return;
 	} else {
 		return "Enter a 10 digit telephone number";
 	}

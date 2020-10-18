@@ -7611,6 +7611,11 @@ react-native-image-crop-picker@^0.35.0:
   resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.35.0.tgz#a93450028354a7d7576a3e107fa627693f509e63"
   integrity sha512-vbmwYK7R3X30Qjv5SUw84ii7e5/FnCLA4E/2DlmEKiqvjpe6VHFPhIl9ntdU6JpEpxFBkEdOWTVAE8EcK1l5qQ==
 
+react-native-image-view@^2.1.9:
+  version "2.1.9"
+  resolved "https://registry.yarnpkg.com/react-native-image-view/-/react-native-image-view-2.1.9.tgz#635306360c42ad2479f364161c47d2557f9240fd"
+  integrity sha512-+DA/+tLM7KHaLs41Hdd+m5UpGX2qtEdMamMZCsXCsJ5J6RwWrqBXQrGVB9Op7dIkZW2DDRVKZTP/FuSNEGtzJg==
+
 react-native-iphone-x-helper@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
@@ -7716,6 +7721,11 @@ react-native-webview@9.4.0:
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
+
+react-native-x2-carousel@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-x2-carousel/-/react-native-x2-carousel-1.0.1.tgz#6bf31e9a43332079d3b8929d4e98c4d0730cd455"
+  integrity sha512-dD8x/qQ2sP1WXmjjf8KexTVwgLioynS4nFHu81G3lA0wg5q6pRk0gkDRJCR2nkHy9P6qG+F1PRBm/m043DZlgw==
 
 react-native@0.62.2:
   version "0.62.2"

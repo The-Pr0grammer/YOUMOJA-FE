@@ -16,7 +16,7 @@ import { fetchBizs } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
 import axios from "axios";
 
-class ListBizStats extends React.Component {
+class ListBizDash extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -237,7 +237,7 @@ class ListBizStats extends React.Component {
 	}
 }
 
-export default connect(mapStateToProps, { fetchBizs })(ListBizStats);
+export default connect(mapStateToProps, { fetchBizs })(ListBizDash);
 
 const styles = StyleSheet.create({
 	badge: {

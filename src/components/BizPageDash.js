@@ -207,6 +207,6 @@ const styles = StyleSheet.create({
 		width: vw(40),
 		height: vh(30),
 		alignSelf: "flex-end",
-		opacity: 0.93,
+		opacity: 0.99,
 	},
 });

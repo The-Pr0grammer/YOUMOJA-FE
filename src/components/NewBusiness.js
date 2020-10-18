@@ -37,7 +37,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import RNFetchBlob from "rn-fetch-blob";
 import axios from "axios";
-import { DirectUpload } from "activestorage";
+// import { DirectUpload } from "activestorage";
+
 
 const NewBusiness = (props) => {
 	const [inputs, setInputs] = useState({
@@ -46,6 +47,7 @@ const NewBusiness = (props) => {
 	});
 	const [errorMessage, setErrorMessage] = useState("");
 	const [visibility, setVisibility] = useState(true);
+	const [posted, setPosted] = useState(false);
 	const navigation = useNavigation();
 	// const data = new FormData();
 	const business = {
@@ -62,7 +64,7 @@ const NewBusiness = (props) => {
 		email: null,
 		image_url:
 			"https://cdn.dribbble.com/users/908023/screenshots/7195388/media/da178ba79a307d5fb608e6307507c2cc.png",
-		hearts: 2,
+		hearts: 1,
 		created_at: "2020-09-04T02:34:57.819Z",
 		updated_at: "2020-09-05T05:02:06.268Z",
 		comments: [],
@@ -70,102 +72,112 @@ const NewBusiness = (props) => {
 
 	// console.log(props.route.params.lastScreen);
 
-	const postBusiness = (email, name, opaque, opaque_two, username) => {
-		// console.log("submitting✅...");
-		// onSubmit();
-		// return post("/users", {
-		// 	user: { email, name, opaque, opaque_two, username },
-		// });
-	};
+	// for (image of inputs.images) {
+	// 	postData.push({
+	// 		name: "biz_images[]",
+	// 		filename: `${image.filename}`,
+	// 		type: image.mime,
+	// 		mime: image.mime,
+	// 		data: `RNFetchBlob-file://${image.sourceURL.replace("file://", "")}`,
+	// 	});
+	// }
+
+	// fetch(
+	// 	`http://127.0.0.1:3000/businesses`,
+	// 	(method: "POST"),
+	// 	{
+	// 		// Authorization: `${environment["API_KEY"]}`,
+	// 		// "Content-Type": undefined,
+	// 	},
+	// 	postData
+	// )
+	// 	.then((resp) => console.log("NEW BUSINESS🔥💼", resp))
+	// 	.catch((err) => {
+	// 		console.log("Error creating new business: ", err);
+	// 	});
+	// for (const image of inputs.images) {
+	// 	data.append({
+	// 		name: "biz_images[]",
+	// 		filename: `${image.filename}`,
+	// 		type: image.mime,
+	// 		mime: image.mime,
+	// 		data: `RNFetchBlob-file://${image.sourceURL.replace("file://", "")}`,
+	// 	});
+	// }
+
+	// return fetch(`http://127.0.0.1:3000/businesses`, {
+	// 	method: "POST",
+	// 	body: data,
+	// });
 
 	const handleChange = (key, value) => {
 		setErrorMessage("");
 		setInputs({ ...inputs, [key]: value });
-		// console.log("INPUTS ARE 🎮 is", inputs);
 	};
 
-	const yerrr = () => {
-		console.log("IMAGES IS 🖼", inputs.images);
+	const postBusiness = () => {
+		setPosted(true);
+
+		let imageHash = inputs.images.map((image) => {
+			return {
+				image: image.data,
+				file_name: image.filename,
+			};
+		});
+
+		// console.log("INPUTS.IMAGES [] IS 🖼", inputs.images);
+		console.log("IMAGE HASH IS 🖼  ", imageHash);
 		let postData = {
-			name: "Tester",
-			summary: "summaryyyyy",
-			city: "ny",
-			categories: "black",
-			website: "www.youmoja.com",
-			twitter: "www.youmoja.com",
-			facebook: "www.youmoja.com",
-			phone: "9145301888",
-			email: "a@a.com",
-			image_url: "www.youmoja.com",
-			hearts: 1,
+			business: {
+				name: inputs.name,
+				summary: inputs.summary,
+				city: "staten island",
+				state: "NY",
+				categories: "all",
+				website: inputs.website,
+				twitter: inputs.twitter,
+				facebook: inputs.facebook,
+				phone: inputs.phone, //FIX CLEAR VALIDATION ERROR
+				email: inputs.email,
+				hearts: 1,
+				images: imageHash,
+				// file_name: inputs.images[0].filename,
+			},
 		};
 
-		// for (image of inputs.images) {
-		// 	postData.push({
-		// 		name: "biz_images[]",
-		// 		filename: `${image.filename}`,
-		// 		type: image.mime,
-		// 		mime: image.mime,
-		// 		data: `RNFetchBlob-file://${image.sourceURL.replace("file://", "")}`,
-		// 	});
-		// }
-
-		// fetch(
-		// 	`http://127.0.0.1:3000/businesses`,
-		// 	(method: "POST"),
-		// 	{
-		// 		// Authorization: `${environment["API_KEY"]}`,
-		// 		// "Content-Type": undefined,
-		// 	},
-		// 	postData
-		// )
-		// 	.then((resp) => console.log("NEW BUSINESS🔥💼", resp))
-		// 	.catch((err) => {
-		// 		console.log("Error creating new business: ", err);
-		// 	});
-		// for (const image of inputs.images) {
-		// 	data.append({
-		// 		name: "biz_images[]",
-		// 		filename: `${image.filename}`,
-		// 		type: image.mime,
-		// 		mime: image.mime,
-		// 		data: `RNFetchBlob-file://${image.sourceURL.replace("file://", "")}`,
-		// 	});
-		// }
-
-		// return fetch(`http://127.0.0.1:3000/businesses`, {
-		// 	method: "POST",
-		// 	body: data,
-		// });
-		axios
-			.post(`http://127.0.0.1:3000/businesses`, { business: postData })
-			.then((resp) => {
-				resp.json();
-			})
-			.then((data) => uploadFile(inputs.images[0], data))
+		fetch(`http://127.0.0.1:3000/businesses`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				// Accept: "application/json",
+			},
+			body: JSON.stringify(postData),
+		})
+			.then((resp) => resp.json())
 			.catch((err) => {
 				console.log("Error creating new business: ", err);
 			});
 	};
 
-	const handleResult = async (result) => {
-		yerrr();
-		console.log("submitting🎉🎉🎉..");
+	// const uploadFile = (image, business) => {
+	// 	const upload = new DirectUpload(
+	// 		image,
+	// 		"http://127.0.0.1:3000/rails/active_storage/direct_uploads"
+	// 	);
+	// 	upload.create((error, blob) => {
+	// 		if (error) {
+	// 			console.log(error);
+	// 		} else {
+	// 			console.log("there is no error...");
+	// 		}
+	// 	});
+	// };
+
+	const handleResult = (result) => {
+		!posted && postBusiness(); //RESET TO POSTED TRUE AFTER POST
 	};
 
-	const uploadFile = (image, business) => {
-		const upload = new DirectUpload(
-			image,
-			"http://127.0.0.1:3000/rails/active_storage/direct_uploads"
-		);
-		upload.create((error, blob) => {
-			if (error) {
-				console.log(error);
-			} else {
-				console.log("there is no error...");
-			}
-		});
-	};
+	console.log("INPUTS.IMAGES [] IS 🖼", inputs.images);
 
 	return (
 		<Modal visible={visibility} style={styles.container}>

@@ -37,6 +37,7 @@ const MyBusinesses = (props) => {
 	// });
 
 	// console.log("HEARTS IS🤎♥️🧡", props.userHearts[0]);
+	console.log("userbizs is 💼💼💼", props.userBizs);
 	return (
 		<View // START OF BIZLIST
 			style={{

@@ -23,7 +23,6 @@ import MyBusinesses from "./MyBusinesses.js";
 import NewBusiness from "./NewBusiness";
 import axios from "axios";
 
-
 const Profile = (props) => {
 	const navigation = useNavigation();
 	const [active, toggleActive] = useState("");
