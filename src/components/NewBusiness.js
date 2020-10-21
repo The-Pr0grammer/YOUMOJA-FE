@@ -177,7 +177,7 @@ const NewBusiness = (props) => {
 		!posted && postBusiness(); //RESET TO POSTED TRUE AFTER POST
 	};
 
-	console.log("INPUTS.IMAGES [] IS 🖼", inputs.images);
+	// console.log("INPUTS.IMAGES [] IS 🖼", inputs.images);
 
 	return (
 		<Modal visible={visibility} style={styles.container}>

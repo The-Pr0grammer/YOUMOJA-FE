@@ -16,7 +16,18 @@ import { urlCheck, phoneNumberCheck } from "./forms/validation";
 import * as WebBrowser from "expo-web-browser";
 import ImagePicker from "react-native-image-crop-picker";
 import Carousel, { PaginationLight } from "react-native-x2-carousel";
-import ImageView from "react-native-image-view";
+// import Carousel, { Pagination } from "react-native-snap-carousel";
+import { decode, encode } from "base-64";
+import ImageView from "react-native-image-viewing";
+import FitImage from "react-native-fit-image";
+
+if (!global.btoa) {
+	global.btoa = encode;
+}
+
+if (!global.atob) {
+	global.atob = decode;
+}
 import axios from "axios";
 // import * as ExpoLinking from "expo-linking";
 
@@ -24,6 +35,9 @@ const NewBusinessDash = (props) => {
 	const [hearts, setHearts] = useState(0);
 	const [browserResult, setBrowserResult] = useState("");
 	const [images, setImages] = useState([]);
+	const [isVisible, setIsVisible] = useState(false);
+	const [page, setPage] = useState(1);
+
 	const handlePicker = () => {
 		ImagePicker.openPicker({
 			// multiple: true,
@@ -31,7 +45,7 @@ const NewBusinessDash = (props) => {
 			// includeExif: true,
 			// compressImageQuality: 0.8,
 			// mediaType: "photo",
-			maxFiles: 5,
+			maxFiles: 10,
 			multiple: true,
 			cropping: true,
 			includeBase64: true,
@@ -39,17 +53,30 @@ const NewBusinessDash = (props) => {
 			compressImageMaxWidth: 1080,
 		})
 			.then((resp) => {
-				setImages(resp);
+				setImages(
+					resp.map((item) => {
+						// console.log("IMAGE📸 DATA", item);
+
+						const b = require("based-blob");
+
+						const blob = b.toBlob(item.data);
+
+						console.log("BLOB 🧴", blob._data.blobId); // true
+
+						return {
+							uri: `data:image/gif;base64,${item.data}`,
+						};
+
+						// console.log(
+						// 	"IMAGES 👀🌃👀🌃👀🌃",
+						// 	JSON.stringify(item.sourceURL.replace("file://", ""))
+						// );
+					})
+				);
 				props.setInputs({ ...props.inputs, images: resp });
 				// console.log("IMAGES PICKED::::", resp);
 				// console.log("IMAGES 📸✨", images);
 
-				images.map((item, index) => {
-					console.log(
-						"IMAGES 👀🌃👀🌃👀🌃",
-						JSON.stringify(item.sourceURL.replace("file://", ""))
-					);
-				});
 				// onSubmit();
 			})
 			.catch((e) => console.log(e));
@@ -62,11 +89,11 @@ const NewBusinessDash = (props) => {
 			// 	props.inputs.images[0]
 			// );
 
-			let strings = props.inputs.images.map((image, index) => {
-				return { id: index, data: image.path };
+			let strings = images.map((image, index) => {
+				return { id: index, data: image.uri };
 			});
 
-			console.log("image strings in newbiz📸🧵::::", strings);
+			// console.log("image strings in newbiz📸🧵::::", strings);
 
 			return (
 				<Carousel
@@ -76,7 +103,20 @@ const NewBusinessDash = (props) => {
 					loop={true}
 					autoplay={true}
 					autoplayInterval={3200}
+					onPage={(p) => !isVisible && setPage(p.current)}
 				/>
+				// <Carousel
+				// 	ref={(c) => {
+				// 		this._carousel = c;
+				// 	}}
+				// 	data={strings}
+				// 	renderItem={renderItem}
+				// 	layout={"stack"}
+				// 	// layoutCardOffset={40}
+				// 	sliderWidth={vw(100)}
+				// 	itemWidth={vw(100)}
+				// 	onSnapToItem={(index) => setActiveSlide(index)}
+				// />
 			);
 		} else {
 			return (
@@ -114,16 +154,30 @@ const NewBusinessDash = (props) => {
 	};
 
 	const renderItem = (data, index) => (
-		<View key={index} style={styles.pickedImgView}>
+		<View key={index} style={styles.imgsView}>
 			<Image
 				//IMAGES
-				style={styles.pickedImg}
+				style={styles.imgs}
 				source={{
 					uri: data.data,
 				}}
+				// resizeMode={"stretch"}
 			/>
 		</View>
 	);
+
+	// const renderItem = ({ item, index }) => {
+	// 	return (
+	// 		<View style={styles.imgsView}>
+	// 			<Image
+	// 				source={{
+	// 					uri: item.data,
+	// 				}}
+	// 				style={styles.imgs}
+	// 			/>
+	// 		</View>
+	// 	);
+	// };
 
 	// const incHearts = () => {
 	// 	this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
@@ -152,20 +206,116 @@ const NewBusinessDash = (props) => {
 	// };
 
 	// console.log(props.inputs.twitter);
+	console.log("PAGE IS 📜", page);
 	return (
 		<View style={styles.container}>
+			{isVisible && (
+				<ImageView
+					images={images}
+					imageIndex={page - 1}
+					visible={isVisible}
+					onRequestClose={() => setIsVisible(false)}
+				/>
+			)}
 			<View
 				style={{
 					flex: 1,
 					position: "absolute",
-					backgroundColor: "darkslategray",
+					backgroundColor: "lightslategray",
 					width: vw(60),
 					height: vh(30),
 					// zIndex: 3,
 					flexDirection: "column",
 					alignSelf: "flex-start",
+					// justifyContent: "center",
 				}}
 			>
+				{images.length !== 0 && (
+					<TouchableOpacity
+						style={{
+							position: "absolute",
+							alignSelf: "flex-end",
+							width: vw(6.5),
+							// left: vw(31.75),
+							marginTop: vh(0.2),
+							marginRight: vh(0.2),
+							opacity: 0.5,
+							zIndex: 2,
+							backgroundColor: "rgba(40, 40, 40, 0.7)",
+						}}
+						onPress={() => {
+							setIsVisible(true);
+						}}
+					>
+						<Icon
+							name="arrows-expand"
+							type="foundation"
+							color={"white"}
+							size={24}
+						/>
+					</TouchableOpacity>
+				)}
+				{images.length !== 0 && (
+					<View
+						style={{
+							position: "absolute",
+							// flex: 1,
+							opacity: 1,
+							backgroundColor: "rgba(40, 40, 40, 0.5)",
+							zIndex: 2,
+							width: vw(60),
+							flexDirection: "row",
+							top: vh(25),
+							alignSelf: "flex-end",
+						}}
+					>
+						<View
+							style={{
+								flex: 1,
+							}}
+						>
+							<TouchableOpacity
+								style={{
+									alignSelf: "flex-start",
+									width: vw(8),
+									opacity: 0.5,
+									zIndex: 3,
+									backgroundColor: "pink",
+								}}
+								onPress={() => {
+									setIsVisible(true);
+								}}
+							>
+								<Icon
+									name="minus-circle"
+									type="feather"
+									color="white"
+									size={32}
+									style={{ alignSelf: "flex-start" }}
+								/>
+							</TouchableOpacity>
+						</View>
+						<TouchableOpacity
+							style={{
+								position: "relative",
+								alignSelf: "flex-end",
+								width: vw(8),
+								// left: vw(22),
+								// marginTop: vh(0.2),
+								// marginLeft: vw(15),
+								opacity: 0.5,
+								zIndex: 2,
+								backgroundColor: "green",
+							}}
+							onPress={() => {
+								setIsVisible(true);
+							}}
+						>
+							<Icon name="plus-circle" type="feather" color="white" size={32} />
+						</TouchableOpacity>
+					</View>
+				)}
+
 				{showPickedImages()}
 				{/* IMAGES 🌃 🖼 📸 🎠*/}
 			</View>
@@ -204,7 +354,7 @@ const NewBusinessDash = (props) => {
 						opacity: 0.01,
 					}}
 				>
-					{1}
+					{0}
 				</Text>
 
 				<TouchableOpacity
@@ -416,19 +566,21 @@ const styles = StyleSheet.create({
 		height: vh(28),
 		opacity: 1.0,
 		// left: vw(10),
-		backgroundColor: "darkslategray",
+		backgroundColor: "lightslategray",
 		// borderRightWidth: 5,
 	},
-	pickedImg: {
+	imgs: {
 		position: "relative",
 		width: vw(60),
-		height: vh(38),
+		// height: vh(38),
+		height: undefined,
+		aspectRatio: 1 / 1.15,
 		opacity: 1.0,
 		// left: vw(10),
-		backgroundColor: "darkslategray",
+		backgroundColor: "lightslategray",
 		// borderRightWidth: 5,
 	},
-	pickedImgView: {
+	imgsView: {
 		position: "relative",
 		width: vw(62),
 		height: vh(38),

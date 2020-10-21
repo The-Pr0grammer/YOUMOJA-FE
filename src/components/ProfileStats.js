@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
 	View,
 	ScrollView,
@@ -17,13 +17,33 @@ import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
 import { setUserInfo, setIsFetching } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
+import ImageView from "react-native-image-viewing";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const ProfileStats = (props) => {
 	const navigation = useNavigation();
 	const [active, toggleActive] = useState("");
 	const [userShow, setUserShow] = useState("");
 	const [loading, setLoading] = useState(true);
+	const [image, setImage] = useState(false);
+	const [isVisible, setIsVisible] = useState(false);
 	const isFocused = useIsFocused();
+
+	useEffect(() => {
+		setImage([{ uri: props.userShow.img_url }]);
+		// props.route.params["biz"].business.images
+		// 	? setImages(
+		// 			props.route.params["biz"].business.images.map((image) => {
+		// 				return { uri: `http://127.0.0.1:3000/${image}` };
+		// 			})
+		// 	  )
+		// 	: setImages([{ uri: props.route.params["biz"].business.img_url }]);
+
+		return () => {
+			console.log("please come again");
+		};
+	}, []);
+
 	return (
 		<View
 			style={{
@@ -35,6 +55,14 @@ const ProfileStats = (props) => {
 				// top: vh(7.9),
 			}}
 		>
+			{isVisible && (
+				<ImageView
+					images={image}
+					imageIndex={0}
+					visible={isVisible}
+					onRequestClose={() => setIsVisible(false)}
+				/>
+			)}
 			<View
 				style={{
 					height: vh(36),
@@ -277,13 +305,15 @@ const ProfileStats = (props) => {
 						Received
 					</Text>
 				</View>
-				<Image
-					resizeMode={"stretch"}
-					source={{
-						uri: props.userShow.img_url,
-					}}
-					style={styles.profilePic}
-				></Image>
+				<TouchableOpacity onPress={() => setIsVisible(true)}>
+					<Image
+						resizeMode={"stretch"}
+						source={{
+							uri: props.userShow.img_url,
+						}}
+						style={styles.profilePic}
+					></Image>
+				</TouchableOpacity>
 				<View
 					style={{
 						height: vh(36),
@@ -300,7 +330,7 @@ const ProfileStats = (props) => {
 						opacity: 0.95,
 					}}
 				>
-					<TouchableOpacity
+					<View
 						style={{
 							position: "relative",
 							top: vh(2.5),
@@ -311,7 +341,7 @@ const ProfileStats = (props) => {
 						}}
 					>
 						<Icon name="heart" type="feather" color="red" size={35} />
-					</TouchableOpacity>
+					</View>
 					<Text
 						style={{
 							width: vw(30),
@@ -332,26 +362,26 @@ const ProfileStats = (props) => {
 							position: "relative",
 							textAlign: "center",
 							fontSize: 18,
-							top: vh(1),
+							top: vh(2.1),
 							fontFamily: "Marker Felt",
 							color: "olivedrab",
 						}}
 					>
 						Given
 					</Text>
-					<TouchableOpacity
+					<View
 						style={{
 							position: "absolute",
 							// backgroundColor: "maroon",
 							// backgroundColor: "rgba(0, 0, 0, 0.3)",
 							height: vh(7.5),
 							width: vw(30),
-							top: vh(17.25),
+							top: vh(17.4),
 							justifyContent: "center",
 						}}
 					>
 						<Icon name="heart" type="feather" color="red" size={35} />
-					</TouchableOpacity>
+					</View>
 					<Text
 						style={{
 							width: vw(30),
@@ -359,7 +389,7 @@ const ProfileStats = (props) => {
 							textAlign: "center",
 							fontSize: 20,
 							fontFamily: "Marker Felt",
-							top: vh(9),
+							top: vh(10.15),
 							color: "lightslategray",
 						}}
 					>
@@ -372,7 +402,7 @@ const ProfileStats = (props) => {
 							position: "relative",
 							textAlign: "center",
 							fontSize: 18,
-							top: vh(8.55),
+							top: vh(10.45),
 							fontFamily: "Marker Felt",
 							color: "olivedrab",
 						}}
@@ -396,7 +426,7 @@ const ProfileStats = (props) => {
 						// bottom: vh(17.6),
 					}}
 				>
-					<TouchableOpacity
+					<TouchableWithoutFeedback
 						style={{
 							// flex: 1,
 							position: "relative",
@@ -411,7 +441,7 @@ const ProfileStats = (props) => {
 							size={28}
 							color={"lightslategray"}
 						/>
-					</TouchableOpacity>
+					</TouchableWithoutFeedback>
 					<Text
 						style={{
 							flex: 1,
@@ -419,7 +449,6 @@ const ProfileStats = (props) => {
 							textAlign: "center",
 							fontFamily: "Marker Felt",
 							fontSize: 19,
-							fontFamily: "Papyrus",
 							color: "darkslategray",
 							marginHorizontal: vw(1.5),
 							// backgroundColor: "gold",
@@ -427,7 +456,7 @@ const ProfileStats = (props) => {
 					>
 						200,000
 					</Text>
-					<TouchableOpacity
+					<TouchableWithoutFeedback
 						style={{
 							position: "relative",
 							// alignSelf: "flex-end",
@@ -441,7 +470,7 @@ const ProfileStats = (props) => {
 							size={28}
 							color={"lightslategray"}
 						/>
-					</TouchableOpacity>
+					</TouchableWithoutFeedback>
 				</View>
 			</View>
 		</View>

@@ -47,13 +47,16 @@ const MyBusinesses = (props) => {
 				// position: "absolute",
 				backgroundColor: "maroon", //MAROON
 				zIndex: 1,
-				top: vh(1.5), // POSITION 📈
+				// top: vh(1.5), // POSITION 📈
 			}}
 		>
 			<View
 				style={{
 					flexDirection: "row",
 					alignItems: "center",
+					backgroundColor: "rgba(0, 0, 0, 0.9)",
+					// marginTop: vh(1.2),
+
 				}}
 			>
 				<Text style={styles.title}>
@@ -123,6 +126,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		height: vh(6.1),
 		lineHeight: vh(5.5),
+
 		// left: vw(4.3),
 	},
 });

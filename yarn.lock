@@ -2957,6 +2957,11 @@ base@^0.11.1:
     mixin-deep "^1.2.0"
     pascalcase "^0.1.1"
 
+based-blob@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/based-blob/-/based-blob-1.0.1.tgz#abdc4c54a9ce6572b26da75999a58093e5063389"
+  integrity sha1-q9xMVKnOZXKybadZmaWAk+UGM4k=
+
 bcrypt-pbkdf@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.2.tgz#a4301d389b6a43f9b67ff3ca11a3f6637e360e9e"
@@ -7537,6 +7542,14 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-addons-shallow-compare@15.6.2:
+  version "15.6.2"
+  resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.6.2.tgz#198a00b91fc37623db64a28fd17b596ba362702f"
+  integrity sha1-GYoAuR/DdiPbZKKP0XtZa6NicC8=
+  dependencies:
+    fbjs "^0.8.4"
+    object-assign "^4.1.0"
+
 react-devtools-core@^4.0.6:
   version "4.8.2"
   resolved "https://registry.yarnpkg.com/react-devtools-core/-/react-devtools-core-4.8.2.tgz#4465f2e8de7795564aa20f28b2f3a9737586db23"
@@ -7611,10 +7624,10 @@ react-native-image-crop-picker@^0.35.0:
   resolved "https://registry.yarnpkg.com/react-native-image-crop-picker/-/react-native-image-crop-picker-0.35.0.tgz#a93450028354a7d7576a3e107fa627693f509e63"
   integrity sha512-vbmwYK7R3X30Qjv5SUw84ii7e5/FnCLA4E/2DlmEKiqvjpe6VHFPhIl9ntdU6JpEpxFBkEdOWTVAE8EcK1l5qQ==
 
-react-native-image-view@^2.1.9:
-  version "2.1.9"
-  resolved "https://registry.yarnpkg.com/react-native-image-view/-/react-native-image-view-2.1.9.tgz#635306360c42ad2479f364161c47d2557f9240fd"
-  integrity sha512-+DA/+tLM7KHaLs41Hdd+m5UpGX2qtEdMamMZCsXCsJ5J6RwWrqBXQrGVB9Op7dIkZW2DDRVKZTP/FuSNEGtzJg==
+react-native-image-viewing@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-image-viewing/-/react-native-image-viewing-0.2.0.tgz#3c0bc67cfb9aa7607cec632139d7ef4c45e07e4e"
+  integrity sha512-j2JXv86WRXGNme4LPsNCJ/2MgX+oVbmJ5ZLbGrYbKXcCPe9OshqlQI5L3SdbAxWu/F5pubcMaXp0zoYNaZVuzA==
 
 react-native-iphone-x-helper@^1.2.1:
   version "1.2.1"
@@ -7657,6 +7670,14 @@ react-native-share@^3.7.0:
   version "3.8.3"
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.8.3.tgz#df8226310dc0cfbd7f6bf9480a20cc49cf51f247"
   integrity sha512-aPcRnFnC3TgAUZ/7B1NIvUixfq3doiOKLUeSekNlP76UZohX2cvBFM0iqqvBSomc78bVse89mLYuIZmkmwo2nQ==
+
+react-native-snap-carousel@^3.9.1:
+  version "3.9.1"
+  resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-3.9.1.tgz#6fd9bd8839546c2c6043a41d2035afbc6fe0443e"
+  integrity sha512-xWEGusacIgK1YaDXLi7Gao2+ISLoGPVEBR8fcMf4tOOJQufutlNwkoLu0l6B8Qgsrre0nTxoVZikRgGRDWlLaQ==
+  dependencies:
+    prop-types "^15.6.1"
+    react-addons-shallow-compare "15.6.2"
 
 react-native-status-bar-height@^2.5.0:
   version "2.5.0"

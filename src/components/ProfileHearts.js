@@ -46,7 +46,8 @@ const ProfileHearts = (props) => {
 				// position: "absolute",
 				backgroundColor: "maroon", //MAROON
 				zIndex: 1,
-				top: vh(1.5), // POSITION 📈
+				top: vh(1), // POSITION 📈
+				// marginTop: vh(5),
 			}}
 		>
 			<Text style={styles.title}>LIKES({props.userHeartBizs.length})</Text>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	View,
 	StyleSheet,
@@ -17,15 +17,35 @@ import CommentList from "./CommentList.js";
 import BizPageDash from "./BizPageDash.js";
 import BizPageSupport from "./BizPageSupport.js";
 import { useNavigation } from "@react-navigation/native";
-import FitImage from "react-native-fit-image";
 import Carousel, { PaginationLight } from "react-native-x2-carousel";
+import ImageView from "react-native-image-viewing";
+import FitImage from "react-native-fit-image";
 
 const BizPage = (props) => {
 	const [bizInfo, setBizinfo] = useState({});
 	const [comments, setComments] = useState([]);
+	const [isVisible, setIsVisible] = useState(false);
+	const [page, setPage] = useState(1);
+	const [images, setImages] = useState([]);
 	const navigation = useNavigation();
+
 	// console.log(props.route.params.lastScreen);
-	console.log("URLLLLLLLLLLL", props.route.params["biz"].business.images);
+	// console.log("URLLLLLLLLLLL", props.route.params["biz"].business.images);
+	console.log("IMAGES LIVE FROM THE BIZPAGE", images);
+
+	useEffect(() => {
+		props.route.params["biz"].business.images
+			? setImages(
+					props.route.params["biz"].business.images.map((image) => {
+						return { uri: `http://127.0.0.1:3000/${image}` };
+					})
+			  )
+			: setImages([{ uri: props.route.params["biz"].business.img_url }]);
+
+		return () => {
+			console.log("please come again");
+		};
+	}, []);
 
 	renderImages = () => {
 		let strings = props.route.params["biz"].business.images.map(
@@ -34,7 +54,7 @@ const BizPage = (props) => {
 			}
 		);
 
-		console.log("image strings in bIzPaGe📸🧵::::", strings);
+		// console.log("image strings in bIzPaGe📸🧵::::", strings);
 		return (
 			<Carousel
 				pagination={PaginationLight}
@@ -43,6 +63,7 @@ const BizPage = (props) => {
 				loop={true}
 				autoplay={true}
 				autoplayInterval={3200}
+				onPage={(p) => !isVisible && setPage(p.current)}
 			/>
 		);
 	};
@@ -61,6 +82,22 @@ const BizPage = (props) => {
 
 	return (
 		<View style={styles.container}>
+			{props.route.params["biz"].business.images && isVisible && (
+				<ImageView
+					images={images}
+					imageIndex={page - 1}
+					visible={isVisible}
+					onRequestClose={() => setIsVisible(false)}
+				/>
+			)}
+			{!props.route.params["biz"].business.images && isVisible && (
+				<ImageView
+					images={images}
+					imageIndex={0}
+					visible={isVisible}
+					onRequestClose={() => setIsVisible(false)}
+				/>
+			)}
 			<View
 				style={{
 					flex: 1,
@@ -80,7 +117,7 @@ const BizPage = (props) => {
 						style={{
 							backgroundColor: "rgba(40, 40, 40, 0.5)",
 							borderLeftWidth: 4,
-							width: vh(8.5),
+							width: vw(16),
 							height: vh(6.8),
 							alignItems: "center",
 							justifyContent: "center",
@@ -122,15 +159,36 @@ const BizPage = (props) => {
 							flex: 1,
 							position: "absolute",
 							// backgroundColor: "darkslategray",
-							width: vw(64),
+							width: vw(60),
 							height: vh(30),
 							// zIndex: 3,
 							flexDirection: "column",
 							alignSelf: "flex-start",
 						}}
 					>
+						<TouchableOpacity
+							style={{
+								position: "absolute",
+								alignSelf: "flex-end",
+								width: vw(6.5),
+								right: vw(1.5),
+								marginTop: vh(0.2),
+								opacity: 0.5,
+								zIndex: 2,
+								// backgroundColor: "red",
+							}}
+							onPress={() => {
+								setIsVisible(true);
+							}}
+						>
+							<Icon
+								name="arrows-expand"
+								type="foundation"
+								color={"white"}
+								size={24}
+							/>
+						</TouchableOpacity>
 						{props.route.params["biz"].business.images && renderImages()}
-
 						{props.route.params["biz"].business.img_url && (
 							<Image
 								style={styles.img}
@@ -163,7 +221,7 @@ const styles = StyleSheet.create({
 	container: {
 		height: "100%",
 		flexDirection: "column",
-		backgroundColor: "darkslategray",
+		backgroundColor: "black",
 	},
 	bizCon: {
 		position: "relative",
@@ -219,7 +277,7 @@ const styles = StyleSheet.create({
 		width: vw(60),
 		height: vh(30),
 		opacity: 1.0,
-		backgroundColor: "darkslategray",
+		backgroundColor: "black",
 		// borderRightWidth: 5,
 	},
 	imgsView: {

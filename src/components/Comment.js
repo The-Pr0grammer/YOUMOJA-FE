@@ -330,11 +330,10 @@ const styles = StyleSheet.create({
 	comment: {
 		flex: 1,
 		alignSelf: "flex-start",
-		fontFamily: "Marker Felt",
-		fontSize: 20,
+		fontSize: 16,
 		marginTop: vh(1),
 		marginLeft: vh(0.7),
-		fontFamily: "Papyrus",
+		fontFamily: "Marker Felt",
 		// paddingLeft: vw(15),
 		color: "olivedrab",
 
@@ -357,17 +356,17 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-end",
 		marginLeft: vh(0.7),
 		height: undefined,
-		aspectRatio: 135 / 135,
+		aspectRatio: 135 / 128,
 	},
 	CommScore: {
 		flexDirection: "row",
-		// backgroundColor: "red",
 		position: "relative",
 		justifyContent: "center",
 		paddingLeft: vw(2),
 		alignItems: "center",
 		// backgroundColor: "orange",
 		paddingRight: vw(1),
+		marginVertical: vh(0.5),
 	},
 	commentAndScoreView: {
 		flexDirection: "column",
