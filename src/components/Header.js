@@ -10,6 +10,7 @@ import {
 	setIsFetching,
 	handleRefresh,
 	fetchBizs,
+	profileLoadingTogg,
 } from "../redux/actions/bizAction";
 
 const Header = (props) => {
@@ -58,6 +59,7 @@ const Header = (props) => {
 								props.refresh && props.handleRefresh();
 								props.lastScreen == "Profile" &&
 									props.navigation.navigate("Profile");
+								props.profileLoadingTogg(true);
 								props.navigation.goBack();
 								props.setIsFetching(true);
 								await props.fetchBizs();
@@ -150,6 +152,7 @@ export default connect(mapStateToProps, {
 	setIsFetching,
 	handleRefresh,
 	fetchBizs,
+	profileLoadingTogg,
 })(Header);
 
 const styles = StyleSheet.create({

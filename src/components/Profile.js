@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
 	View,
 	ScrollView,
@@ -14,48 +14,91 @@ import TextTicker from "react-native-text-ticker";
 import { FontAwesome } from "@expo/vector-icons";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
-import { setUserInfo, setIsFetching } from "../redux/actions/bizAction";
+import {
+	setUserInfo,
+	setIsFetching,
+	profileLoadingTogg,
+	fetchBizs,
+} from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 import Header from "./Header.js";
 import ProfileStats from "./ProfileStats.js";
 import ProfileHearts from "./ProfileHearts.js";
 import MyBusinesses from "./MyBusinesses.js";
 import NewBusiness from "./NewBusiness";
+import SuccessModal from "./SuccessModal.js";
+
 import axios from "axios";
 
 const Profile = (props) => {
+	const [loading, setLoading] = useState(true);
 	const navigation = useNavigation();
 	const [active, toggleActive] = useState("");
 	const [userShow, setUserShow] = useState("");
-	const [loading, setLoading] = useState(true);
 	const isFocused = useIsFocused();
 	const [addBusinessTogg, setAddBusinessTogg] = useState(false);
+	const [posted, setPosted] = useState(false);
+	const [imgSaved, setImgSaved] = useState(false);
+	const [editTogg, setEditTogg] = useState(false);
 
-	setTimeout(() => setLoading(false), 1000);
+	// setTimeout(() => setLoading(false), 500);
+	// props.profileLoading &&
+	// 	setTimeout(() => props.profileLoadingTogg(false), 500);
+	useEffect(() => {
+		!addBusinessTogg && props.setIsFetching(true);
+		setTimeout(() => props.setIsFetching(false), 500);
 
-	// isFocused ? console.log("🔍♥👀focused") : console.log("unfocused");
-	// !isFocused &&
-	// 	NavigationActions.setParams({
-	// 		params: { title: "Hello" },
-	// 		key: "screen-123",
-	// 	});
-
-	useLayoutEffect(() => {
-		return () => {
-			// navigation.navigate("Profile");
-			!loading && setLoading(true);
-			// let response = () =>
-			// 	axios(`http://127.0.0.1:3000/users/${props.userInfo.id}`)
-			// 		.then((resp) => this.props.setUserShow(resp.data))
-			// 		.catch((error) => console.log(error));
-			// response();
-			setUserShow(props.userInfo);
-		};
-	});
+		if (!userShow) {
+			let response = axios(`http://127.0.0.1:3000/users/${props.userInfo.id}`)
+				.then((resp) => {
+					props.setUserInfo(resp.data);
+					setUserShow(resp.data);
+				})
+				.catch((error) => console.log(error));
+		}
+	}, [isFocused]);
 
 	const handleAddBusinessTogg = () => {
 		setAddBusinessTogg(!addBusinessTogg);
 	};
+
+	handleSuccess = (type) => {
+		if (type === "business") {
+			props.fetchBizs();
+			setTimeout(() => {
+				setPosted(true);
+
+			}, 2000);
+		} else if (type === "profilePic") {
+			setTimeout(() => {
+				setImgSaved(true);
+				let response = axios(`http://127.0.0.1:3000/users/${props.userInfo.id}`)
+				.then((resp) => {
+					props.setUserInfo(resp.data);
+					setUserShow(resp.data);
+				})
+				.catch((error) => console.log(error));
+			}, 250);
+		}
+	};
+
+	handleClose = (type) => {
+		if (type === "business") {
+			setTimeout(() => {
+				setPosted(false);
+			}, 3200);
+		} else if (type === "profilePic") {
+			setTimeout(() => {
+				setImgSaved(false);
+			}, 3200);
+		}
+	};
+
+	handleDismiss = () => {
+		setPosted(false);
+		setImgSaved(false);
+	};
+
 	// console.log("userSHOW IS 🐛✋🏾");
 	// console.log("♻️", loading);
 	// console.log("userinfo:::::", props.userInfo);
@@ -65,36 +108,13 @@ const Profile = (props) => {
 			{/* {isFocused && addBusinessTogg && setVisibility(true)} */}
 
 			<Header
-				name={userShow.name}
+				name={props.userInfo.name}
 				navigation={navigation}
 				refresh={true}
-				loading={loading}
+				// loading={props.profileLoading}
 				lastScreen={"Home"}
 			/>
-			{loading && (
-				<View
-					style={{
-						// flex: 1,
-						height: vh(90),
-						width: vw(100),
-						justifyContent: "center",
-						backgroundColor: "rgba(0,0,0,0.9)",
-					}}
-				>
-					<ActivityIndicator
-						size="large"
-						color="lime"
-						hidesWhenStopped={true}
-					></ActivityIndicator>
-					<View style={{ position: "absolute" }}>
-						<ImageBackground
-							source={require("../images/BlackLivesMatter.gif")}
-							style={styles.bg}
-							imageStyle={{ resizeMode: "stretch" }}
-						></ImageBackground>
-					</View>
-				</View>
-			)}
+
 			<View
 				style={{
 					zIndex: 2,
@@ -142,34 +162,133 @@ const Profile = (props) => {
 						// opacity: 0.75,
 					}}
 				>
-					{userShow.username}
+					{props.userInfo.username}
 				</TextTicker>
 			</View>
 
 			<ScrollView
 				contentContainerStyle={{ paddingBottom: vh(15) }}
 				style={{
-					// flex: 1,
+					flex: 1,
 					backgroundColor: "black",
 					flexDirection: "column",
 					zIndex: 1,
 				}}
 				//START OF STATS
 			>
-				<ProfileStats userShow={props.userInfo} />
+				{posted && (
+					<SuccessModal
+						handleDismiss={this.handleDismiss}
+						message={"Your business has been listed✅"}
+					/>
+				)}
+
+				{imgSaved && (
+					<SuccessModal
+						handleDismiss={this.handleDismiss}
+						message={"You updated your profile pic✅"}
+					/>
+				)}
+				<ProfileStats
+					userShow={props.userInfo}
+					handleSuccess={handleSuccess}
+					handleClose={handleClose}
+					handleDismiss={handleDismiss}
+				/>
 				{
 					addBusinessTogg && (
-						<NewBusiness handleAddBusinessTogg={handleAddBusinessTogg} />
+						<NewBusiness
+							handleAddBusinessTogg={handleAddBusinessTogg}
+							handleSuccess={handleSuccess}
+							handleClose={handleClose}
+							handleDismiss={handleDismiss}
+						/>
 					) //NEW BUSINESS
 				}
-				<MyBusinesses
-					userId={props.userInfo.id}
-					handleAddBusinessTogg={handleAddBusinessTogg}
-				/>
-				<ProfileHearts
-					userShow={props.userInfo}
-					//PROFHEARTS
-				/>
+				{!props.isFetching && !addBusinessTogg && (
+					<>
+						{props.userBizs.length > 0 && (
+							<MyBusinesses
+								userId={props.userInfo.id}
+								handleAddBusinessTogg={handleAddBusinessTogg}
+								loading={loading}
+							/>
+						)}
+						{props.userHearts.length > 0 && (
+							<ProfileHearts
+								userShow={props.userInfo}
+								//PROFHEARTS
+							/>
+						)}
+
+						<View
+							style={{
+								flex: 1,
+								width: vw(40),
+								// height: vh(10),
+								alignSelf: "center",
+								position: "relative",
+								top: vh(8),
+								// left: vw(55),
+								backgroundColor: "rgba(0,0,0,0.75)",
+								zIndex: 4,
+								flexDirection: "row",
+								// alignSelf: "flex-end",
+							}}
+						>
+							<Button
+								title="Edit Profile"
+								buttonStyle={{
+									// backgroundColor: "slategray",
+									// backgroundColor: "firebrick",
+									backgroundColor: "transparent",
+									borderRadius: 10,
+									zIndex: 5,
+								}}
+								style={{
+									position: "relative",
+									borderRadius: 20,
+									width: vw(40),
+									// height: vh(4),
+									zIndex: 5,
+
+									// marginBottom: vh(2.2),
+								}}
+								titleStyle={{ color: "slategray", fontSize: 24 }}
+								onPress={() => {
+									setImage("");
+								}}
+							/>
+						</View>
+					</>
+				)}
+				{props.isFetching && (
+					<View
+						style={{
+							// flex: 1,
+							// height: vh(100),
+							width: vw(100),
+							justifyContent: "center",
+							backgroundColor: "rgba(0,0,0,0.9)",
+						}}
+					>
+						<ActivityIndicator
+							size="large"
+							color="lime"
+							hidesWhenStopped={true}
+							style={{
+								top: vh(22),
+							}}
+						></ActivityIndicator>
+						<View style={{ position: "relative", height: vh(5) }}>
+							<ImageBackground
+								source={require("../images/BlackLivesMatter.gif")}
+								style={styles.bg}
+								imageStyle={{ resizeMode: "stretch" }}
+							></ImageBackground>
+						</View>
+					</View>
+				)}
 			</ScrollView>
 		</View>
 	);
@@ -178,7 +297,13 @@ const Profile = (props) => {
 export default connect(mapStateToProps, {
 	setUserInfo,
 	setIsFetching,
-})(Profile);
+	profileLoadingTogg,
+	fetchBizs,
+})(function (props) {
+	const isFocused = useIsFocused();
+
+	return <Profile {...props} isFocused={isFocused} />;
+});
 
 const styles = StyleSheet.create({
 	container: {
@@ -189,13 +314,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "black",
 		// marginTop: vh(10),
 	},
-	background: {
-		flex: 1,
-		height: vh(100),
-		width: vw(100),
-		alignItems: "center",
-		resizeMode: "center",
-	},
+
 	menuButton: {
 		position: "relative",
 		height: vh(7.5),
@@ -240,11 +359,11 @@ const styles = StyleSheet.create({
 	},
 	bg: {
 		// position: "absolute",
-		// resizeMode: "cover",
+		resizeMode: "stretch",
 		opacity: 0.2,
 		borderWidth: 0,
 		width: vw(100),
-		height: vh(85),
+		height: vh(40),
 		justifyContent: "center",
 	},
 });
@@ -252,5 +371,10 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
 	return {
 		userInfo: state.userInfo,
+		userHeartBizs: state.userHearts.map((uh) => uh.user_biz),
+		profileLoading: state.profileLoading,
+		isFetching: state.isFetching,
+		userBizs: state.userBizs,
+		userHearts: state.userHearts,
 	};
 }

@@ -3,6 +3,13 @@ import { StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 
 export default class SuccessModal extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			message: "",
+		};
+	}
+
 	render() {
 		return (
 			<View
@@ -37,7 +44,7 @@ export default class SuccessModal extends React.Component {
 								top: vh(54),
 							}}
 						>
-							Your Comment Was Posted✅
+							{this.props.message}
 						</Text>
 					</TouchableOpacity>
 				</Modal>

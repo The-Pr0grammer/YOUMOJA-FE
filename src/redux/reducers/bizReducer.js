@@ -17,6 +17,7 @@ import {
 	SET_IS_FETCHING,
 	HANDLE_REFRESH,
 	SORT_BY_SCORES_TOGG,
+	PROFILE_LOADING_TOGG,
 } from "../actions/types";
 
 const initialState = {
@@ -33,6 +34,7 @@ const initialState = {
 	userInfo: {},
 	userHearts: [],
 	userBizs: [],
+	profileLoading: true,
 };
 
 const bizReducer = (state = initialState, action) => {
@@ -135,7 +137,7 @@ const bizReducer = (state = initialState, action) => {
 				locationSort: !state.locationSort,
 			};
 		case SET_USER_INFO:
-			console.log("reducing➗🔇", action.payload);
+			// console.log("reducing➗🔇", action.payload);
 			return {
 				...state,
 				userInfo: {
@@ -144,6 +146,7 @@ const bizReducer = (state = initialState, action) => {
 					name: action.payload.name,
 					username: action.payload.username,
 					img_url: action.payload.img_url,
+					image: action.payload.image,
 					emailVerified: action.payload.emailVerified,
 					opaque: action.payload.opaque,
 					timeSent: action.payload.timeSent,
@@ -178,6 +181,12 @@ const bizReducer = (state = initialState, action) => {
 						...state,
 						scoresSort: !state.scoresSort,
 				  };
+		case PROFILE_LOADING_TOGG:
+			console.log("loading action is", state.profileLoading);
+			return {
+				...state,
+				profileLoading: action.payload,
+			};
 
 		default:
 			return state;

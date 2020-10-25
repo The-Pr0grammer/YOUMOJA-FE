@@ -3,12 +3,15 @@ import {
 	View,
 	Text,
 	TouchableOpacity,
+	TouchableWithoutFeedback,
 	Linking,
 	StyleSheet,
 	Share,
 	Image,
 	FlatList,
 } from "react-native";
+import { Modal } from "react-native";
+
 import { Icon } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
@@ -16,9 +19,11 @@ import { urlCheck, phoneNumberCheck } from "./forms/validation";
 import * as WebBrowser from "expo-web-browser";
 import ImagePicker from "react-native-image-crop-picker";
 import Carousel, { PaginationLight } from "react-native-x2-carousel";
-// import Carousel, { Pagination } from "react-native-snap-carousel";
 import { decode, encode } from "base-64";
-import ImageView from "react-native-image-viewing";
+import ImageViewer from "react-native-image-zoom-viewer";
+
+// import Carousel, { Pagination } from "react-native-snap-carousel";
+// import ImageView from "react-native-image-viewer";
 import FitImage from "react-native-fit-image";
 
 if (!global.btoa) {
@@ -29,6 +34,7 @@ if (!global.atob) {
 	global.atob = decode;
 }
 import axios from "axios";
+import { TouchableHighlight } from "react-native-gesture-handler";
 // import * as ExpoLinking from "expo-linking";
 
 const NewBusinessDash = (props) => {
@@ -36,7 +42,23 @@ const NewBusinessDash = (props) => {
 	const [browserResult, setBrowserResult] = useState("");
 	const [images, setImages] = useState([]);
 	const [isVisible, setIsVisible] = useState(false);
-	const [page, setPage] = useState(1);
+	const [page, setPage] = useState(0);
+	const [fixedPage, setFixedPage] = useState(0);
+	const [lastTap, setLastTap] = useState(null);
+
+	const handleDoubleTap = () => {
+		const now = Date.now();
+		const DOUBLE_PRESS_DELAY = 300;
+		if (lastTap && now - lastTap < DOUBLE_PRESS_DELAY) {
+			console.log("hi");
+			setFixedPage(page);
+			setIsVisible(true);
+		} else {
+			console.log("bye");
+
+			setLastTap(now);
+		}
+	};
 
 	const handlePicker = () => {
 		ImagePicker.openPicker({
@@ -45,7 +67,7 @@ const NewBusinessDash = (props) => {
 			// includeExif: true,
 			// compressImageQuality: 0.8,
 			// mediaType: "photo",
-			maxFiles: 10,
+			maxFiles: 10 - images.length,
 			multiple: true,
 			cropping: true,
 			includeBase64: true,
@@ -53,48 +75,65 @@ const NewBusinessDash = (props) => {
 			compressImageMaxWidth: 1080,
 		})
 			.then((resp) => {
-				setImages(
-					resp.map((item) => {
-						// console.log("IMAGE📸 DATA", item);
+				const picks = resp.map((item, index) => {
+					// console.log("IMAGE📸 DATA", item);
 
-						const b = require("based-blob");
+					const b = require("based-blob");
 
-						const blob = b.toBlob(item.data);
+					const blob = b.toBlob(item.data);
 
-						console.log("BLOB 🧴", blob._data.blobId); // true
+					console.log("BLOB 🧴", blob._data.blobId); // true
 
-						return {
-							uri: `data:image/gif;base64,${item.data}`,
-						};
+					return (
+						{
+							url: `data:image/gif;base64,${item.data}`,
+						},
+						{
+							url: `data:image/gif;base64,${item.data}`,
+							props: {
+								// source: require("data:image/gif;base64,${item.data}"),
+							},
+							id: index,
+							file_name: item.filename,
+							uri: item.data,
+						}
+					);
+				});
 
-						// console.log(
-						// 	"IMAGES 👀🌃👀🌃👀🌃",
-						// 	JSON.stringify(item.sourceURL.replace("file://", ""))
-						// );
-					})
-				);
-				props.setInputs({ ...props.inputs, images: resp });
+				setImages([...images, ...picks]);
+
+				// console.log(
+				// 	"IMAGES 👀🌃👀🌃👀🌃",
+				// 	JSON.stringify(item.sourceURL.replace("file://", ""))
+				// );
+
+				props.setErrorMessage("");
+
+				if (!props.inputs.images) {
+					props.setInputs({
+						...props.inputs,
+						images: picks,
+					});
+				} else {
+					const newImgInputs = [...props.inputs.images, ...picks];
+					props.setInputs({
+						...props.inputs,
+						images: newImgInputs,
+					});
+				}
+
 				// console.log("IMAGES PICKED::::", resp);
 				// console.log("IMAGES 📸✨", images);
-
-				// onSubmit();
 			})
 			.catch((e) => console.log(e));
 	};
 
 	const showPickedImages = () => {
-		if (props.inputs.images) {
-			// console.log(
-			// 	"✨props.inputs.images from newbizdash",
-			// 	props.inputs.images[0]
-			// );
-
+		if (images.length > 0) {
 			let strings = images.map((image, index) => {
-				return { id: index, data: image.uri };
+				return { id: index, data: image.url };
 			});
-
 			// console.log("image strings in newbiz📸🧵::::", strings);
-
 			return (
 				<Carousel
 					pagination={PaginationLight}
@@ -103,20 +142,8 @@ const NewBusinessDash = (props) => {
 					loop={true}
 					autoplay={true}
 					autoplayInterval={3200}
-					onPage={(p) => !isVisible && setPage(p.current)}
+					onPage={(p) => setPage(p.current - 1)}
 				/>
-				// <Carousel
-				// 	ref={(c) => {
-				// 		this._carousel = c;
-				// 	}}
-				// 	data={strings}
-				// 	renderItem={renderItem}
-				// 	layout={"stack"}
-				// 	// layoutCardOffset={40}
-				// 	sliderWidth={vw(100)}
-				// 	itemWidth={vw(100)}
-				// 	onSnapToItem={(index) => setActiveSlide(index)}
-				// />
 			);
 		} else {
 			return (
@@ -162,9 +189,14 @@ const NewBusinessDash = (props) => {
 					uri: data.data,
 				}}
 				// resizeMode={"stretch"}
+				resizeMode={"cover"}
 			/>
 		</View>
 	);
+
+	const remove = (array, element) => {
+		return array.filter((imageObj) => imageObj.id !== element);
+	};
 
 	// const renderItem = ({ item, index }) => {
 	// 	return (
@@ -206,16 +238,20 @@ const NewBusinessDash = (props) => {
 	// };
 
 	// console.log(props.inputs.twitter);
-	console.log("PAGE IS 📜", page);
+	// console.log("PAGE IS 📜", page);
 	return (
 		<View style={styles.container}>
 			{isVisible && (
-				<ImageView
-					images={images}
-					imageIndex={page - 1}
-					visible={isVisible}
-					onRequestClose={() => setIsVisible(false)}
-				/>
+				<Modal visible={isVisible} transparent={true}>
+					<ImageViewer
+						imageUrls={images}
+						// imageIndex={page}
+						// visible={isVisible}
+						onCancel={() => setIsVisible(false)}
+						enableSwipeDown={true}
+						index={fixedPage}
+					/>
+				</Modal>
 			)}
 			<View
 				style={{
@@ -244,6 +280,7 @@ const NewBusinessDash = (props) => {
 							backgroundColor: "rgba(40, 40, 40, 0.7)",
 						}}
 						onPress={() => {
+							setFixedPage(page);
 							setIsVisible(true);
 						}}
 					>
@@ -261,7 +298,7 @@ const NewBusinessDash = (props) => {
 							position: "absolute",
 							// flex: 1,
 							opacity: 1,
-							backgroundColor: "rgba(40, 40, 40, 0.5)",
+							backgroundColor: "rgba(40, 40, 40, 0.7)",
 							zIndex: 2,
 							width: vw(60),
 							flexDirection: "row",
@@ -280,10 +317,30 @@ const NewBusinessDash = (props) => {
 									width: vw(8),
 									opacity: 0.5,
 									zIndex: 3,
-									backgroundColor: "pink",
+									// backgroundColor: "pink",
 								}}
 								onPress={() => {
-									setIsVisible(true);
+									if (images.length > 1) {
+										const filtered = remove(images, page);
+										setImages(
+											filtered.map((img, index) => {
+												img.id = index;
+												return img;
+											})
+										);
+										props.setInputs({
+											...props.inputs,
+											images: filtered,
+										});
+									} else {
+										setImages([]);
+										props.setInputs({
+											...props.inputs,
+											images: [],
+										});
+									}
+
+									console.log("𐄳 FILTERED ✅");
 								}}
 							>
 								<Icon
@@ -305,10 +362,14 @@ const NewBusinessDash = (props) => {
 								// marginLeft: vw(15),
 								opacity: 0.5,
 								zIndex: 2,
-								backgroundColor: "green",
+								// backgroundColor: "green",
 							}}
 							onPress={() => {
-								setIsVisible(true);
+								images.length < 10
+									? handlePicker()
+									: props.setErrorMessage(
+											"You can upload 10 images. Choose your favorites."
+									  );
 							}}
 						>
 							<Icon name="plus-circle" type="feather" color="white" size={32} />

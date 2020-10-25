@@ -82,13 +82,13 @@ export const validateField = (validators, value, values, key) => {
 
 export const urlCheck = (url) => {
 	if (
-		/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(
+		/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(
 			url
 		)
 	) {
 		return;
 	} else {
-		return "Enter a valid url ie https://twitter.com/Y0UM0JA";
+		return "Enter a valid url ie twitter.com/Y0UM0JA";
 	}
 };
 

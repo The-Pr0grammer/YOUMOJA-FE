@@ -9,6 +9,8 @@ import {
 	ActivityIndicator,
 	Image,
 } from "react-native";
+import { Modal } from "react-native";
+
 import { useIsFocused } from "@react-navigation/native";
 import { Button, Icon } from "react-native-elements";
 import TextTicker from "react-native-text-ticker";
@@ -17,32 +19,168 @@ import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
 import { setUserInfo, setIsFetching } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
-import ImageView from "react-native-image-viewing";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import ImageView from "react-native-image-viewing";
+import ImagePicker from "react-native-image-crop-picker";
+import ImageViewer from "react-native-image-zoom-viewer";
+import axios from "axios";
 
 const ProfileStats = (props) => {
 	const navigation = useNavigation();
 	const [active, toggleActive] = useState("");
 	const [userShow, setUserShow] = useState("");
 	const [loading, setLoading] = useState(true);
-	const [image, setImage] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
+	const [image, setImage] = useState([{ url: "a" }]);
+	const [imgView, setImgView] = useState([{ uri: "a" }]);
 	const [isVisible, setIsVisible] = useState(false);
+	const [editTogg, setEditTogg] = useState(false);
 	const isFocused = useIsFocused();
 
-	useEffect(() => {
-		setImage([{ uri: props.userShow.img_url }]);
-		// props.route.params["biz"].business.images
-		// 	? setImages(
-		// 			props.route.params["biz"].business.images.map((image) => {
-		// 				return { uri: `http://127.0.0.1:3000/${image}` };
-		// 			})
-		// 	  )
-		// 	: setImages([{ uri: props.route.params["biz"].business.img_url }]);
+	useLayoutEffect(() => {
+		let arr = [1];
+		const pick = props.userInfo.image
+			? arr.map((item, index) => {
+					return (
+						{
+							url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+						},
+						{
+							url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+							props: {
+								// source: require("data:image/gif;base64,${item.data}"),
+							},
+						}
+					);
+			  })
+			: arr.map((item, index) => {
+					return (
+						{
+							url: props.userShow.img_url,
+						},
+						{
+							url: props.userShow.img_url,
+							props: {
+								// source: require("data:image/gif;base64,${item.data}"),
+							},
+						}
+					);
+			  });
 
-		return () => {
-			console.log("please come again");
-		};
+		setImage(pick);
+		setImgView([{ uri: pick[0].url }]);
+
+		// return () => {
+		// 	// console.log("please come again");
+		// };
 	}, []);
+
+	const handlePicker = () => {
+		ImagePicker.openPicker({
+			// multiple: true,
+			// waitAnimationEnd: false,
+			// includeExif: true,
+			// compressImageQuality: 0.8,
+			// mediaType: "photo",
+			maxFiles: 1,
+			multiple: true,
+			cropping: true,
+			includeBase64: true,
+			compressImageMaxHeight: 1080,
+			compressImageMaxWidth: 1080,
+		})
+			.then((resp) => {
+				const pick = resp.map((item, index) => {
+					// console.log("IMAGE📸 DATA", item);
+
+					const b = require("based-blob");
+
+					const blob = b.toBlob(item.data);
+
+					console.log("BLOB 🧴", blob._data.blobId); // true
+
+					return (
+						{
+							url: `data:image/gif;base64,${item.data}`,
+						},
+						{
+							url: `data:image/gif;base64,${item.data}`,
+							props: {
+								// source: require("data:image/gif;base64,${item.data}"),
+							},
+							id: index,
+							file_name: item.filename,
+							uri: item.data,
+						}
+					);
+				});
+
+				setImage(pick);
+				setImgView([{ uri: pick[0].url }]);
+				setEditTogg(true);
+
+				// console.log(
+				// 	"IMAGES 👀🌃👀🌃👀🌃",
+				// 	JSON.stringify(item.sourceURL.replace("file://", ""))
+				// );
+
+				// console.log("IMAGES PICKED::::", resp);
+				// console.log("IMAGES 📸✨", images);
+			})
+			.catch((e) => console.log(e));
+	};
+
+	const handlePut = () => {
+		console.log(
+			"IMAGE HASH IS 🖼  ",
+			image.map((img) => img.file_name)
+		);
+
+		let imageHash = image.map((image) => {
+			// console.log(image.uri);
+			return {
+				image: image.uri,
+				file_name: image.file_name,
+			};
+		});
+
+		let putData = {
+			user: {
+				image: imageHash,
+			},
+		};
+
+		fetch(`http://127.0.0.1:3000/users/${props.userShow.id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				// Accept: "application/json",
+			},
+			body: JSON.stringify(putData),
+		})
+			.then((resp) => {
+				// setEditTogg(false);
+				// props.setUserInfo(resp.data);
+				// console.log(resp);
+				// refreshUserInfo();
+				props.handleSuccess("profilePic")
+			})
+			.catch((err) => {
+				setErrorMessage("Something went wrong. Try again later.");
+				console.log("🚨 Error updating user avatar: ", err);
+			});
+	};
+
+	refreshUserInfo = () => {
+		let response = axios(`http://127.0.0.1:3000/users/${props.userInfo.id}`)
+			.then((resp) => {
+				console.log("RESP IS", resp.data);
+				props.setUserInfo(resp.data);
+			})
+			.catch((error) => console.log(error));
+	};
+
+	// console.log("👤 USER INFO ISSS 👤 ", props.userShow);
 
 	return (
 		<View
@@ -50,17 +188,18 @@ const ProfileStats = (props) => {
 				height: vh(35),
 				width: vw(100),
 				// position: "absolute",
-				backgroundColor: "magenta", //MAGENTA
+				backgroundColor: "red", //MAGENTA
+				// backgroundColor: "rgba(0,0,0,0.1)",
 				zIndex: 1,
 				// top: vh(7.9),
 			}}
 		>
 			{isVisible && (
 				<ImageView
-					images={image}
-					imageIndex={0}
-					visible={isVisible}
+					images={imgView}
 					onRequestClose={() => setIsVisible(false)}
+					visible={isVisible}
+					index={0}
 				/>
 			)}
 			<View
@@ -70,7 +209,7 @@ const ProfileStats = (props) => {
 					borderWidth: 2,
 					position: "absolute",
 					alignSelf: "flex-start",
-					backgroundColor: "firebrick", //MIDDLE
+					backgroundColor: "slategray", //MIDDLE
 					justifyContent: "center",
 					alignItems: "center",
 					zIndex: 1,
@@ -78,6 +217,134 @@ const ProfileStats = (props) => {
 					// bottom: vh(17.6),
 				}}
 			>
+				<View
+					style={{
+						// width: vw(20),
+						// height: vh(40),
+						alignSelf: "center",
+						position: "absolute",
+						bottom: vh(32),
+						left: vw(64),
+						// backgroundColor: "red",
+						zIndex: 4,
+					}}
+				>
+					<TouchableOpacity
+						style={{
+							// position: "absolute",
+							opacity: 0.5,
+							backgroundColor: "rgba(0,0,0,0.7)",
+						}}
+						onPress={handlePicker}
+					>
+						<Icon
+							name="edit"
+							type="font-awesome-5"
+							color="white"
+							size={24}
+							opacity={0.5}
+							// reverse
+							// reverseColor="dodgerblue"
+						/>
+					</TouchableOpacity>
+				</View>
+				{editTogg && (
+					<View
+						style={{
+							width: vw(40),
+							// height: vh(10),
+							// alignSelf: "center",
+							position: "absolute",
+							top: vh(16),
+							// left: vw(55),
+							backgroundColor: "rgba(0,0,0,0.75)",
+							zIndex: 4,
+							flexDirection: "row",
+							// alignSelf: "flex-end",
+						}}
+					>
+						<Button
+							title="Cancel"
+							buttonStyle={{
+								backgroundColor: "transparent",
+								borderRadius: 18,
+								zIndex: 5,
+							}}
+							style={{
+								position: "relative",
+								borderRadius: 20,
+								width: vw(20),
+								// height: vh(4),
+								zIndex: 5,
+
+								// marginBottom: vh(2.2),
+							}}
+							titleStyle={{ color: "gray" }}
+							onPress={() => {
+								const arr = [0];
+								const pick = props.userInfo.image
+									? arr.map((item, index) => {
+											return (
+												{
+													url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+												},
+												{
+													url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+													props: {
+														// source: require("data:image/gif;base64,${item.data}"),
+													},
+												}
+											);
+									  })
+									: arr.map((item, index) => {
+											return (
+												{
+													url: props.userShow.img_url,
+												},
+												{
+													url: props.userShow.img_url,
+													props: {
+														// source: require("data:image/gif;base64,${item.data}"),
+													},
+												}
+											);
+									  });
+
+								setImage(pick);
+								setImgView([{ uri: pick[0].url }]);
+								setEditTogg(false);
+							}}
+							// loading={buttonSpinner}
+							// loadingProps={{ color: "green", size: "large" }}
+						/>
+						<Button
+							title="Save"
+							buttonStyle={{
+								backgroundColor: "transparent",
+								borderRadius: 18,
+								zIndex: 5,
+							}}
+							style={{
+								position: "relative",
+								borderRadius: 20,
+								width: vw(20),
+								// height: vh(4),
+								zIndex: 5,
+
+								// marginBottom: vh(2.2),
+							}}
+							titleStyle={{ color: "gray" }}
+							onPress={() => {
+								setEditTogg(false);
+								handlePut();
+								// props.handleSuccess("profilePic");
+								props.handleClose("profilePic");
+							}}
+							// loading={buttonSpinner}
+							// loadingProps={{ color: "green", size: "large" }}
+						/>
+					</View>
+				)}
 				<View
 					style={{
 						height: vh(36),
@@ -305,15 +572,20 @@ const ProfileStats = (props) => {
 						Received
 					</Text>
 				</View>
-				<TouchableOpacity onPress={() => setIsVisible(true)}>
+				<TouchableOpacity
+					onPress={() => setIsVisible(true)}
+					style={{ zIndex: 3 }}
+				>
 					<Image
-						resizeMode={"stretch"}
+						resizeMode={"cover"}
 						source={{
-							uri: props.userShow.img_url,
+							uri: image[0].url,
 						}}
 						style={styles.profilePic}
+						//PROFILE PICTURE 📸 📸 📸
 					></Image>
 				</TouchableOpacity>
+
 				<View
 					style={{
 						height: vh(36),
@@ -435,6 +707,10 @@ const ProfileStats = (props) => {
 							opacity: 0.85,
 							// backgroundColor: "red",
 						}}
+						onPress={
+							() => console.log(props.userInfo)
+							// console.log(props.userHeartBizs);
+						}
 					>
 						<FontAwesome
 							name="caret-square-o-up"

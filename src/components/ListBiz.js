@@ -37,6 +37,7 @@ class ListBiz extends React.Component {
 			error: null,
 			page: 1,
 			isVisible: false,
+			summaryLength: props.biz.business.summary,
 		};
 	}
 
@@ -72,6 +73,7 @@ class ListBiz extends React.Component {
 					uri: `http://127.0.0.1:3000/${data.data}`,
 				}}
 				// resizeMode={"stretch"}
+				resizeMode={"cover"}
 			/>
 		</View>
 	);
@@ -100,7 +102,7 @@ class ListBiz extends React.Component {
 							loop
 							bounce
 							repeatSpacer={25}
-							// duration={Math.random * 18000}
+							duration={Math.random * 18000}
 							marqueeDelay={Math.random() * 2000}
 						>
 							{this.props.biz.business.summary}

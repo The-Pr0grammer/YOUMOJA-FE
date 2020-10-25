@@ -58,9 +58,11 @@ const Form = ({
 	const getValues = () => {
 		return fieldKeys.sort().map((key) => values[key]);
 	};
+
 	const submit = async () => {
 		const result = await action(...getValues());
-		// await afterSubmit(result);
+		await afterSubmit(result);
+		// TEST SHIT
 
 		Keyboard.dismiss();
 		setErrorMessage("");
@@ -79,6 +81,25 @@ const Form = ({
 			setErrorMessage(e.message);
 		}
 	};
+
+	// const submit = async () => {
+	// 	Keyboard.dismiss();
+	// 	setErrorMessage("");
+	// 	setValidationErrors(getInitialState(fieldKeys));
+
+	// 	const errors = validateFields(fields, values);
+	// 	if (hasValidationError(errors)) {
+	// 		console.log(errors);
+	// 		return setValidationErrors(errors); //VALIDATIONSSSSSSS
+	// 	}
+	// 	try {
+	// 		const result = await action(...getValues());
+	// 		// console.log("RESULT IS", result);
+	// 		await afterSubmit(result);
+	// 	} catch (e) {
+	// 		setErrorMessage(e.message);
+	// 	}
+	// }; WORKING TRIGGERRRRRR 🔫
 
 	return (
 		<View style={styles.container}>

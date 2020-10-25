@@ -36,34 +36,51 @@ class Search extends React.Component {
 		return (
 			<Modal transparent={true}>
 				<TouchableOpacity
-					style={{ backgroundColor: "rgba(0, 0, 0, 0.65)", flex: 1 }}
+					style={{
+						backgroundColor: "rgba(0, 0, 0, 0.65)",
+						// backgroundColor: "blue",
+						flex: 1,
+					}}
 					onPress={() => this.props.handleSearchFocus()}
+					activeOpacity={1}
 				>
 					<View style={styles.searchDiv}>
-						<View style={{ zIndex: -4 }}>
-							<Header type="Search"/>
-							<Menu />
-						</View>
-						<SearchBar
-							ref={(search) => (this.search = search)}
-							round
-							searchIcon={{ size: 18 }}
-							onChangeText={this.updateSearch}
-							onSubmitEditing={(e) => this.submitSearch()}
-							placeholder={"     Search by keyword or location"}
-							value={this.state.search}
-							inputContainerStyle={{
-								borderRadius: 100,
-								height: vh(6.5),
-								backgroundColor: "deepskyblue",
-								marginHorizontal: 0,
-							}}
-							containerStyle={{
-								backgroundColor: "black",
-								padding: 2,
-							}}
-						/>
+						{/* <Header type="Search" />
+						<Menu /> */}
 					</View>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={{
+						backgroundColor: "rgba(0, 0, 0, 0.65)",
+						// backgroundColor: "red",
+						// height: vh(20),
+						flex: 4.725,
+
+						// zIndex: 12,
+					}}
+					onPress={() => this.props.handleSearchFocus()}
+					activeOpacity={1}
+
+				>
+					<SearchBar
+						ref={(search) => (this.search = search)}
+						round
+						searchIcon={{ size: 18 }}
+						onChangeText={this.updateSearch}
+						onSubmitEditing={(e) => this.submitSearch()}
+						placeholder={"     Search by keyword or location"}
+						value={this.state.search}
+						inputContainerStyle={{
+							borderRadius: 100,
+							height: vh(6.5),
+							backgroundColor: "deepskyblue",
+							marginHorizontal: 0,
+						}}
+						containerStyle={{
+							backgroundColor: "black",
+							padding: 2,
+						}}
+					/>
 				</TouchableOpacity>
 			</Modal>
 		);

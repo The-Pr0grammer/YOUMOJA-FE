@@ -25,7 +25,7 @@ const MyBusinesses = (props) => {
 	const [active, toggleActive] = useState("");
 	const [userShow, setUserShow] = useState("");
 	const [userHearts, setUserHearts] = useState([]);
-	const [loading, setLoading] = useState(true);
+	// const [loading, setLoading] = useState(true);
 	const isFocused = useIsFocused();
 
 	// useEffect(() => {
@@ -37,7 +37,7 @@ const MyBusinesses = (props) => {
 	// });
 
 	// console.log("HEARTS IS🤎♥️🧡", props.userHearts[0]);
-	console.log("userbizs is 💼💼💼", props.userBizs);
+	// console.log("userbizs is 💼💼💼", props.userBizs);
 	return (
 		<View // START OF BIZLIST
 			style={{
@@ -45,9 +45,9 @@ const MyBusinesses = (props) => {
 				height: vh(47),
 				width: vw(100),
 				// position: "absolute",
-				backgroundColor: "maroon", //MAROON
+				backgroundColor: "rgba(255,255,255,0.02)", //MAROON
 				zIndex: 1,
-				// top: vh(1.5), // POSITION 📈
+				top: vh(1.5), // POSITION 📈
 			}}
 		>
 			<View
@@ -56,7 +56,6 @@ const MyBusinesses = (props) => {
 					alignItems: "center",
 					backgroundColor: "rgba(0, 0, 0, 0.9)",
 					// marginTop: vh(1.2),
-
 				}}
 			>
 				<Text style={styles.title}>
@@ -80,7 +79,7 @@ const MyBusinesses = (props) => {
 				horizontal={true}
 				// style={styles.list}
 				contentContainerStyle={{
-					backgroundColor: "rgba(0, 0, 0, 0.9)",
+					backgroundColor: "rgba(255, 255, 255, 0.02)",
 					justifyContent: "flex-start",
 					alignItems: "flex-start",
 					// height: vh(47),
@@ -92,9 +91,18 @@ const MyBusinesses = (props) => {
 				renderItem={({ item }) => (
 					<ListBiz biz={item} navigation={navigation} lastScreen={"Profile"} />
 				)}
-				// extraData={props.userHearts}
+				extraData={props.userBizs}
 				legacyImplementation={true}
 			/>
+			{/* {props.loading && (
+				<View style={styles.activityView}>
+					<ActivityIndicator
+						size="large"
+						color="#00ff00"
+						hidesWhenStopped={true}
+					/>
+				</View>
+			)} */}
 		</View>
 	);
 };
@@ -128,6 +136,10 @@ const styles = StyleSheet.create({
 		lineHeight: vh(5.5),
 
 		// left: vw(4.3),
+	},
+	activityView: {
+		flex: 1,
+		justifyContent: "center",
 	},
 });
 

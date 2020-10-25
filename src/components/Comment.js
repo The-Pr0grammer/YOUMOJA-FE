@@ -233,7 +233,9 @@ class Comment extends PureComponent {
 						<Image
 							resizeMode={"cover"}
 							source={{
-								uri: this.props.comment.user.img_url,
+								uri: this.props.comment.user.image
+									? `http://127.0.0.1:3000/${this.props.comment.user.image}`
+									: this.props.comment.user.img_url,
 							}}
 							style={styles.profilePic}
 						></Image>

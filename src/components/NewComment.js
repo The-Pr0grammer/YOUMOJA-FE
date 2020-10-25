@@ -32,10 +32,10 @@ class NewComment extends React.Component {
 		});
 	};
 
-	handleSubmit = () => {
+	handleSubmit = async() => {
 		if (/\S/.test(this.state.text)) {
-			this.props.handleCancel();
 			this.props.handleSuccess();
+			this.props.handleCancel();
 			this.props.handleClose();
 			const data = {
 				user_id: this.props.userInfo.id,

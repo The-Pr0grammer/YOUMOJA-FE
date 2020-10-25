@@ -7,8 +7,13 @@ import {
 	TouchableOpacity,
 	Share,
 } from "react-native";
+import { Modal } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+
 import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
+import { connect } from "react-redux";
+import { setUserInfo, setIsFetching } from "../redux/actions/bizAction";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
 import TextTicker from "react-native-text-ticker";
@@ -16,36 +21,68 @@ import Header from "./Header.js";
 import CommentList from "./CommentList.js";
 import BizPageDash from "./BizPageDash.js";
 import BizPageSupport from "./BizPageSupport.js";
+import SuccessModal from "./SuccessModal.js";
 import { useNavigation } from "@react-navigation/native";
 import Carousel, { PaginationLight } from "react-native-x2-carousel";
-import ImageView from "react-native-image-viewing";
+import ImageViewer from "react-native-image-zoom-viewer";
 import FitImage from "react-native-fit-image";
 
 const BizPage = (props) => {
 	const [bizInfo, setBizinfo] = useState({});
 	const [comments, setComments] = useState([]);
 	const [isVisible, setIsVisible] = useState(false);
-	const [page, setPage] = useState(1);
+	const [successTogg, setSuccessTogg] = useState(false);
 	const [images, setImages] = useState([]);
 	const navigation = useNavigation();
+	const [page, setPage] = useState(0);
+	const [fixedPage, setFixedPage] = useState(0);
+	const isFocused = useIsFocused();
 
 	// console.log(props.route.params.lastScreen);
 	// console.log("URLLLLLLLLLLL", props.route.params["biz"].business.images);
 	console.log("IMAGES LIVE FROM THE BIZPAGE", images);
 
 	useEffect(() => {
-		props.route.params["biz"].business.images
+		let arr = [0];
+		props.userInfo.image
 			? setImages(
-					props.route.params["biz"].business.images.map((image) => {
-						return { uri: `http://127.0.0.1:3000/${image}` };
+					arr.map((image, index) => {
+						return (
+							{
+								url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+							},
+							{
+								url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+								props: {
+									// source: require("data:image/gif;base64,${item.data}"),
+								},
+								id: index,
+							}
+						);
 					})
 			  )
-			: setImages([{ uri: props.route.params["biz"].business.img_url }]);
+			: setImages([{ url: props.route.params["biz"].business.img_url }]);
 
 		return () => {
 			console.log("please come again");
 		};
-	}, []);
+	}, [isFocused]);
+
+	const handleSuccess = () => {
+		setTimeout(() => {
+			setSuccessTogg(true);
+		}, 750);
+	};
+
+	const handleClose = () => {
+		setTimeout(() => {
+			setSuccessTogg(false);
+		}, 4800);
+	};
+
+	const handleDismiss = () => {
+		setSuccessTogg(false);
+	};
 
 	renderImages = () => {
 		let strings = props.route.params["biz"].business.images.map(
@@ -63,7 +100,7 @@ const BizPage = (props) => {
 				loop={true}
 				autoplay={true}
 				autoplayInterval={3200}
-				onPage={(p) => !isVisible && setPage(p.current)}
+				onPage={(p) => setPage(p.current - 1)}
 			/>
 		);
 	};
@@ -76,6 +113,8 @@ const BizPage = (props) => {
 				source={{
 					uri: `http://127.0.0.1:3000/${data.data}`,
 				}}
+				// resizeMode={"stretch"}
+				resizeMode={"cover"}
 			/>
 		</View>
 	);
@@ -83,21 +122,30 @@ const BizPage = (props) => {
 	return (
 		<View style={styles.container}>
 			{props.route.params["biz"].business.images && isVisible && (
-				<ImageView
-					images={images}
-					imageIndex={page - 1}
-					visible={isVisible}
-					onRequestClose={() => setIsVisible(false)}
-				/>
+				<Modal visible={isVisible} transparent={true}>
+					<ImageViewer
+						imageUrls={images}
+						// imageIndex={page}
+						// visible={isVisible}
+						onCancel={() => setIsVisible(false)}
+						enableSwipeDown={true}
+						index={fixedPage}
+					/>
+				</Modal>
 			)}
 			{!props.route.params["biz"].business.images && isVisible && (
-				<ImageView
-					images={images}
-					imageIndex={0}
-					visible={isVisible}
-					onRequestClose={() => setIsVisible(false)}
-				/>
+				<Modal visible={isVisible} transparent={true}>
+					<ImageViewer
+						imageUrls={images}
+						// imageIndex={page}
+						// visible={isVisible}
+						onCancel={() => setIsVisible(false)}
+						enableSwipeDown={true}
+						index={fixedPage}
+					/>
+				</Modal>
 			)}
+
 			<View
 				style={{
 					flex: 1,
@@ -112,6 +160,12 @@ const BizPage = (props) => {
 			</View>
 
 			<View style={styles.bizCon}>
+				{successTogg && (
+					<SuccessModal
+						handleDismiss={handleDismiss}
+						message={"Your comment was posted✅"}
+					/>
+				)}
 				<View style={{ flexDirection: "row", justifyContent: "center" }}>
 					<View
 						style={{
@@ -135,7 +189,9 @@ const BizPage = (props) => {
 							<Image
 								resizeMode={"cover"}
 								source={{
-									uri: props.route.params.userInfo.img_url,
+									uri: props.route.params.userInfo.image
+										? `http://127.0.0.1:3000/${props.route.params["biz"].user.image}`
+										: props.route.params.userInfo.img_url,
 								}}
 								style={styles.profilePic}
 							></Image>
@@ -143,7 +199,7 @@ const BizPage = (props) => {
 					</View>
 					<TextTicker
 						shouldAnimateTreshold={vw(8)}
-						duration={9600}
+						duration={Math.random * 18000}
 						loop
 						bounce
 						repeatSpacer={25}
@@ -179,6 +235,7 @@ const BizPage = (props) => {
 							}}
 							onPress={() => {
 								setIsVisible(true);
+								setFixedPage(page);
 							}}
 						>
 							<Icon
@@ -208,6 +265,9 @@ const BizPage = (props) => {
 				<CommentList
 					bizId={props.route.params["biz"].business.id}
 					navigation={navigation}
+					handleSuccess={handleSuccess}
+					handleClose={handleClose}
+					successTogg={successTogg}
 					// comments={comments}
 				/>
 			</View>
@@ -215,7 +275,14 @@ const BizPage = (props) => {
 	);
 };
 
-export default BizPage;
+export default connect(mapStateToProps, {
+	setUserInfo,
+	setIsFetching,
+})(function (props) {
+	const isFocused = useIsFocused();
+
+	return <BizPage {...props} isFocused={isFocused} />;
+});
 
 const styles = StyleSheet.create({
 	container: {
@@ -256,7 +323,7 @@ const styles = StyleSheet.create({
 	},
 	img: {
 		position: "absolute",
-		width: vw(59),
+		width: vw(58),
 		height: vh(30),
 		opacity: 1.0,
 		alignSelf: "flex-start",
@@ -274,7 +341,7 @@ const styles = StyleSheet.create({
 	},
 	imgs: {
 		position: "relative",
-		width: vw(60),
+		width: vw(58),
 		height: vh(30),
 		opacity: 1.0,
 		backgroundColor: "black",
@@ -288,3 +355,9 @@ const styles = StyleSheet.create({
 		backgroundColor: "black",
 	},
 });
+
+function mapStateToProps(state) {
+	return {
+		userInfo: state.userInfo,
+	};
+}

@@ -44,10 +44,10 @@ const ProfileHearts = (props) => {
 				height: vh(47),
 				width: vw(100),
 				// position: "absolute",
-				backgroundColor: "maroon", //MAROON
+				backgroundColor: "rgba(255,255,255,0.02)", //MAROON
 				zIndex: 1,
-				top: vh(1), // POSITION 📈
-				// marginTop: vh(5),
+				top: vh(1.5), // POSITION 📈
+				marginTop: vh(2),
 			}}
 		>
 			<Text style={styles.title}>LIKES({props.userHeartBizs.length})</Text>
@@ -57,7 +57,7 @@ const ProfileHearts = (props) => {
 				horizontal={true}
 				// style={styles.list}
 				contentContainerStyle={{
-					backgroundColor: "rgba(0, 0, 0, 0.9)",
+					backgroundColor: "rgba(255, 255, 255, 0.02)",
 					alignItems: "flex-start",
 					justifyContent: "flex-start",
 					// height: vh(47),

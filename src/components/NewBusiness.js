@@ -39,7 +39,6 @@ import RNFetchBlob from "rn-fetch-blob";
 import axios from "axios";
 // import { DirectUpload } from "activestorage";
 
-
 const NewBusiness = (props) => {
 	const [inputs, setInputs] = useState({
 		name: "Business Name",
@@ -47,9 +46,7 @@ const NewBusiness = (props) => {
 	});
 	const [errorMessage, setErrorMessage] = useState("");
 	const [visibility, setVisibility] = useState(true);
-	const [posted, setPosted] = useState(false);
 	const navigation = useNavigation();
-	// const data = new FormData();
 	const business = {
 		id: 1,
 		name: "Black Flag Apparel",
@@ -70,63 +67,34 @@ const NewBusiness = (props) => {
 		comments: [],
 	};
 
-	// console.log(props.route.params.lastScreen);
-
-	// for (image of inputs.images) {
-	// 	postData.push({
-	// 		name: "biz_images[]",
-	// 		filename: `${image.filename}`,
-	// 		type: image.mime,
-	// 		mime: image.mime,
-	// 		data: `RNFetchBlob-file://${image.sourceURL.replace("file://", "")}`,
-	// 	});
-	// }
-
-	// fetch(
-	// 	`http://127.0.0.1:3000/businesses`,
-	// 	(method: "POST"),
-	// 	{
-	// 		// Authorization: `${environment["API_KEY"]}`,
-	// 		// "Content-Type": undefined,
-	// 	},
-	// 	postData
-	// )
-	// 	.then((resp) => console.log("NEW BUSINESS🔥💼", resp))
-	// 	.catch((err) => {
-	// 		console.log("Error creating new business: ", err);
-	// 	});
-	// for (const image of inputs.images) {
-	// 	data.append({
-	// 		name: "biz_images[]",
-	// 		filename: `${image.filename}`,
-	// 		type: image.mime,
-	// 		mime: image.mime,
-	// 		data: `RNFetchBlob-file://${image.sourceURL.replace("file://", "")}`,
-	// 	});
-	// }
-
-	// return fetch(`http://127.0.0.1:3000/businesses`, {
-	// 	method: "POST",
-	// 	body: data,
-	// });
-
 	const handleChange = (key, value) => {
 		setErrorMessage("");
 		setInputs({ ...inputs, [key]: value });
+		// console.log(inputs.images.map((img) => img.file_name));
 	};
 
-	const postBusiness = () => {
-		setPosted(true);
+	const postBusiness = (values) => {
+		// console.log(
+		// 	"IMAGE HASH IS 🖼  ",
+		// 	inputs.images.map((img) => img.file_name)
+		// );
+		if (!inputs.images || inputs.images.length < 1) {
+			setErrorMessage("You can upload 10 images. At least 1 is required.");
+			return;
+		}
+
+		// console.log("vvvvalues", values);
 
 		let imageHash = inputs.images.map((image) => {
+			console.log(image.uri);
 			return {
-				image: image.data,
-				file_name: image.filename,
+				image: image.uri,
+				file_name: image.file_name,
 			};
 		});
 
 		// console.log("INPUTS.IMAGES [] IS 🖼", inputs.images);
-		console.log("IMAGE HASH IS 🖼  ", imageHash);
+
 		let postData = {
 			business: {
 				name: inputs.name,
@@ -139,7 +107,7 @@ const NewBusiness = (props) => {
 				facebook: inputs.facebook,
 				phone: inputs.phone, //FIX CLEAR VALIDATION ERROR
 				email: inputs.email,
-				hearts: 1,
+				hearts: 0,
 				images: imageHash,
 				// file_name: inputs.images[0].filename,
 			},
@@ -153,9 +121,12 @@ const NewBusiness = (props) => {
 			},
 			body: JSON.stringify(postData),
 		})
-			.then((resp) => resp.json())
+			.then((resp) => {
+				handleResult();
+			})
 			.catch((err) => {
-				console.log("Error creating new business: ", err);
+				setErrorMessage("Something went wrong. Try again later.");
+				console.log("🚨 Error creating new business: ", err);
 			});
 	};
 
@@ -174,7 +145,15 @@ const NewBusiness = (props) => {
 	// };
 
 	const handleResult = (result) => {
-		!posted && postBusiness(); //RESET TO POSTED TRUE AFTER POST
+		props.handleSuccess("business");
+		props.handleClose("business");
+		// setPosted(true); //RESET TO POSTED TRUE AFTER POST
+		setTimeout(() => {
+			setVisibility(false);
+		}, 500);
+
+		props.handleAddBusinessTogg();
+		// navigation.navigate("Profile");
 	};
 
 	// console.log("INPUTS.IMAGES [] IS 🖼", inputs.images);
@@ -198,6 +177,7 @@ const NewBusiness = (props) => {
 					handleAddBusinessTogg={props.handleAddBusinessTogg}
 				/>
 			</View>
+
 			<KeyboardAvoidingView behavior="height">
 				<ScrollView
 					// decelerationRate={0.75}
@@ -217,7 +197,7 @@ const NewBusiness = (props) => {
 							<View
 								style={{
 									backgroundColor: "rgba(40, 40, 40, 0.5)",
-									borderLeftWidth: 4,
+									borderLeftWidth: 2,
 									width: vh(8.5),
 									height: vh(6.8),
 									alignItems: "center",
@@ -227,7 +207,9 @@ const NewBusiness = (props) => {
 								<Image
 									resizeMode={"cover"}
 									source={{
-										uri: props.userInfo.img_url,
+										uri: props.userInfo.image
+											? `http://127.0.0.1:3000/${props.userInfo.image}`
+											: props.userInfo.image,
 									}}
 									style={styles.profilePic}
 								></Image>
@@ -457,15 +439,15 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 	},
 	profilePic: {
-		// zIndex: 1,
-		borderRadius: 22,
-		height: vh(6),
+		borderRadius: vw(100),
 		width: vw(11),
+		height: undefined,
+		aspectRatio: 135 / 128,
 	},
 	inputDiv: {
 		flex: 1,
 		position: "relative",
-		opacity: 1,
+		opacity: 0.94,
 		backgroundColor: "black",
 		zIndex: 1,
 		bottom: vh(1),

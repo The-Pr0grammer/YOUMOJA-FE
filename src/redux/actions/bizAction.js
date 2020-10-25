@@ -17,6 +17,7 @@ import {
 	SORT_BY_SCORES_TOGG,
 	HANDLE_REFRESH,
 	SET_USER_INFO,
+	PROFILE_LOADING_TOGG,
 } from "./types";
 import axios from "axios";
 
@@ -142,4 +143,9 @@ export const handleRefresh = () => ({
 export const setUserInfo = (user) => ({
 	type: SET_USER_INFO,
 	payload: user,
+});
+
+export const profileLoadingTogg = (togg) => ({
+	type: PROFILE_LOADING_TOGG,
+	payload: togg,
 });
