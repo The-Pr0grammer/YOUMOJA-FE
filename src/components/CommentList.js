@@ -284,6 +284,7 @@ class CommentList extends React.Component {
 					{!this.props.isFetching && !this.props.newBusiness && (
 						<FlatList
 							horizontal={this.props.newBusiness && true}
+							indicatorStyle={"white"}
 							ref={(ref) => {
 								this.flatList = ref;
 							}}

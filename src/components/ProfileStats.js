@@ -164,6 +164,7 @@ const ProfileStats = (props) => {
 				// console.log(resp);
 				// refreshUserInfo();
 				props.handleSuccess("profilePic")
+				setTimeout(()=> props.handleClose("profilePic"),3900)
 			})
 			.catch((err) => {
 				setErrorMessage("Something went wrong. Try again later.");

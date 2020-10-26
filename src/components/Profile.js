@@ -46,7 +46,7 @@ const Profile = (props) => {
 	// 	setTimeout(() => props.profileLoadingTogg(false), 500);
 	useEffect(() => {
 		!addBusinessTogg && props.setIsFetching(true);
-		setTimeout(() => props.setIsFetching(false), 500);
+		setTimeout(() => props.setIsFetching(false), 2000);
 
 		if (!userShow) {
 			let response = axios(`http://127.0.0.1:3000/users/${props.userInfo.id}`)
@@ -64,20 +64,19 @@ const Profile = (props) => {
 
 	handleSuccess = (type) => {
 		if (type === "business") {
-			props.fetchBizs();
 			setTimeout(() => {
 				setPosted(true);
-
-			}, 2000);
+				props.fetchBizs();
+			}, 1000);
 		} else if (type === "profilePic") {
 			setTimeout(() => {
 				setImgSaved(true);
 				let response = axios(`http://127.0.0.1:3000/users/${props.userInfo.id}`)
-				.then((resp) => {
-					props.setUserInfo(resp.data);
-					setUserShow(resp.data);
-				})
-				.catch((error) => console.log(error));
+					.then((resp) => {
+						props.setUserInfo(resp.data);
+						setUserShow(resp.data);
+					})
+					.catch((error) => console.log(error));
 			}, 250);
 		}
 	};
@@ -86,7 +85,7 @@ const Profile = (props) => {
 		if (type === "business") {
 			setTimeout(() => {
 				setPosted(false);
-			}, 3200);
+			}, 6400);
 		} else if (type === "profilePic") {
 			setTimeout(() => {
 				setImgSaved(false);
@@ -167,6 +166,8 @@ const Profile = (props) => {
 			</View>
 
 			<ScrollView
+				indicatorStyle={"white"}
+				scrollIndicatorInsets={{ top: 0, left: vw(10), bottom: 0, right: 0 }}
 				contentContainerStyle={{ paddingBottom: vh(15) }}
 				style={{
 					flex: 1,

@@ -43,16 +43,15 @@ const BizPage = (props) => {
 	console.log("IMAGES LIVE FROM THE BIZPAGE", images);
 
 	useEffect(() => {
-		let arr = [0];
-		props.userInfo.image
+		props.route.params["biz"].business.images
 			? setImages(
-					arr.map((image, index) => {
+				props.route.params["biz"].business.images.map((image, index) => {
 						return (
 							{
-								url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+								url: `http://127.0.0.1:3000/${image}`,
 							},
 							{
-								url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+								url: `http://127.0.0.1:3000/${image}`,
 								props: {
 									// source: require("data:image/gif;base64,${item.data}"),
 								},
@@ -77,7 +76,7 @@ const BizPage = (props) => {
 	const handleClose = () => {
 		setTimeout(() => {
 			setSuccessTogg(false);
-		}, 4800);
+		}, 6400);
 	};
 
 	const handleDismiss = () => {
@@ -190,7 +189,7 @@ const BizPage = (props) => {
 								resizeMode={"cover"}
 								source={{
 									uri: props.route.params.userInfo.image
-										? `http://127.0.0.1:3000/${props.route.params["biz"].user.image}`
+										? `http://127.0.0.1:3000/${props.userInfo.image}`
 										: props.route.params.userInfo.img_url,
 								}}
 								style={styles.profilePic}

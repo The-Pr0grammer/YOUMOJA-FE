@@ -34,9 +34,6 @@ class NewComment extends React.Component {
 
 	handleSubmit = async() => {
 		if (/\S/.test(this.state.text)) {
-			this.props.handleSuccess();
-			this.props.handleCancel();
-			this.props.handleClose();
 			const data = {
 				user_id: this.props.userInfo.id,
 				business_id: this.props.bizId,
@@ -44,6 +41,9 @@ class NewComment extends React.Component {
 				score: 1,
 			};
 			this.props.postComment(data);
+			this.props.handleSuccess();
+			this.props.handleCancel();
+			this.props.handleClose();
 		} else if (!/\S/.test(this.state.text)) {
 			this.setState({
 				errorMessage: "Can't be blank",

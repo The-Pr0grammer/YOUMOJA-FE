@@ -48,25 +48,19 @@ class Businesses extends Component {
 	}
 
 	loadUser = async (id) => {
-		try {
-			let response = await axios(`http://127.0.0.1:3000/users/${id}`);
-			// console.log("response is", response )
-			this.props.setUserInfo({
-				...this.props.userInfo,
-				name: response.data.name,
-				username: response.data.username,
-			});
-		} catch (error) {
-			this.setState({ userLoadingErrorMessage: error.message });
-		}
+		let response = await axios(`http://127.0.0.1:3000/users/${1}`)
+			.then((resp) => this.props.setUserInfo(resp.data))
+			.catch((error) => console.log(error));
 	};
 
 	componentDidMount(props) {
 		// Linking.addEventListener("url", this.handleOpenURL);
 
-		let response = axios(`http://127.0.0.1:3000/users/${1}`)
-			.then((resp) => this.props.setUserInfo(resp.data))
-			.catch((error) => console.log(error));
+		this.props.filteredBizs.length < 1 &&
+			this.props.fetchBizs() &&
+			this.loadUser();
+
+		setTimeout(() => this.props.setIsFetching(false), 2200);
 		// this.props.setUserInfo({
 		// 	email: "anthonyh202x@gmail.com",
 		// 	emailVerified: true,
@@ -81,10 +75,9 @@ class Businesses extends Component {
 		// 	? this.props.navigation.navigate("Login", { message: "Please log in" })
 		// 	: null;
 		// this.loadUser(this.props.userInfo.id);
-		this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
+		// this.setState({ hasLoadedUsers: false, userLoadingErrorMessage: "" });
 		// this.loadUsers();
 		// console.log("USER INFO ON LOGIN IS", this.props.userInfo);
-		this.props.filteredBizs.length<1 && this.props.fetchBizs();
 		// this.didFocusSubscription = this.props.navigation.addListener(
 		// 	"didfocus",
 		// 	() => {
@@ -249,6 +242,7 @@ class Businesses extends Component {
 
 				{emptyCheck > 0 && (
 					<FlatList
+						indicatorStyle={"white"}
 						style={styles.list}
 						contentContainerStyle={{
 							backgroundColor: "rgba(0, 0, 0, 0)",

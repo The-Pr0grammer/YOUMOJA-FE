@@ -12,7 +12,7 @@ import { Icon, ThemeConsumer } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
-import { fetchBizs } from "../redux/actions/bizAction";
+import { fetchBizs, setUserInfo } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
 import axios from "axios";
 
@@ -73,7 +73,13 @@ class ListBizDash extends React.Component {
 				user_heart: { user_id: 1, user_biz_id: this.props.biz.id },
 			})
 			.then(function (response) {
-				// console.log(response);
+				let userRsp = axios(
+					`http://127.0.0.1:3000/users/${this.props.userInfo.id}`
+				)
+					.then((resp) => {
+						this.props.setUserInfo(resp.data);
+					})
+					.catch((error) => console.log(error));
 			});
 	};
 
@@ -237,7 +243,9 @@ class ListBizDash extends React.Component {
 	}
 }
 
-export default connect(mapStateToProps, { fetchBizs })(ListBizDash);
+export default connect(mapStateToProps, { fetchBizs, setUserInfo })(
+	ListBizDash
+);
 
 const styles = StyleSheet.create({
 	badge: {
@@ -250,5 +258,5 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
-	return { category: state.category };
+	return { category: state.category, userInfo: state.userInfo };
 }

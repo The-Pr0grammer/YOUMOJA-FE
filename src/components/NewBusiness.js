@@ -10,6 +10,8 @@ import {
 	Text,
 	ScrollView,
 	KeyboardAvoidingView,
+	ActivityIndicator,
+	ImageBackground,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Icon, Button } from "react-native-elements";
@@ -149,14 +151,14 @@ const NewBusiness = (props) => {
 		props.handleClose("business");
 		// setPosted(true); //RESET TO POSTED TRUE AFTER POST
 		setTimeout(() => {
-			setVisibility(false);
-		}, 500);
+			props.handleAddBusinessTogg();
+		}, 2000);
 
-		props.handleAddBusinessTogg();
 		// navigation.navigate("Profile");
 	};
 
 	// console.log("INPUTS.IMAGES [] IS 🖼", inputs.images);
+	console.log("fetching 🐶:", props.isFetching);
 
 	return (
 		<Modal visible={visibility} style={styles.container}>
@@ -184,12 +186,13 @@ const NewBusiness = (props) => {
 					bounces={false}
 					contentContainerStyle={{
 						flexGrow: 1,
-						height: vh(170),
+						height: props.isFetching ? vh(100) : vh(170),
 						backgroundColor: "lightslategray",
 						borderWidth: 2.5,
 						borderColor: "black",
 						// top: vh(0.25),
 					}}
+					indicatorStyle={"white"}
 					// style={styles.scrollCon}
 				>
 					<View style={styles.bizCon}>
@@ -248,104 +251,134 @@ const NewBusiness = (props) => {
 							/>
 						</View>
 					</View>
-
-					<View style={styles.commentCon}>
-						<CommentList
-							bizId={0}
-							navigation={navigation}
-							newBusiness={true}
-							// comments={comments}
-						/>
-					</View>
-					<View style={styles.inputDiv}>
-						<View style={styles.inputDash}>
-							<Text style={styles.errorMessage}>{errorMessage}</Text>
-							<Form
-								action={postBusiness}
-								afterSubmit={handleResult}
-								handleChange={handleChange}
-								// buttonText="Create Account"
-								// buttonSpinner={spinner}
-								type="NewBusiness"
-								fields={{
-									name: {
-										label: "Name",
-										validators: [validateContent],
-										inputProps: {
-											autoCapitalize: "words",
-											placeholder: "What's the name of your business?",
-											placeholderTextColor: "#D50000",
-											textAlign: "center",
-										},
-									},
-									summary: {
-										label: "Summary",
-										validators: [validateContent],
-										inputProps: {
-											placeholder: "Enter a summary for your business",
-											placeholderTextColor: "#D50000",
-											textAlign: "center",
-										},
-									},
-									facebook: {
-										label: "Facebook",
-										validators: [urlCheck],
-										inputProps: {
-											autoCapitalize: "none",
-											placeholder: "Business Facebook url",
-											placeholderTextColor: "#D50000",
-											textAlign: "center",
-										},
-									},
-									instagram: {
-										label: "Instagram",
-										validators: [urlCheck],
-										inputProps: {
-											placeholder: "Business Instagram url",
-											placeholderTextColor: "#D50000",
-											textAlign: "center",
-										},
-									},
-									twitter: {
-										label: "Twitter",
-										validators: [urlCheck],
-										inputProps: {
-											placeholder: "Business Twitter url",
-											placeholderTextColor: "#D50000",
-											textAlign: "center",
-										},
-									},
-									website: {
-										label: "Website",
-										validators: [urlCheck],
-										inputProps: {
-											placeholder: "Business website url",
-											placeholderTextColor: "#D50000",
-											textAlign: "center",
-										},
-									},
-									number: {
-										label: "Contact",
-										validators: [phoneNumberCheck],
-										inputProps: {
-											keyboardType: "phone-pad",
-											placeholder: "Enter a telephone number for this business",
-											placeholderTextColor: "#D50000",
-											textAlign: "center",
-										},
-									},
-									support: {
-										label: "Support",
-										validators: [urlCheck],
-										inputProps: {
-											placeholder: "Enter a url to support this business",
-											placeholderTextColor: "#D50000",
-											textAlign: "center",
-										},
-									},
+					{props.isFetching && (
+						<View
+							style={{
+								// flex: 1,
+								// height: vh(100),
+								width: vw(100),
+								justifyContent: "center",
+								backgroundColor: "rgba(0,5,35,0.8)",
+							}}
+						>
+							<ActivityIndicator
+								size="large"
+								color="lime"
+								hidesWhenStopped={true}
+								style={{
+									top: vh(28),
 								}}
+							></ActivityIndicator>
+							<View style={{ position: "relative", height: vh(50) }}>
+								<ImageBackground
+									source={require("../images/blackownedbiz.gif")}
+									style={styles.bg}
+									imageStyle={{ resizeMode: "stretch" }}
+								></ImageBackground>
+							</View>
+						</View>
+					)}
+					{/* {!props.isFetching && (
+						<View style={styles.commentCon}>
+							<CommentList
+								bizId={0}
+								navigation={navigation}
+								newBusiness={true}
+								// comments={comments}
 							/>
-							{/* <Button
+						</View>
+					)} */}
+					{!props.isFetching && (
+						<View style={styles.inputDiv}>
+							<View style={styles.inputDash}>
+								<Text style={styles.errorMessage}>{errorMessage}</Text>
+								<Form
+									action={postBusiness}
+									afterSubmit={handleResult}
+									handleChange={handleChange}
+									// buttonText="Create Account"
+									// buttonSpinner={spinner}
+									type="NewBusiness"
+									fields={{
+										name: {
+											label: "Name",
+											validators: [validateContent],
+											inputProps: {
+												autoCapitalize: "words",
+												placeholder: "What's the name of your business?",
+												placeholderTextColor: "#D50000",
+												textAlign: "center",
+											},
+										},
+										summary: {
+											label: "Summary",
+											validators: [validateContent],
+											inputProps: {
+												placeholder: "Enter a summary for your business",
+												placeholderTextColor: "#D50000",
+												textAlign: "center",
+											},
+										},
+										facebook: {
+											label: "Facebook",
+											validators: [urlCheck],
+											inputProps: {
+												autoCapitalize: "none",
+												placeholder: "Business Facebook url",
+												placeholderTextColor: "#D50000",
+												textAlign: "center",
+											},
+										},
+										instagram: {
+											label: "Instagram",
+											validators: [urlCheck],
+											inputProps: {
+												placeholder: "Business Instagram url",
+												placeholderTextColor: "#D50000",
+												textAlign: "center",
+											},
+										},
+										twitter: {
+											label: "Twitter",
+											validators: [urlCheck],
+											inputProps: {
+												placeholder: "Business Twitter url",
+												placeholderTextColor: "#D50000",
+												textAlign: "center",
+											},
+										},
+										website: {
+											label: "Website",
+											validators: [urlCheck],
+											inputProps: {
+												placeholder: "Business website url",
+												placeholderTextColor: "#D50000",
+												textAlign: "center",
+											},
+										},
+										number: {
+											label: "Contact",
+											validators: [phoneNumberCheck],
+											inputProps: {
+												keyboardType: "phone-pad",
+												placeholder:
+													"Enter a telephone number for this business",
+												placeholderTextColor: "#D50000",
+												textAlign: "center",
+											},
+										},
+										support: {
+											label: "Support",
+											validators: [urlCheck],
+											inputProps: {
+												placeholder: "Enter a url to support this business",
+												placeholderTextColor: "#D50000",
+												textAlign: "center",
+											},
+										},
+									}}
+								/>
+								{/* <Button
 							title={"Post Business"}
 							buttonStyle={{
 								backgroundColor: "transparent",
@@ -369,8 +402,9 @@ const NewBusiness = (props) => {
 							// loading={buttonSpinner}
 							// loadingProps={{ color: "green", size: "large" }}
 						/> */}
+							</View>
 						</View>
-					</View>
+					)}
 				</ScrollView>
 			</KeyboardAvoidingView>
 		</Modal>
@@ -473,10 +507,20 @@ const styles = StyleSheet.create({
 		zIndex: -1,
 		// backgroundColor: "red",
 	},
+	bg: {
+		// position: "absolute",
+		resizeMode: "stretch",
+		opacity: 0.2,
+		borderWidth: 0,
+		width: vw(100),
+		height: vh(36),
+		justifyContent: "center",
+	},
 });
 
 function mapStateToProps(state) {
 	return {
 		userInfo: state.userInfo,
+		isFetching: state.isFetching,
 	};
 }
