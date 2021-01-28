@@ -3,7 +3,7 @@ PODS:
   - CocoaAsyncSocket (7.6.4)
   - CocoaLibEvent (1.0.0)
   - DoubleConversion (1.1.6)
-  - EXConstants (9.1.1):
+  - EXConstants (9.2.0):
     - UMConstantsInterface
     - UMCore
   - EXErrorRecovery (1.2.2):
@@ -11,7 +11,7 @@ PODS:
   - EXFileSystem (9.0.1):
     - UMCore
     - UMFileSystemInterface
-  - EXFirebaseCore (1.1.1):
+  - EXFirebaseCore (1.2.0):
     - Firebase/Core (= 6.14.0)
     - UMCore
   - EXFont (8.2.2):
@@ -23,7 +23,7 @@ PODS:
     - UMImageLoaderInterface
   - EXKeepAwake (8.2.1):
     - UMCore
-  - EXLinearGradient (8.2.1):
+  - EXLinearGradient (8.2.2):
     - UMCore
   - EXLocation (8.2.1):
     - UMCore
@@ -416,12 +416,14 @@ PODS:
     - React
   - RNGestureHandler (1.6.1):
     - React
-  - RNImageCropPicker (0.35.0):
+  - RNIap (5.2.4):
+    - React-Core
+  - RNImageCropPicker (0.35.1):
     - React-Core
     - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.35.0)
+    - RNImageCropPicker/QBImagePickerController (= 0.35.1)
     - TOCropViewController
-  - RNImageCropPicker/QBImagePickerController (0.35.0):
+  - RNImageCropPicker/QBImagePickerController (0.35.1):
     - React-Core
     - React-RCTImage
     - TOCropViewController
@@ -429,7 +431,7 @@ PODS:
     - React
   - RNScreens (2.9.0):
     - React
-  - RNShare (3.8.3):
+  - RNShare (3.8.5):
     - React-Core
   - TOCropViewController (2.5.4)
   - UMAppLoader (1.2.0)
@@ -455,7 +457,7 @@ PODS:
 
 DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
-  - EXConstants (from `../node_modules/expo-constants/ios`)
+  - EXConstants (from `../node_modules/expo-linking/node_modules/expo-constants/ios`)
   - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFirebaseCore (from `../node_modules/expo-firebase-core/ios`)
@@ -523,6 +525,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNIap (from `../node_modules/react-native-iap`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -574,7 +577,7 @@ EXTERNAL SOURCES:
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXConstants:
-    :path: "../node_modules/expo-constants/ios"
+    :path: "../node_modules/expo-linking/node_modules/expo-constants/ios"
   EXErrorRecovery:
     :path: "../node_modules/expo-error-recovery/ios"
   EXFileSystem:
@@ -665,6 +668,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/masked-view"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNIap:
+    :path: "../node_modules/react-native-iap"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
   RNReanimated:
@@ -707,14 +712,14 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   CocoaLibEvent: 2fab71b8bd46dd33ddb959f7928ec5909f838e3f
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
-  EXConstants: f907b3b6ce16e20d1750f22af1e095e924574bcb
+  EXConstants: f486f6b4a36b86e47ab258d4d2b7b2699786fdce
   EXErrorRecovery: ff58873bf2714fcd5290935d49b74d9fc589d575
   EXFileSystem: 76875135b61708b9afa7e6a89b72a60ba0fdfa20
-  EXFirebaseCore: 7e720f6f3725795b960b9e59dfcd46e674b30774
+  EXFirebaseCore: d5befdb22015f9b71168ed89dda0b50dbb07fed1
   EXFont: e583875d5d37a9e272d1cdba7f383bd576952919
   EXImageLoader: 02ca02c9cd5cc8a97b423207a73a791e0a86bea5
   EXKeepAwake: 8b0f68242f036b971f9f8976341823cbe6f50812
-  EXLinearGradient: 663bf3b9009a96567e98498016e40422631be81d
+  EXLinearGradient: fd56f6e9fca133329f190d75bfa28dc57ed7a1dc
   EXLocation: e93020e255f52a1cc031e0f45b0a24eb20fc4b55
   EXPermissions: 80ac3acbdb145930079810fe5b08c022b3428aa8
   EXSharing: 90a28fe9d4187d124d491788d96d204b30448b8f
@@ -773,10 +778,11 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: d059c3ee71738c39834a627476322a5a8cd5bf36
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
-  RNImageCropPicker: 89352ad050ea8dd9bc1728802c477f5b38cd7b4c
+  RNIap: e94081db501c26e56cdacb96fbd83cd344d0fbc4
+  RNImageCropPicker: 16951bc02411f50c4d197488ed6406a23dc3b5f1
   RNReanimated: b5ccb50650ba06f6e749c7c329a1bc3ae0c88b43
   RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
-  RNShare: ec48772563576a8ff19022c3d1db410429fb3e2e
+  RNShare: 7e22ba3bf66294ff7c122a1f2da8a8ec642091a0
   TOCropViewController: 2a1ae1242600b1f2d996fd91a5268b2309a33b5c
   UMAppLoader: 61049c8d55590b74e9ae1d5429bf68d96b4a2528
   UMBarCodeScannerInterface: e5e4c87797d3d01214e25cd1618866caf5d4f17f
@@ -796,4 +802,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: d02480ed35f1172f40e3b23748ec9b777206924f
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.1
