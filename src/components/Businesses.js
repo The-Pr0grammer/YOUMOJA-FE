@@ -48,7 +48,7 @@ class Businesses extends Component {
 	}
 
 	loadUser = async (id) => {
-		let response = await axios(`http://127.0.0.1:3000/users/${1}`)
+		let response = await axios(`http://192.168.1.211:3000/users/${1}`)
 			.then((resp) => this.props.setUserInfo(resp.data))
 			.catch((error) => console.log(error));
 	};

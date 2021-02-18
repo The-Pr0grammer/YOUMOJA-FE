@@ -49,12 +49,7 @@ class Sorter extends React.Component {
 						this.props.sorters.locationSort ? styles.litBox : styles.sortBox3,
 					]}
 				>
-					<Icon
-						name="certificate"
-						type="material-community"
-						color="darkcyan"
-						size={42}
-					/>
+					<Icon name="rocket1" type="ant-design" color="darkcyan" size={42} />
 				</TouchableOpacity>
 			</View>
 		);

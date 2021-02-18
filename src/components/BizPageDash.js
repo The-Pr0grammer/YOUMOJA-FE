@@ -11,8 +11,8 @@ import { Icon } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import axios from "axios";
-import * as Sharing from "expo-sharing";
 import * as WebBrowser from "expo-web-browser";
+import * as Sharing from "expo-sharing";
 import * as ExpoLinking from "expo-linking";
 
 const BizPageDash = (props) => {
@@ -25,7 +25,7 @@ const BizPageDash = (props) => {
 		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
 		axios
 			.patch(
-				`http://127.0.0.1:3000/businesses/${props.business.id}`,
+				`http://192.168.1.211:3000/businesses/${props.business.id}`,
 				{
 					hearts: hearts + 1,
 				},
@@ -38,7 +38,7 @@ const BizPageDash = (props) => {
 				console.log(error.response);
 			});
 		axios
-			.post(`http://127.0.0.1:3000/user_hearts`, {
+			.post(`http://192.168.1.211:3000/user_hearts`, {
 				user_id: props.userInfo.id,
 				business_id: props.business.id,
 			})
@@ -151,7 +151,7 @@ const BizPageDash = (props) => {
 			>
 				<Icon
 					name="instagram"
-					type="material-community"
+					type="ant-design"
 					color="rgb(195, 42, 163)"
 					size={32}
 				/>

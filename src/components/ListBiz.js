@@ -70,7 +70,7 @@ class ListBiz extends React.Component {
 				//IMAGES
 				style={styles.imgs}
 				source={{
-					uri: `http://127.0.0.1:3000/${data.data}`,
+					uri: `http://192.168.1.211:3000/${data.data}`,
 				}}
 				// resizeMode={"stretch"}
 				resizeMode={"cover"}
@@ -85,7 +85,7 @@ class ListBiz extends React.Component {
 		return (
 			<View style={styles.container}>
 				<TouchableOpacity
-					style={{ zIndex: 2 }}
+					style={{ zIndex: 10 }}
 					onPress={() => {
 						this.props.navigation.navigate("BizPage", {
 							biz: this.props.biz,
@@ -130,7 +130,7 @@ class ListBiz extends React.Component {
 								height: vh(30),
 								flexDirection: "column",
 								alignSelf: "flex-start",
-								zIndex: 3,
+								zIndex: 1,
 							}}
 						>
 							{this.props.biz.business.images && this.renderImages()}

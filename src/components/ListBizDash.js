@@ -15,6 +15,7 @@ const DEVICE_HEIGHT = Dimensions.get("window").height;
 import { fetchBizs, setUserInfo } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
 import axios from "axios";
+import BadgeShop from "./BadgeShop.js";
 
 class ListBizDash extends React.Component {
 	constructor(props) {
@@ -26,6 +27,7 @@ class ListBizDash extends React.Component {
 			search: "",
 			catTogg: false,
 			comments: 0,
+			shopTogg: false,
 		};
 	}
 
@@ -39,7 +41,7 @@ class ListBizDash extends React.Component {
 
 	fetchHearts = () => {
 		axios
-			.get(`http://127.0.0.1:3000/users/1`)
+			.get(`http://192.168.1.211:3000/users/1`)
 			.then((response) => {
 				this.setState({ userHearts: response.data.user_hearts });
 			})
@@ -53,7 +55,7 @@ class ListBizDash extends React.Component {
 		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
 		axios
 			.patch(
-				`http://127.0.0.1:3000/businesses/${this.props.biz.business.id}`,
+				`http://192.168.1.211:3000/businesses/${this.props.biz.business.id}`,
 				{
 					business: {
 						id: this.props.biz.business.id,
@@ -69,18 +71,22 @@ class ListBizDash extends React.Component {
 				console.log(error.response);
 			});
 		axios
-			.post(`http://127.0.0.1:3000/user_hearts`, {
+			.post(`http://192.168.1.211:3000/user_hearts`, {
 				user_heart: { user_id: 1, user_biz_id: this.props.biz.id },
 			})
 			.then(function (response) {
 				let userRsp = axios(
-					`http://127.0.0.1:3000/users/${this.props.userInfo.id}`
+					`http://192.168.1.211:3000/users/${this.props.userInfo.id}`
 				)
 					.then((resp) => {
 						this.props.setUserInfo(resp.data);
 					})
 					.catch((error) => console.log(error));
 			});
+	};
+
+	handleShopTogg = () => {
+		return this.setState({ shopTogg: !this.state.shopTogg });
 	};
 
 	render() {
@@ -186,10 +192,16 @@ class ListBizDash extends React.Component {
 					snapToInterval={33}
 					scrollEventThrottle={1}
 				>
-					<TouchableOpacity style={styles.badge}>
+					<TouchableOpacity
+						style={styles.badge}
+						onPress={() => {
+							console.log("lets shop. togg is:", this.state.shopTogg);
+							this.handleShopTogg();
+						}}
+					>
 						<Icon
-							name="certificate"
-							type="material-community"
+							name="rocket1"
+							type="ant-design"
 							color="green"
 							size={45}
 							// reverse
@@ -197,40 +209,60 @@ class ListBizDash extends React.Component {
 							style={{ marginRight: vw(10) }}
 						/>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.badge}>
+					<TouchableOpacity
+						style={styles.badge}
+						onPress={() => {
+							this.handleShopTogg();
+						}}
+					>
 						<Icon
-							name="certificate"
-							type="material-community"
+							name="rocket1"
+							type="ant-design"
 							color="blue"
 							size={45}
 							// reverse
 							// reverseColor="dodgerblue"
 						/>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.badge}>
+					<TouchableOpacity
+						style={styles.badge}
+						onPress={() => {
+							this.handleShopTogg();
+						}}
+					>
 						<Icon
-							name="certificate"
-							type="material-community"
+							name="rocket1"
+							type="ant-design"
 							color="firebrick"
 							size={45}
 							// reverse
 							// reverseColor="lightcoral"
 						/>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.badge}>
+					<TouchableOpacity
+						style={styles.badge}
+						onPress={() => {
+							this.handleShopTogg();
+						}}
+					>
 						<Icon
-							name="certificate"
-							type="material-community"
+							name="rocket1"
+							type="ant-design"
 							color="slateblue"
 							size={45}
 							// reverse
 							// reverseColor="darkmagenta"
 						/>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.badge}>
+					<TouchableOpacity
+						style={styles.badge}
+						onPress={() => {
+							this.handleShopTogg();
+						}}
+					>
 						<Icon
-							name="certificate"
-							type="material-community"
+							name="rocket1"
+							type="ant-design"
 							color="gold"
 							size={45}
 							// reverse
@@ -238,6 +270,9 @@ class ListBizDash extends React.Component {
 						/>
 					</TouchableOpacity>
 				</ScrollView>
+				{this.state.shopTogg && (
+					<BadgeShop handleShopTogg={this.handleShopTogg} />
+				)}
 			</View>
 		);
 	}

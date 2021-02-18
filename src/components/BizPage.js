@@ -45,13 +45,13 @@ const BizPage = (props) => {
 	useEffect(() => {
 		props.route.params["biz"].business.images
 			? setImages(
-				props.route.params["biz"].business.images.map((image, index) => {
+					props.route.params["biz"].business.images.map((image, index) => {
 						return (
 							{
-								url: `http://127.0.0.1:3000/${image}`,
+								url: `http://192.168.1.211:3000/${image}`,
 							},
 							{
-								url: `http://127.0.0.1:3000/${image}`,
+								url: `http://192.168.1.211:3000/${image}`,
 								props: {
 									// source: require("data:image/gif;base64,${item.data}"),
 								},
@@ -110,7 +110,7 @@ const BizPage = (props) => {
 				//IMAGES
 				style={styles.imgs}
 				source={{
-					uri: `http://127.0.0.1:3000/${data.data}`,
+					uri: `http://192.168.1.211:3000/${data.data}`,
 				}}
 				// resizeMode={"stretch"}
 				resizeMode={"cover"}
@@ -189,7 +189,7 @@ const BizPage = (props) => {
 								resizeMode={"cover"}
 								source={{
 									uri: props.route.params.userInfo.image
-										? `http://127.0.0.1:3000/${props.userInfo.image}`
+										? `http://192.168.1.211:3000/${props.userInfo.image}`
 										: props.route.params.userInfo.img_url,
 								}}
 								style={styles.profilePic}

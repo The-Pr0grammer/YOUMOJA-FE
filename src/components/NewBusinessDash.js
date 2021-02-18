@@ -215,7 +215,7 @@ const NewBusinessDash = (props) => {
 	// 	this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
 	// 	axios
 	// 		.patch(
-	// 			`http://127.0.0.1:3000/businesses/${props.business.id}`,
+	// 			`http://192.168.1.211:3000/businesses/${props.business.id}`,
 	// 			{
 	// 				hearts: hearts + 1,
 	// 			},
@@ -228,7 +228,7 @@ const NewBusinessDash = (props) => {
 	// 			console.log(error.response);
 	// 		});
 	// 	axios
-	// 		.post(`http://127.0.0.1:3000/user_hearts`, {
+	// 		.post(`http://192.168.1.211:3000/user_hearts`, {
 	// 			user_id: props.userInfo.id,
 	// 			business_id: props.business.id,
 	// 		})
@@ -510,7 +510,7 @@ const NewBusinessDash = (props) => {
 				>
 					<Icon
 						name="facebook-box"
-						type="material-community"
+						type="ant-design"
 						color="rgb(59,89,152)"
 						size={32}
 						opacity={props.inputs.facebook ? 1 : 0.2}
@@ -543,7 +543,7 @@ const NewBusinessDash = (props) => {
 				>
 					<Icon
 						name="instagram"
-						type="material-community"
+						type="ant-design"
 						color="rgb(195, 42, 163)"
 						size={32}
 						opacity={props.inputs.instagram ? 1 : 0.2}

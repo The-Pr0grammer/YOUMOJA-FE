@@ -72,7 +72,7 @@ export const fetchBizs = (activityIndicator) => {
 	return async (dispatch) => {
 		dispatch(fetchingBizsRequest(activityIndicator));
 		try {
-			let response = await axios(`http://127.0.0.1:3000/user_bizs`);
+			let response = await axios(`http://192.168.1.211:3000/user_bizs`);
 			// let json = await response.json();
 			dispatch(fetchingBizsSuccess(response.data));
 		} catch (error) {
@@ -85,7 +85,7 @@ export const fetchComments = (id, activityIndicator) => {
 	return async (dispatch) => {
 		dispatch(fetchingCommentsRequest(activityIndicator));
 		try {
-			let response = await axios(`http://127.0.0.1:3000/businesses/${id}`, {
+			let response = await axios(`http://192.168.1.211:3000/businesses/${id}`, {
 				business: { id: `${id}` },
 			});
 			// let json = await response.json();
@@ -101,7 +101,7 @@ export const postComment = (comment) => {
 		dispatch(postingCommentRequest());
 		try {
 			let response = await axios
-				.post(`http://127.0.0.1:3000/comments`, {
+				.post(`http://192.168.1.211:3000/comments`, {
 					comment,
 				})
 				.then((res) => {

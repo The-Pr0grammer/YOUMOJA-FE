@@ -49,7 +49,9 @@ const Profile = (props) => {
 		setTimeout(() => props.setIsFetching(false), 2000);
 
 		if (!userShow) {
-			let response = axios(`http://127.0.0.1:3000/users/${props.userInfo.id}`)
+			let response = axios(
+				`http://192.168.1.211:3000/users/${props.userInfo.id}`
+			)
 				.then((resp) => {
 					props.setUserInfo(resp.data);
 					setUserShow(resp.data);
@@ -71,7 +73,9 @@ const Profile = (props) => {
 		} else if (type === "profilePic") {
 			setTimeout(() => {
 				setImgSaved(true);
-				let response = axios(`http://127.0.0.1:3000/users/${props.userInfo.id}`)
+				let response = axios(
+					`http://192.168.1.211:3000/users/${props.userInfo.id}`
+				)
 					.then((resp) => {
 						props.setUserInfo(resp.data);
 						setUserShow(resp.data);

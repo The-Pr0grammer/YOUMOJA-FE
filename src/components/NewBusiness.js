@@ -115,7 +115,7 @@ const NewBusiness = (props) => {
 			},
 		};
 
-		fetch(`http://127.0.0.1:3000/businesses`, {
+		fetch(`http://192.168.1.211:3000/businesses`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -135,7 +135,7 @@ const NewBusiness = (props) => {
 	// const uploadFile = (image, business) => {
 	// 	const upload = new DirectUpload(
 	// 		image,
-	// 		"http://127.0.0.1:3000/rails/active_storage/direct_uploads"
+	// 		"http://192.168.1.211:3000/rails/active_storage/direct_uploads"
 	// 	);
 	// 	upload.create((error, blob) => {
 	// 		if (error) {
@@ -211,7 +211,7 @@ const NewBusiness = (props) => {
 									resizeMode={"cover"}
 									source={{
 										uri: props.userInfo.image
-											? `http://127.0.0.1:3000/${props.userInfo.image}`
+											? `http://192.168.1.211:3000/${props.userInfo.image}`
 											: props.userInfo.image,
 									}}
 									style={styles.profilePic}

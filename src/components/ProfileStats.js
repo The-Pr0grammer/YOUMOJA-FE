@@ -43,10 +43,10 @@ const ProfileStats = (props) => {
 			? arr.map((item, index) => {
 					return (
 						{
-							url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+							url: `http://192.168.1.211:3000/${props.userInfo.image}`,
 						},
 						{
-							url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+							url: `http://192.168.1.211:3000/${props.userInfo.image}`,
 							props: {
 								// source: require("data:image/gif;base64,${item.data}"),
 							},
@@ -150,7 +150,7 @@ const ProfileStats = (props) => {
 			},
 		};
 
-		fetch(`http://127.0.0.1:3000/users/${props.userShow.id}`, {
+		fetch(`http://192.168.1.211:3000/users/${props.userShow.id}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
@@ -163,8 +163,8 @@ const ProfileStats = (props) => {
 				// props.setUserInfo(resp.data);
 				// console.log(resp);
 				// refreshUserInfo();
-				props.handleSuccess("profilePic")
-				setTimeout(()=> props.handleClose("profilePic"),3900)
+				props.handleSuccess("profilePic");
+				setTimeout(() => props.handleClose("profilePic"), 3900);
 			})
 			.catch((err) => {
 				setErrorMessage("Something went wrong. Try again later.");
@@ -173,7 +173,7 @@ const ProfileStats = (props) => {
 	};
 
 	refreshUserInfo = () => {
-		let response = axios(`http://127.0.0.1:3000/users/${props.userInfo.id}`)
+		let response = axios(`http://192.168.1.211:3000/users/${props.userInfo.id}`)
 			.then((resp) => {
 				console.log("RESP IS", resp.data);
 				props.setUserInfo(resp.data);
@@ -287,10 +287,10 @@ const ProfileStats = (props) => {
 									? arr.map((item, index) => {
 											return (
 												{
-													url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+													url: `http://192.168.1.211:3000/${props.userInfo.image}`,
 												},
 												{
-													url: `http://127.0.0.1:3000/${props.userInfo.image}`,
+													url: `http://192.168.1.211:3000/${props.userInfo.image}`,
 													props: {
 														// source: require("data:image/gif;base64,${item.data}"),
 													},
@@ -392,8 +392,8 @@ const ProfileStats = (props) => {
 					>
 						<TouchableOpacity style={styles.badge}>
 							<Icon
-								name="certificate"
-								type="material-community"
+								name="rocket1"
+								type="ant-design"
 								color="green"
 								size={40}
 								// reverse
@@ -402,8 +402,8 @@ const ProfileStats = (props) => {
 						</TouchableOpacity>
 						<TouchableOpacity style={styles.badge}>
 							<Icon
-								name="certificate"
-								type="material-community"
+								name="rocket1"
+								type="ant-design"
 								color="blue"
 								size={40}
 								// reverse
@@ -412,8 +412,8 @@ const ProfileStats = (props) => {
 						</TouchableOpacity>
 						<TouchableOpacity style={styles.badge}>
 							<Icon
-								name="certificate"
-								type="material-community"
+								name="rocket1"
+								type="ant-design"
 								color="firebrick"
 								size={40}
 								// reverse
@@ -422,8 +422,8 @@ const ProfileStats = (props) => {
 						</TouchableOpacity>
 						<TouchableOpacity style={styles.badge}>
 							<Icon
-								name="certificate"
-								type="material-community"
+								name="rocket1"
+								type="ant-design"
 								color="slateblue"
 								size={40}
 								// reverse
@@ -432,8 +432,8 @@ const ProfileStats = (props) => {
 						</TouchableOpacity>
 						<TouchableOpacity style={styles.badge}>
 							<Icon
-								name="certificate"
-								type="material-community"
+								name="rocket1"
+								type="ant-design"
 								color="gold"
 								size={40}
 								// reverse
@@ -497,8 +497,8 @@ const ProfileStats = (props) => {
 					>
 						<TouchableOpacity style={styles.badge}>
 							<Icon
-								name="certificate"
-								type="material-community"
+								name="rocket1"
+								type="ant-design"
 								color="green"
 								size={40}
 								// reverse
@@ -507,8 +507,8 @@ const ProfileStats = (props) => {
 						</TouchableOpacity>
 						<TouchableOpacity style={styles.badge}>
 							<Icon
-								name="certificate"
-								type="material-community"
+								name="rocket1"
+								type="ant-design"
 								color="blue"
 								size={40}
 								// reverse
@@ -517,8 +517,8 @@ const ProfileStats = (props) => {
 						</TouchableOpacity>
 						<TouchableOpacity style={styles.badge}>
 							<Icon
-								name="certificate"
-								type="material-community"
+								name="rocket1"
+								type="ant-design"
 								color="firebrick"
 								size={40}
 								// reverse
@@ -527,8 +527,8 @@ const ProfileStats = (props) => {
 						</TouchableOpacity>
 						<TouchableOpacity style={styles.badge}>
 							<Icon
-								name="certificate"
-								type="material-community"
+								name="rocket1"
+								type="ant-design"
 								color="slateblue"
 								size={40}
 								// reverse
@@ -537,8 +537,8 @@ const ProfileStats = (props) => {
 						</TouchableOpacity>
 						<TouchableOpacity style={styles.badge}>
 							<Icon
-								name="certificate"
-								type="material-community"
+								name="rocket1"
+								type="ant-design"
 								color="gold"
 								size={40}
 								// reverse

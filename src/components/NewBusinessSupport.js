@@ -88,8 +88,8 @@ const NewBusinessSupport = (props) => {
 			>
 				<TouchableOpacity style={styles.badge}>
 					<Icon
-						name="certificate"
-						type="material-community"
+						name="rocket1"
+						type="ant-design"
 						color="green"
 						size={45}
 						// reverse
@@ -98,8 +98,8 @@ const NewBusinessSupport = (props) => {
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.badge}>
 					<Icon
-						name="certificate"
-						type="material-community"
+						name="rocket1"
+						type="ant-design"
 						color="blue"
 						size={45}
 						// reverse
@@ -108,8 +108,8 @@ const NewBusinessSupport = (props) => {
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.badge}>
 					<Icon
-						name="certificate"
-						type="material-community"
+						name="rocket1"
+						type="ant-design"
 						color="firebrick"
 						size={45}
 						// reverse
@@ -118,8 +118,8 @@ const NewBusinessSupport = (props) => {
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.badge}>
 					<Icon
-						name="certificate"
-						type="material-community"
+						name="rocket1"
+						type="ant-design"
 						color="slateblue"
 						size={45}
 						// reverse
@@ -128,8 +128,8 @@ const NewBusinessSupport = (props) => {
 				</TouchableOpacity>
 				<TouchableOpacity style={styles.badge}>
 					<Icon
-						name="certificate"
-						type="material-community"
+						name="rocket1"
+						type="ant-design"
 						color="gold"
 						size={45}
 						// reverse

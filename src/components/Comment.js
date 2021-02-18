@@ -49,7 +49,7 @@ class Comment extends PureComponent {
 			// console.log("posting vote", vote);
 			await axios
 				.post(
-					`http://127.0.0.1:3000/comment_votes`,
+					`http://192.168.1.211:3000/comment_votes`,
 					{
 						user_id: this.props.userInfo.id,
 						comment_id: this.props.comment.id,
@@ -77,7 +77,7 @@ class Comment extends PureComponent {
 				);
 		} else if (this.state.vote == vote) {
 			await axios
-				.delete(`http://127.0.0.1:3000/comment_votes/${this.state.voteId}`)
+				.delete(`http://192.168.1.211:3000/comment_votes/${this.state.voteId}`)
 				.then(async (res) => {
 					this.setState({
 						voteId: null,
@@ -94,7 +94,7 @@ class Comment extends PureComponent {
 		} else if (vote == 1) {
 			// console.log("updating vote UP", vote);
 			await axios
-				.patch(`http://127.0.0.1:3000/comment_votes/${this.state.voteId}`, {
+				.patch(`http://192.168.1.211:3000/comment_votes/${this.state.voteId}`, {
 					vote: 1,
 				})
 				.then((res) => {
@@ -114,7 +114,7 @@ class Comment extends PureComponent {
 		} else if (vote == -1) {
 			// console.log("updating vote DOWN", vote);
 			await axios
-				.patch(`http://127.0.0.1:3000/comment_votes/${this.state.voteId}`, {
+				.patch(`http://192.168.1.211:3000/comment_votes/${this.state.voteId}`, {
 					vote: -1,
 				})
 				.then((res) => {
@@ -142,7 +142,7 @@ class Comment extends PureComponent {
 		if (vote == 1) {
 			await axios({
 				method: "PATCH",
-				url: `http://127.0.0.1:3000/comments/${this.props.comment.id}`,
+				url: `http://192.168.1.211:3000/comments/${this.props.comment.id}`,
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",
@@ -164,7 +164,7 @@ class Comment extends PureComponent {
 		} else if (vote == -1) {
 			await axios({
 				method: "PATCH",
-				url: `http://127.0.0.1:3000/comments/${this.props.comment.id}`,
+				url: `http://192.168.1.211:3000/comments/${this.props.comment.id}`,
 				headers: {
 					Accept: "application/json",
 					"Content-Type": "application/json",
@@ -234,7 +234,7 @@ class Comment extends PureComponent {
 							resizeMode={"cover"}
 							source={{
 								uri: this.props.comment.user.image
-									? `http://127.0.0.1:3000/${this.props.comment.user.image}`
+									? `http://192.168.1.211:3000/${this.props.comment.user.image}`
 									: this.props.comment.user.img_url,
 							}}
 							style={styles.profilePic}
