@@ -7,8 +7,9 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	Dimensions,
+	Vibration,
 } from "react-native";
-import { Icon, ThemeConsumer } from "react-native-elements";
+import { Icon, Badge, ThemeConsumer } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
@@ -22,21 +23,31 @@ class ListBizDash extends React.Component {
 		super(props);
 		this.state = {
 			userHearts: [],
-			page: 1,
 			error: null,
-			search: "",
-			catTogg: false,
-			comments: 0,
 			shopTogg: false,
+			badgeCounts: [],
+			badgeKeyPressed: null,
 		};
 	}
 
 	componentDidMount() {
-		return this.setState({
+		// let countArr = this.mapBadges();
+
+		this.setState({
 			biz: this.props.biz,
 			hearts: this.props.biz.business.hearts,
 			comments: this.props.biz.business.comments.length,
+			badgeCounts: this.mapBadges(),
 		});
+	}
+
+	componentDidUpdate(prevProps) {
+		// Typical usage (don't forget to compare props):
+		if (this.props.biz.business.badges !== prevProps.biz.business.badges) {
+			this.setState({
+				badgeCounts: this.mapBadges(),
+			});
+		}
 	}
 
 	fetchHearts = () => {
@@ -85,12 +96,48 @@ class ListBizDash extends React.Component {
 			});
 	};
 
-	handleShopTogg = () => {
-		return this.setState({ shopTogg: !this.state.shopTogg });
+	mapBadges = () => {
+		let countArr = [];
+
+		this.props.biz.business.badges
+			.map((badge) => {
+				let badgeObj = countArr.find((x) => x.color == badge.color);
+				if (badgeObj) {
+					badgeObj["quantity"]++;
+					badgeObj["sum"] += parseFloat(badge.price);
+				} else {
+					countArr.push({
+						color: badge.color,
+						price: parseFloat(badge.price),
+						quantity: 1,
+						sum: parseFloat(badge.price),
+					});
+				}
+			})
+			.sort((a, b) => (a.price > b.price ? 1 : -1));
+
+		return countArr;
+	};
+
+	handleShopTogg = async () => {
+		this.setState({ shopTogg: !this.state.shopTogg });
+		await this.props.fetchBizs();
 	};
 
 	render() {
 		// console.log(this.props.biz.id);
+
+		// console.log(
+		// 	"BADGE PROPS ",
+		// 	this.props.biz.business.name,
+		// 	":",
+		// 	this.state.badgeCounts
+		// );
+
+		const colors = ["green", "blue", "firebrick", "slateblue", "gold"];
+		const trueColors = ["green", "blue", "red", "ultraviolet", "gold"];
+		let colorItr = -1;
+
 		return (
 			<View
 				style={{
@@ -143,7 +190,7 @@ class ListBizDash extends React.Component {
 						height: vh(5),
 						width: vw(13),
 					}}
-					onPress={() => {}}
+					disabled={true}
 				>
 					<Icon
 						name="chat"
@@ -166,7 +213,7 @@ class ListBizDash extends React.Component {
 						alignSelf: "center",
 					}}
 				>
-					{this.state.comments}
+					{this.props.biz.business.comments.length}
 				</Text>
 
 				<ScrollView
@@ -192,95 +239,62 @@ class ListBizDash extends React.Component {
 					snapToInterval={33}
 					scrollEventThrottle={1}
 				>
-					<TouchableOpacity
-						style={styles.badge}
-						onPress={() => {
-							console.log("lets shop. togg is:", this.state.shopTogg);
-							this.handleShopTogg();
-						}}
-					>
-						<Icon
-							name="rocket1"
-							type="ant-design"
-							color="green"
-							size={45}
-							// reverse
-							// reverseColor="lawngreen"
-							style={{ marginRight: vw(10) }}
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={styles.badge}
-						onPress={() => {
-							this.handleShopTogg();
-						}}
-					>
-						<Icon
-							name="rocket1"
-							type="ant-design"
-							color="blue"
-							size={45}
-							// reverse
-							// reverseColor="dodgerblue"
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={styles.badge}
-						onPress={() => {
-							this.handleShopTogg();
-						}}
-					>
-						<Icon
-							name="rocket1"
-							type="ant-design"
-							color="firebrick"
-							size={45}
-							// reverse
-							// reverseColor="lightcoral"
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={styles.badge}
-						onPress={() => {
-							this.handleShopTogg();
-						}}
-					>
-						<Icon
-							name="rocket1"
-							type="ant-design"
-							color="slateblue"
-							size={45}
-							// reverse
-							// reverseColor="darkmagenta"
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={styles.badge}
-						onPress={() => {
-							this.handleShopTogg();
-						}}
-					>
-						<Icon
-							name="rocket1"
-							type="ant-design"
-							color="gold"
-							size={45}
-							// reverse
-							// reverseColor="darkorange"
-						/>
-					</TouchableOpacity>
+					{colors.map((badge, key = index) => {
+						colorItr++;
+						let badgeObj = this.state.badgeCounts.find(
+							(badgeObj) => badgeObj.color == trueColors[colorItr]
+						);
+						return (
+							<TouchableOpacity
+								key={key}
+								style={styles.badge}
+								onPress={() => {
+									// IAP.requestPurchase(badge.productId);
+									// console.log("color key🔑🚀:", key);
+									this.setState({ badgeKeyPressed: key });
+									Vibration.vibrate();
+									this.handleShopTogg();
+								}}
+							>
+								<Icon
+									name="rocket1"
+									type="ant-design"
+									color={colors[colorItr]}
+									size={45}
+									// reverse
+									// reverseColor="lawngreen"
+									style={[colorItr == 0 ? { marginRight: vw(10) } : {}]}
+								/>
+
+								{badgeObj && (
+									<Badge
+										value={badgeObj.quantity}
+										status="success"
+										containerStyle={[
+											colorItr == 0 ? styles.greenBadgeInd : styles.badgeInd,
+										]}
+									/>
+								)}
+							</TouchableOpacity>
+						);
+					})}
 				</ScrollView>
 				{this.state.shopTogg && (
-					<BadgeShop handleShopTogg={this.handleShopTogg} />
+					<BadgeShop
+						biz={this.props.biz}
+						handleShopTogg={this.handleShopTogg}
+						badgeKeyPressed={this.state.badgeKeyPressed}
+					/>
 				)}
 			</View>
 		);
 	}
 }
 
-export default connect(mapStateToProps, { fetchBizs, setUserInfo })(
-	ListBizDash
-);
+export default connect(mapStateToProps, {
+	fetchBizs,
+	setUserInfo,
+})(ListBizDash);
 
 const styles = StyleSheet.create({
 	badge: {
@@ -290,8 +304,17 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
+	greenBadgeInd: {
+		position: "relative",
+		bottom: vh(1),
+		left: vw(2),
+	},
+	badgeInd: { position: "relative", bottom: vh(1), left: vw(7) },
 });
 
 function mapStateToProps(state) {
-	return { category: state.category, userInfo: state.userInfo };
+	return {
+		category: state.category,
+		userInfo: state.userInfo,
+	};
 }

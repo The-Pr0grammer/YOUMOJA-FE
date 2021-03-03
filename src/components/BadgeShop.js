@@ -6,6 +6,7 @@ import {
 	Text,
 	ImageBackground,
 	TouchableOpacity,
+	TouchableWithoutFeedback,
 	ActivityIndicator,
 	Modal,
 } from "react-native";
@@ -47,28 +48,6 @@ const productIds = Platform.select({
 	android: [""],
 });
 
-const purchaseUpdateSubscription = IAP.purchaseUpdatedListener((purchase) => {
-	const receipt = purchase.transactionReceipt;
-	
-	if (receipt) {
-		IAP.finishTransaction(purchase);
-		console.log("hey! here's your receipt🧾", receipt);
-		//call to backend
-
-		// handleValidation(receipt);
-	} else {
-		console.log("no receipt");
-		//throw error
-	}
-	// const clear = IAP.clearTransactionIOS();
-
-});
-
-const purchaseErrorSubscription = IAP.purchaseErrorListener((error) => {
-	console.log("applying error listener");
-	console.log(error);
-});
-
 // const handleValidation = async (receipt) => {
 // 	// console.log(receipt);
 
@@ -83,27 +62,65 @@ const purchaseErrorSubscription = IAP.purchaseErrorListener((error) => {
 // 	// console.log("validation call response is...", validation);
 // };
 
-
 const BadgeShop = (props) => {
 	const [badges, setBadges] = useState([]);
+	const [colorChosen, setColorChosen] = useState("");
+	const [price, setPrice] = useState(0);
+	const [loading, setLoading] = useState(true);
+	const [purchaseFlow, setPurchaseFlow] = useState(false);
 	const colors = ["green", "blue", "firebrick", "slateblue", "gold"];
 	let colorItr = -1;
 
 	useEffect(() => {
+		// console.log("Welcome to the badge shop");
+		setTimeout(() => {
+			setLoading(false);
+			// console.log("LOADING FLAG BEING SET TO FALSE");
+		}, 5225);
+		IAP.clearTransactionIOS();
 		IAP.initConnection()
 			.catch(() => {
 				console.log("error connecting to store 🅧");
 			})
 			.then(() => {
-				console.log("coNNeCtInG 📶✅");
+				// console.log("coNNeCtInG 📶✅");
 				IAP.getProducts(productIds)
 					.catch(() => {
 						console.log("error finding purchases 😬");
 					})
 					.then((res) => {
-						setBadges(res);
+						let sorted = res.sort((a, b) =>
+							parseFloat(a.price) > parseFloat(b.price) ? 1 : -1
+						);
+						setBadges(sorted);
 					});
 			});
+
+		const purchaseUpdateSubscription = IAP.purchaseUpdatedListener(
+			(purchase) => {
+				const receipt = purchase.transactionReceipt;
+
+				if (receipt) {
+					IAP.finishTransaction(purchase);
+					console.log("hey! here's your receipt🧾", receipt);
+					// console.log("PURCHASE DATA🚀:::", purchase);
+
+					//call to backend
+					// setStopDupe(true);
+					handleCreate(receipt);
+
+					// handleValidation(receipt);
+				} else {
+					console.log("no receipt");
+					//throw error
+				}
+			}
+		);
+
+		const purchaseErrorSubscription = IAP.purchaseErrorListener((error) => {
+			setPurchaseFlow(false);
+			console.log("PURCHASE LISTENER ERROR:", error);
+		});
 
 		return () => {
 			purchaseUpdateSubscription.remove();
@@ -111,7 +128,35 @@ const BadgeShop = (props) => {
 		};
 	}, []);
 
-	console.log("PRODUCTS(BADGES) ARE...", badges[0]);
+	// handlePurchase = (key) => {};
+
+	handleCreate = (receipt) => {
+		console.log("price is :", price);
+		const data = {
+			color: colorChosen,
+			user_id: props.userInfo.id,
+			business_id: props.biz.business.id,
+			price: price,
+			receipt: receipt,
+		};
+
+		axios
+			.post(`http://192.168.1.211:3000/badges`, {
+				badge: data,
+			})
+			.then(async (res) => {
+				console.log("BACK FROM THE BACKEND ::: badge was created ?");
+				// await props.fetchBizs();
+
+				props.handleShopTogg();
+			});
+	};
+
+	console.log("PRODUCTS(BADGES) ARE...", badges);
+	// console.log("🏬BIIIZ IS:::", props.biz.business.name);
+	// console.log("Color Chosen🎨:", colorChosen);
+	// console.log("PRICE 💲:", price);
+	console.log("key🔑", props.badgeKeyPressed);
 
 	return (
 		<Modal>
@@ -134,16 +179,12 @@ const BadgeShop = (props) => {
 				</View>
 				<View style={styles.headingView}>
 					<Text style={styles.heading}>Boost This</Text>
-					<Text style={styles.heading}>Business🚀</Text>
+					<Text style={styles.heading}>Business</Text>
+					<Text style={styles.bizName}>"{props.biz.business.name}"</Text>
 				</View>
 				<View style={styles.listView}>
-					{badges
-						.sort((a, b) => {
-							if (parseInt(a.price) < parseInt(b.price)) return -1;
-							if (parseInt(a.price) > parseInt(b.price)) return 1;
-							return 0;
-						})
-						.map((badge, key = index) => {
+					{!loading ? (
+						badges.map((badge, key = index) => {
 							colorItr++;
 							return (
 								<TouchableOpacity
@@ -151,6 +192,30 @@ const BadgeShop = (props) => {
 									style={styles.badge}
 									onPress={() => {
 										IAP.requestPurchase(badge.productId);
+
+										setPrice(badge.price);
+
+										switch (badge.productId) {
+											case "com.greenrocket.id":
+												setColorChosen("green");
+												break;
+											case "com.bluerocket.id":
+												setColorChosen("blue");
+												break;
+											case "com.redrocket.id":
+												setColorChosen("red");
+												break;
+											case "com.ultravioletrocket.id":
+												setColorChosen("ultraviolet");
+												break;
+											case "com.goldrocket.id":
+												setColorChosen("gold");
+												break;
+											default:
+												break;
+										}
+
+										setPurchaseFlow(true);
 									}}
 								>
 									<Icon
@@ -164,7 +229,37 @@ const BadgeShop = (props) => {
 									<Text style={styles.price}>${badge.price}</Text>
 								</TouchableOpacity>
 							);
-						})}
+						})
+					) : (
+						<View
+							style={{
+								position: "relative",
+								height: vh(5),
+								marginTop: vh(5),
+							}}
+						>
+							<TouchableWithoutFeedback
+								onPress={() => {
+									setLoading(false);
+								}}
+							>
+								<ImageBackground
+									source={require("../images/rocketgif.gif")}
+									style={styles.bg}
+									imageStyle={{ resizeMode: "stretch" }}
+								></ImageBackground>
+							</TouchableWithoutFeedback>
+						</View>
+					)}
+					{purchaseFlow && (
+						<View style={styles.activityView}>
+							<ActivityIndicator
+								size="large"
+								color="#00ff00"
+								hidesWhenStopped={true}
+							/>
+						</View>
+					)}
 				</View>
 			</View>
 		</Modal>
@@ -219,6 +314,20 @@ const styles = StyleSheet.create({
 		color: "crimson",
 		// marginTop: vh(1),
 	},
+	bizName: {
+		position: "relative",
+		backgroundColor: "black",
+		color: "lightslategray",
+		height: vh(5.2),
+		fontFamily: "Marker Felt",
+		fontWeight: "bold",
+		fontSize: 20,
+		textAlign: "center",
+		borderWidth: 2,
+		borderBottomWidth: 0,
+		lineHeight: vh(4.5),
+		justifyContent: "center",
+	},
 	listView: {
 		position: "relative",
 		height: vh(70),
@@ -228,6 +337,7 @@ const styles = StyleSheet.create({
 		// backgroundColor: "blue",
 		justifyContent: "flex-start",
 		alignItems: "flex-start",
+		// opacity: 0.1,
 	},
 	badge: {
 		position: "relative",
@@ -243,11 +353,21 @@ const styles = StyleSheet.create({
 	price: { fontFamily: "Marker Felt", color: "olivedrab", fontSize: 54 },
 	bg: {
 		// position: "absolute",
+		// marginTop: vh(5),
 		resizeMode: "stretch",
-		opacity: 0.2,
+		opacity: 0.75,
 		borderWidth: 0,
 		width: vw(100),
-		height: vh(40),
+		height: vh(60),
+		justifyContent: "center",
+	},
+	activityView: {
+		flex: 1,
+		width: vw(100),
+		height: vh(70),
+		marginTop: vh(0.5),
+		position: "absolute",
+		backgroundColor: "black",
 		justifyContent: "center",
 	},
 });

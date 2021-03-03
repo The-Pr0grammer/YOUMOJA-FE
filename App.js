@@ -22,7 +22,7 @@ import PeerProfile from "./src/components/PeerProfile.js";
 import * as firebase from "firebase";
 import * as Linking from "expo-linking";
 
-const prefix = Linking.makeUrl("/");
+// const prefix = Linking.makeUrl("/");
 const createStoreWithMiddleWare = applyMiddleware(thunk)(createStore);
 const store = createStoreWithMiddleWare(bizReducer);
 const Stack = createStackNavigator();
@@ -266,15 +266,15 @@ class App extends React.Component {
 		super(props);
 	}
 	render() {
-		console.log("PREFIX LINK IS🔆 🔆 🔆", prefix);
-		const linking = {
-			prefixes: [prefix],
-		};
+		// console.log("PREFIX LINK IS🔆 🔆 🔆", prefix);
+		// const linking = {
+		// 	prefixes: [prefix],
+		// };
 
 		return (
 			<Provider store={store}>
 				<NavigationContainer
-					linking={linking}
+					// linking={linking}
 					fallback={<Text>Loading...</Text>}
 				>
 					<AppNav></AppNav>

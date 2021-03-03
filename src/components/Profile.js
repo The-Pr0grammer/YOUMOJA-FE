@@ -46,7 +46,7 @@ const Profile = (props) => {
 	// 	setTimeout(() => props.profileLoadingTogg(false), 500);
 	useEffect(() => {
 		!addBusinessTogg && props.setIsFetching(true);
-		setTimeout(() => props.setIsFetching(false), 2000);
+		setTimeout(() => props.setIsFetching(false), 750);
 
 		if (!userShow) {
 			let response = axios(

@@ -42,6 +42,7 @@ class Businesses extends Component {
 			searchFocus: false,
 			catTogg: false,
 			userLoadingErrorMessage: "",
+
 			// users: [],
 			// hasLoadedUsers: false,
 		};
@@ -136,6 +137,7 @@ class Businesses extends Component {
 		return this.setState({ searchFocus: !this.state.searchFocus });
 	};
 
+	
 	// handleFetchingToggle = (togg) => {
 	// 	return this.props.setIsFetching(togg);
 	// };
@@ -251,6 +253,9 @@ class Businesses extends Component {
 						}}
 						data={this.props.filteredBizs}
 						keyExtractor={(item) => item.id.toString()}
+						// keyExtractor={(item) => item.name}
+						// keyExtractor={(item, index) => item.key}
+						// keyExtractor={(item, index) => index.toString()}
 						renderItem={({ item }) => (
 							<ListBiz
 								biz={item}
@@ -258,7 +263,7 @@ class Businesses extends Component {
 								lastScreen={"Home"}
 							/>
 						)}
-						extraData={this.props.sorters}
+						extraData={this.props}
 						// legacyImplementation={true}
 					/>
 				)}
@@ -366,6 +371,7 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
 	return {
 		reduxState: state,
+		businesses: state.businesses,
 		userInfo: state.userInfo,
 		isFetching: state.isFetching,
 		sorters: {

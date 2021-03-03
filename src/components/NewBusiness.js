@@ -158,7 +158,8 @@ const NewBusiness = (props) => {
 	};
 
 	// console.log("INPUTS.IMAGES [] IS 🖼", inputs.images);
-	console.log("fetching 🐶:", props.isFetching);
+	// console.log("fetching 🐶:", props.isFetching);
+	console.log("New Business USER INFO:", props.userInfo);
 
 	return (
 		<Modal visible={visibility} style={styles.container}>
@@ -210,9 +211,12 @@ const NewBusiness = (props) => {
 								<Image
 									resizeMode={"cover"}
 									source={{
+										// uri: props.userInfo.image
+										// 	? `http://192.168.1.211:3000/${props.userInfo.image}`
+										// 	: props.userInfo.image,
 										uri: props.userInfo.image
 											? `http://192.168.1.211:3000/${props.userInfo.image}`
-											: props.userInfo.image,
+											: props.userInfo.img_url,
 									}}
 									style={styles.profilePic}
 								></Image>

@@ -18,6 +18,7 @@ import {
 	HANDLE_REFRESH,
 	SET_USER_INFO,
 	PROFILE_LOADING_TOGG,
+	SET_BADGE_COUNTS,
 } from "./types";
 import axios from "axios";
 
@@ -74,7 +75,8 @@ export const fetchBizs = (activityIndicator) => {
 		try {
 			let response = await axios(`http://192.168.1.211:3000/user_bizs`);
 			// let json = await response.json();
-			dispatch(fetchingBizsSuccess(response.data));
+			// console.log(response.data);
+			await dispatch(fetchingBizsSuccess(response.data));
 		} catch (error) {
 			dispatch(fetchingBizsFailure(error));
 		}
@@ -149,3 +151,5 @@ export const profileLoadingTogg = (togg) => ({
 	type: PROFILE_LOADING_TOGG,
 	payload: togg,
 });
+
+

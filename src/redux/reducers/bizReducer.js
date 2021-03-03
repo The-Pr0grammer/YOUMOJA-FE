@@ -18,6 +18,7 @@ import {
 	HANDLE_REFRESH,
 	SORT_BY_SCORES_TOGG,
 	PROFILE_LOADING_TOGG,
+	SET_BADGE_COUNTS,
 } from "../actions/types";
 
 const initialState = {
@@ -59,8 +60,8 @@ const bizReducer = (state = initialState, action) => {
 		case FETCHING_BIZS_SUCCESS:
 			return {
 				...state,
+				businesses: [...action.payload],
 				isFetching: false,
-				businesses: action.payload,
 			};
 		case FETCHING_COMMENTS_REQUEST:
 			return action.payload

@@ -142,7 +142,9 @@ class ListBiz extends React.Component {
 								/>
 							)}
 						</View>
-						<ListBizDash biz={this.props.biz} />
+						<ListBizDash
+							biz={this.props.biz}
+						/>
 					</Card>
 				</TouchableOpacity>
 			</View>
