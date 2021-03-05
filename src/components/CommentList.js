@@ -72,6 +72,7 @@ class CommentList extends React.Component {
 		});
 		console.log("SWIPING💳");
 	}
+
 	// updateComments = (newComment) => {
 	// 	this.setState({ comments: [newComment, ...this.state.comments] });
 	// };
@@ -96,6 +97,14 @@ class CommentList extends React.Component {
 		const config = {
 			velocityThreshold: 0.2,
 			directionalOffsetThreshold: 70,
+		};
+
+		const numFormat = (n) => {
+			if (n < 1e3) return n;
+			if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
+			if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
+			if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + "B";
+			if (n >= 1e12) return +(n / 1e12).toFixed(1) + "T";
 		};
 		return (
 			<View
@@ -208,9 +217,9 @@ class CommentList extends React.Component {
 								}}
 							>
 								COMMENTS
-								{!this.props.isFetching && this.props.comments.length === 0
-									? `(0)`
-									: `(${this.props.comments.length})`}
+								{!this.props.isFetching &&
+									this.props.comments.length > 0 &&
+									`(` + numFormat(this.props.comments.length) + `)`}
 							</Text>
 
 							<TouchableOpacity

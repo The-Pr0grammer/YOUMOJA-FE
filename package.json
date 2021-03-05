@@ -43,6 +43,7 @@
     "react-native-webview": "9.4.0",
     "react-native-x2-carousel": "^1.0.1",
     "react-navigation-drawer": "react-navigation/drawer",
+    "react-number-format": "^4.4.4",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",

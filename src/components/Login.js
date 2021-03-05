@@ -186,6 +186,7 @@ const Login = (props) => {
 							zIndex: 1,
 							resizeMode: "stretch",
 							marginVertical: vh(1),
+							// backgroundColor: "transparent",
 						}}
 						source={require("../images/LOGO.png")}
 					></Image>

@@ -23,13 +23,6 @@ import {
 	fetchBizs,
 } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
-// import Header from "./Header.js";
-// import ProfileStats from "./ProfileStats.js";
-// import ProfileHearts from "./ProfileHearts.js";
-// import MyBusinesses from "./MyBusinesses.js";
-// import NewBusiness from "./NewBusiness";
-// import SuccessModal from "./SuccessModal.js";
-
 import IAP, {
 	purchaseErrorListener,
 	purchaseUpdatedListener,
@@ -152,11 +145,11 @@ const BadgeShop = (props) => {
 			});
 	};
 
-	console.log("PRODUCTS(BADGES) ARE...", badges);
+	// console.log("PRODUCTS(BADGES) ARE...", badges);
 	// console.log("🏬BIIIZ IS:::", props.biz.business.name);
 	// console.log("Color Chosen🎨:", colorChosen);
 	// console.log("PRICE 💲:", price);
-	console.log("key🔑", props.badgeKeyPressed);
+	// console.log("key🔑", props.badgeKeyPressed);
 
 	return (
 		<Modal>

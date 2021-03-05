@@ -32,14 +32,14 @@ import axios from "axios";
 
 const Profile = (props) => {
 	const [loading, setLoading] = useState(true);
-	const navigation = useNavigation();
 	const [active, toggleActive] = useState("");
 	const [userShow, setUserShow] = useState("");
-	const isFocused = useIsFocused();
 	const [addBusinessTogg, setAddBusinessTogg] = useState(false);
 	const [posted, setPosted] = useState(false);
 	const [imgSaved, setImgSaved] = useState(false);
 	const [editTogg, setEditTogg] = useState(false);
+	const isFocused = useIsFocused();
+	const navigation = useNavigation();
 
 	// setTimeout(() => setLoading(false), 500);
 	// props.profileLoading &&

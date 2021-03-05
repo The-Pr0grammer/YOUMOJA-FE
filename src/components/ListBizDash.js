@@ -137,6 +137,13 @@ class ListBizDash extends React.Component {
 		const colors = ["green", "blue", "firebrick", "slateblue", "gold"];
 		const trueColors = ["green", "blue", "red", "ultraviolet", "gold"];
 		let colorItr = -1;
+		const numFormat = (n) => {
+			if (n < 1e3) return n;
+			if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
+			if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
+			if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + "B";
+			if (n >= 1e12) return +(n / 1e12).toFixed(1) + "T";
+		};
 
 		return (
 			<View
@@ -173,13 +180,17 @@ class ListBizDash extends React.Component {
 						fontWeight: "bold",
 						top: vh(6),
 						height: vh(5),
-						width: vw(13),
+						// width: vw(13),
 						alignSelf: "center",
+						// backgroundColor: "blue",
 					}}
 				>
-					{this.state.hearts > this.props.biz.business.hearts
-						? this.state.hearts
-						: this.props.biz.business.hearts}
+					{this.props.biz.business.hearts > 0 &&
+						numFormat(
+							this.state.hearts > this.props.biz.business.hearts
+								? this.state.hearts
+								: this.props.biz.business.hearts
+						)}
 				</Text>
 				{/* COMMENTS ICON */}
 				<TouchableOpacity
@@ -209,11 +220,12 @@ class ListBizDash extends React.Component {
 						fontWeight: "bold",
 						top: vh(15),
 						height: vh(5),
-						width: vw(13),
+						// width: vw(13),
 						alignSelf: "center",
 					}}
 				>
-					{this.props.biz.business.comments.length}
+					{this.props.biz.business.comments.length > 0 &&
+						numFormat(this.props.biz.business.comments.length)}
 				</Text>
 
 				<ScrollView
@@ -268,7 +280,7 @@ class ListBizDash extends React.Component {
 
 								{badgeObj && (
 									<Badge
-										value={badgeObj.quantity}
+										value={numFormat(badgeObj.quantity)}
 										status="success"
 										containerStyle={[
 											colorItr == 0 ? styles.greenBadgeInd : styles.badgeInd,

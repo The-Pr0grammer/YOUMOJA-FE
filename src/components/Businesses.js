@@ -137,7 +137,6 @@ class Businesses extends Component {
 		return this.setState({ searchFocus: !this.state.searchFocus });
 	};
 
-	
 	// handleFetchingToggle = (togg) => {
 	// 	return this.props.setIsFetching(togg);
 	// };

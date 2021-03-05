@@ -19,6 +19,7 @@ import WelcomeSplash from "./src/components/WelcomeSplash.js";
 import ResetPassword from "./src/components/ResetPassword.js";
 import Profile from "./src/components/Profile.js";
 import PeerProfile from "./src/components/PeerProfile.js";
+import Blackboard from "./src/components/Blackboard.js";
 import * as firebase from "firebase";
 import * as Linking from "expo-linking";
 
@@ -145,12 +146,18 @@ function DrawerNav({ navigation }) {
 					fontSize: 24,
 				},
 			}}
-			initialRouteName="Home"
+			// initialRouteName="Home"
+			initialRouteName="Blackboard"
 			drawerType="slide"
 			drawerContentOptions={{
-				activeBackgroundColor: "maroon",
-				activeTintColor: "#e91e63",
+				activeBackgroundColor: "black",
+				activeTintColor: "olivedrab",
 				inactiveTintColor: "black",
+				labelStyle: {
+					fontWeight: "normal",
+					fontFamily: "Marker Felt",
+					// fontSize: 16,
+				},
 				style: {
 					backgroundColor: "darkslategray",
 					flex: 1,
@@ -175,6 +182,23 @@ function DrawerNav({ navigation }) {
 				}}
 			/>
 			<Drawer.Screen
+				name="Blackboard"
+				component={Blackboard}
+				options={{
+					headerShown: false,
+					headerLeft: () => (
+						<Button
+							icon={<Icon name="arrow-circle-left" size={25} color="black" />}
+							type="clear"
+							onPress={() => navigation.navigate("Home")}
+							title=" Blackboards"
+							titleStyle={{ color: "black" }}
+						/>
+					),
+					swipeEnabled: true,
+				}}
+			/>
+			<Drawer.Screen
 				name="Notifications"
 				component={NotificationsScreen}
 				options={{
@@ -190,6 +214,7 @@ function DrawerNav({ navigation }) {
 					),
 				}}
 			/>
+
 			<Drawer.Screen
 				name="Logout"
 				component={Login}
@@ -267,9 +292,6 @@ class App extends React.Component {
 	}
 	render() {
 		// console.log("PREFIX LINK IS🔆 🔆 🔆", prefix);
-		// const linking = {
-		// 	prefixes: [prefix],
-		// };
 
 		return (
 			<Provider store={store}>

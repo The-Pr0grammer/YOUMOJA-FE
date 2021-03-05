@@ -46,6 +46,13 @@ const BizPageDash = (props) => {
 				console.log(response);
 			});
 	};
+	const numFormat = (n) => {
+		if (n < 1e3) return n;
+		if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
+		if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
+		if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + "B";
+		if (n >= 1e12) return +(n / 1e12).toFixed(1) + "T";
+	};
 
 	return (
 		<View style={styles.container}>
@@ -72,11 +79,11 @@ const BizPageDash = (props) => {
 					fontWeight: "bold",
 					top: vh(16),
 					height: vh(10),
-					width: vw(10),
+					// width: vw(10),
 					alignSelf: "center",
 				}}
 			>
-				{hearts}
+				{hearts > 0 && numFormat(hearts)}
 			</Text>
 
 			<TouchableOpacity

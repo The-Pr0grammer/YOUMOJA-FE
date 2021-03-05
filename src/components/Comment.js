@@ -205,6 +205,15 @@ class Comment extends PureComponent {
 			// vote && console.log("voteID iSSSSSSs🔥", vote["vote"]);
 			// vote && this.setState({ voteId: vote.id, vote: vote["vote"] });
 		}
+
+		const numFormat = (n) => {
+			if (n < 1e3) return n;
+			if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
+			if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
+			if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + "B";
+			if (n >= 1e12) return +(n / 1e12).toFixed(1) + "T";
+		};
+
 		// console.log("COMMENT VOTES ARE", this.props.comment.comment_votes);
 		// console.log("COMMENT PROP IS 💬", this.props.comment);
 		// console.log("vote is", this.state.vote);
@@ -278,7 +287,7 @@ class Comment extends PureComponent {
 							// backgroundColor: "blue",
 						}}
 					>
-						{this.state.score > 0 ? this.state.score : 0}
+						{this.state.score > 0 ? numFormat(this.state.score) : 0}
 					</Text>
 					<TouchableOpacity
 						style={{
