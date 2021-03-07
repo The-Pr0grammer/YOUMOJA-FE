@@ -146,7 +146,7 @@ function DrawerNav({ navigation }) {
 					fontSize: 24,
 				},
 			}}
-			// initialRouteName="Home"
+			// initialRouteName="Home" //THIS BREAKS APP!!! USE "Main"
 			initialRouteName="Blackboard"
 			drawerType="slide"
 			drawerContentOptions={{

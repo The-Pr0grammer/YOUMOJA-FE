@@ -1,24 +1,26 @@
 import {
-	FETCHING_BIZS_REQUEST,
-	FETCHING_BIZS_SUCCESS,
-	FETCHING_BIZS_FAILURE,
-	FETCHING_COMMENTS_REQUEST,
-	FETCHING_COMMENTS_SUCCESS,
-	FETCHING_COMMENTS_FAILURE,
-	POSTING_COMMENT_REQUEST,
-	POSTING_COMMENT_SUCCESS,
-	POSTING_COMMENT_FAILURE,
+	FETCH_BIZS_REQUEST,
+	FETCH_BIZS_SUCCESS,
+	FETCH_BIZS_FAILURE,
+	FETCH_COMMENTS_REQUEST,
+	FETCH_COMMENTS_SUCCESS,
+	FETCH_COMMENTS_FAILURE,
+	POST_COMMENT_REQUEST,
+	POST_COMMENT_SUCCESS,
+	POST_COMMENT_FAILURE,
+	FETCH_BADGE_SUMS_REQUEST,
+	FETCH_BADGE_SUMS_SUCCESS,
+	FETCH_BADGE_SUMS_FAILURE,
 	CHANGE_CAT,
 	HANDLE_SEARCH,
 	SORT_BY_HEARTS_TOGG,
 	SORT_BY_BADGES_TOGG,
 	SORT_BY_LOCATION_TOGG,
+	SORT_BY_SCORES_TOGG,
 	SET_USER_INFO,
 	SET_IS_FETCHING,
 	HANDLE_REFRESH,
-	SORT_BY_SCORES_TOGG,
 	PROFILE_LOADING_TOGG,
-	SET_BADGE_COUNTS,
 } from "../actions/types";
 
 const initialState = {
@@ -36,11 +38,12 @@ const initialState = {
 	userHearts: [],
 	userBizs: [],
 	profileLoading: true,
+	badge_sums: [],
 };
 
 const bizReducer = (state = initialState, action) => {
 	switch (action.type) {
-		case FETCHING_BIZS_REQUEST:
+		case FETCH_BIZS_REQUEST:
 			// console.log("$ is", action.payload);
 			return action.payload
 				? {
@@ -51,19 +54,19 @@ const bizReducer = (state = initialState, action) => {
 						...state,
 						isFetching: false,
 				  };
-		case FETCHING_BIZS_FAILURE:
+		case FETCH_BIZS_FAILURE:
 			return {
 				...state,
 				isFetching: false,
 				errorMessage: action.payload,
 			};
-		case FETCHING_BIZS_SUCCESS:
+		case FETCH_BIZS_SUCCESS:
 			return {
 				...state,
 				businesses: [...action.payload],
 				isFetching: false,
 			};
-		case FETCHING_COMMENTS_REQUEST:
+		case FETCH_COMMENTS_REQUEST:
 			return action.payload
 				? {
 						...state,
@@ -73,34 +76,46 @@ const bizReducer = (state = initialState, action) => {
 						...state,
 						isFetching: false,
 				  };
-		case FETCHING_COMMENTS_FAILURE:
+		case FETCH_COMMENTS_FAILURE:
 			return {
 				...state,
 				isFetching: false,
 				errorMessage: action.payload,
 			};
-		case FETCHING_COMMENTS_SUCCESS:
+		case FETCH_COMMENTS_SUCCESS:
 			return {
 				...state,
 				isFetching: false,
 				comments: action.payload,
 			};
-		case POSTING_COMMENT_REQUEST:
+		case POST_COMMENT_REQUEST:
 			return {
 				...state,
 				isFetching: true,
 			};
-		case POSTING_COMMENT_FAILURE:
+		case POST_COMMENT_FAILURE:
 			return {
 				...state,
 				isFetching: false,
 				errorMessage: action.payload,
 			};
-		case POSTING_COMMENT_SUCCESS:
+		case POST_COMMENT_SUCCESS:
 			return {
 				...state,
 				isFetching: false,
 				comments: [action.payload, ...state.comments],
+			};
+		case FETCH_BADGE_SUMS_REQUEST:
+			return { ...state };
+		case FETCH_BADGE_SUMS_FAILURE:
+			return {
+				...state,
+				errorMessage: action.payload,
+			};
+		case FETCH_BADGE_SUMS_SUCCESS:
+			return {
+				...state,
+				badge_sums: [...action.payload],
 			};
 		case CHANGE_CAT:
 			return action.payload == "All Categories"

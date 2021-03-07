@@ -1,24 +1,26 @@
 import {
-	SET_IS_FETCHING,
-	FETCHING_BIZS_REQUEST,
-	FETCHING_BIZS_SUCCESS,
-	FETCHING_BIZS_FAILURE,
-	FETCHING_COMMENTS_REQUEST,
-	FETCHING_COMMENTS_SUCCESS,
-	FETCHING_COMMENTS_FAILURE,
-	POSTING_COMMENT_REQUEST,
-	POSTING_COMMENT_SUCCESS,
-	POSTING_COMMENT_FAILURE,
+	FETCH_BIZS_REQUEST,
+	FETCH_BIZS_SUCCESS,
+	FETCH_BIZS_FAILURE,
+	FETCH_COMMENTS_REQUEST,
+	FETCH_COMMENTS_SUCCESS,
+	FETCH_COMMENTS_FAILURE,
+	POST_COMMENT_REQUEST,
+	POST_COMMENT_SUCCESS,
+	POST_COMMENT_FAILURE,
+	FETCH_BADGE_SUMS_REQUEST,
+	FETCH_BADGE_SUMS_SUCCESS,
+	FETCH_BADGE_SUMS_FAILURE,
 	CHANGE_CAT,
 	HANDLE_SEARCH,
 	SORT_BY_HEARTS_TOGG,
 	SORT_BY_BADGES_TOGG,
 	SORT_BY_LOCATION_TOGG,
 	SORT_BY_SCORES_TOGG,
-	HANDLE_REFRESH,
 	SET_USER_INFO,
+	SET_IS_FETCHING,
+	HANDLE_REFRESH,
 	PROFILE_LOADING_TOGG,
-	SET_BADGE_COUNTS,
 } from "./types";
 import axios from "axios";
 
@@ -27,80 +29,94 @@ export const setIsFetching = (togg) => ({
 	payload: togg,
 });
 
-export const fetchingBizsRequest = (activityIndicator = true) => ({
-	type: FETCHING_BIZS_REQUEST,
+export const fetchBizsRequest = (activityIndicator = true) => ({
+	type: FETCH_BIZS_REQUEST,
 	payload: activityIndicator,
 });
 
-export const fetchingBizsSuccess = (json) => ({
-	type: FETCHING_BIZS_SUCCESS,
+export const fetchBizsSuccess = (json) => ({
+	type: FETCH_BIZS_SUCCESS,
 	payload: json,
 });
 
-export const fetchingBizsFailure = (error) => ({
-	type: FETCHING_BIZS_FAILURE,
+export const fetchBizsFailure = (error) => ({
+	type: FETCH_BIZS_FAILURE,
 	payload: error,
 });
 
-export const fetchingCommentsRequest = (activityIndicator = true) => ({
-	type: FETCHING_COMMENTS_REQUEST,
+export const fetchCommentsRequest = (activityIndicator = true) => ({
+	type: FETCH_COMMENTS_REQUEST,
 	payload: activityIndicator,
 });
 
-export const fetchingCommentsSuccess = (json) => ({
-	type: FETCHING_COMMENTS_SUCCESS,
+export const fetchCommentsSuccess = (json) => ({
+	type: FETCH_COMMENTS_SUCCESS,
 	payload: json,
 });
 
-export const fetchingCommentsFailure = (error) => ({
-	type: FETCHING_COMMENTS_FAILURE,
+export const fetchCommentsFailure = (error) => ({
+	type: FETCH_COMMENTS_FAILURE,
 	payload: error,
 });
 
-export const postingCommentRequest = () => ({ type: POSTING_COMMENT_REQUEST });
+export const postCommentRequest = () => ({ type: POST_COMMENT_REQUEST });
 
-export const postingCommentSuccess = (json) => ({
-	type: POSTING_COMMENT_SUCCESS,
+export const postCommentSuccess = (json) => ({
+	type: POST_COMMENT_SUCCESS,
 	payload: json,
 });
 
-export const postingCommentFailure = (error) => ({
-	type: POSTING_COMMENT_FAILURE,
+export const postCommentFailure = (error) => ({
+	type: POST_COMMENT_FAILURE,
+	payload: error,
+});
+
+export const fetchBadgeSumsRequest = () => ({
+	type: FETCH_BADGE_SUMS_REQUEST,
+});
+
+export const fetchBadgeSumsSuccess = (json) => ({
+	type: FETCH_BADGE_SUMS_SUCCESS,
+	payload: json,
+});
+
+export const fetchBadgeSumsFailure = (error) => ({
+	type: FETCH_BADGE_SUMS_FAILURE,
 	payload: error,
 });
 
 export const fetchBizs = (activityIndicator) => {
 	return async (dispatch) => {
-		dispatch(fetchingBizsRequest(activityIndicator));
+		dispatch(fetchBizsRequest(activityIndicator));
 		try {
 			let response = await axios(`http://192.168.1.211:3000/user_bizs`);
 			// let json = await response.json();
 			// console.log(response.data);
-			await dispatch(fetchingBizsSuccess(response.data));
+			await dispatch(fetchBizsSuccess(response.data));
 		} catch (error) {
-			dispatch(fetchingBizsFailure(error));
+			dispatch(fetchBizsFailure(error));
 		}
 	};
 };
 
 export const fetchComments = (id, activityIndicator) => {
 	return async (dispatch) => {
-		dispatch(fetchingCommentsRequest(activityIndicator));
+		dispatch(fetchCommentsRequest(activityIndicator));
 		try {
 			let response = await axios(`http://192.168.1.211:3000/businesses/${id}`, {
 				business: { id: `${id}` },
 			});
 			// let json = await response.json();
-			dispatch(fetchingCommentsSuccess(response.data.comments));
+			dispatch(fetchCommentsSuccess(response.data.comments));
 		} catch (error) {
-			dispatch(fetchingCommentsFailure(error));
+			dispatch(fetchCommentsFailure(error));
 		}
 	};
 };
 
 export const postComment = (comment) => {
 	return async (dispatch) => {
-		dispatch(postingCommentRequest());
+		dispatch(postCommentRequest());
 		try {
 			let response = await axios
 				.post(`http://192.168.1.211:3000/comments`, {
@@ -110,9 +126,24 @@ export const postComment = (comment) => {
 					dispatch(fetchComments(res.data.business_id));
 				});
 			// let json = await response.json();
-			dispatch(postingCommentSuccess(response.data));
+			dispatch(postCommentSuccess(response.data));
 		} catch (error) {
-			dispatch(postingCommentFailure(error));
+			dispatch(postCommentFailure(error));
+		}
+	};
+};
+
+export const fetchBadgeSums = () => {
+	return async (dispatch) => {
+		dispatch(fetchBadgeSumsRequest());
+		try {
+			let response = await axios(`http://192.168.1.211:3000/user_bizs/badges`);
+
+			dispatch(fetchBadgeSumsSuccess(response.data));
+
+			// let json = await response.json();
+		} catch (error) {
+			dispatch(fetchBadgeSumsFailure(error));
 		}
 	};
 };
@@ -151,5 +182,3 @@ export const profileLoadingTogg = (togg) => ({
 	type: PROFILE_LOADING_TOGG,
 	payload: togg,
 });
-
-

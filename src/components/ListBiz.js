@@ -85,7 +85,7 @@ class ListBiz extends React.Component {
 		return (
 			<View style={styles.container}>
 				<TouchableOpacity
-					style={{ zIndex: 10 }}
+					// style={{ zIndex: 10 }}
 					onPress={() => {
 						this.props.navigation.navigate("BizPage", {
 							biz: this.props.biz,
@@ -123,14 +123,14 @@ class ListBiz extends React.Component {
 					>
 						<View
 							style={{
-								flex: 1,
-								position: "absolute",
+								// flex: 1,
+								position: "relative",
 								// backgroundColor: "darkslategray",
 								width: vw(66),
 								height: vh(30),
 								flexDirection: "column",
 								alignSelf: "flex-start",
-								zIndex: 1,
+								zIndex: -1,
 							}}
 						>
 							{this.props.biz.business.images && this.renderImages()}
@@ -192,13 +192,15 @@ const styles = StyleSheet.create({
 		width: vw(100),
 		height: vh(5.5),
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
-		zIndex: 1,
+		zIndex: 2,
 	},
 	bizSumm: {
 		fontSize: 18,
 		color: "olivedrab",
 		paddingHorizontal: vw(2),
 		fontFamily: "Marker Felt",
+		zIndex: 2,
+
 	},
 	imgs: {
 		position: "relative",
