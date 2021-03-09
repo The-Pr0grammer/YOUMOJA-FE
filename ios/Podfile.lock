@@ -11,7 +11,7 @@ PODS:
   - EXFileSystem (9.0.1):
     - UMCore
     - UMFileSystemInterface
-  - EXFirebaseCore (1.2.0):
+  - EXFirebaseCore (1.3.0):
     - Firebase/Core (= 6.14.0)
     - UMCore
   - EXFont (8.2.2):
@@ -416,21 +416,48 @@ PODS:
     - React
   - RNGestureHandler (1.6.1):
     - React
-  - RNIap (5.2.6):
+  - RNIap (5.2.14):
     - React-Core
-  - RNImageCropPicker (0.35.1):
-    - React-Core
-    - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.35.1)
-    - TOCropViewController
-  - RNImageCropPicker/QBImagePickerController (0.35.1):
+  - RNImageCropPicker (0.35.3):
     - React-Core
     - React-RCTImage
+    - RNImageCropPicker/QBImagePickerController (= 0.35.3)
     - TOCropViewController
-  - RNReanimated (1.9.0):
+  - RNImageCropPicker/QBImagePickerController (0.35.3):
+    - React-Core
+    - React-RCTImage
+    - TOCropViewController
+  - RNReanimated (2.0.0):
+    - DoubleConversion
+    - FBLazyVector
+    - FBReactNativeSpec
+    - Folly
+    - glog
+    - RCTRequired
+    - RCTTypeSafety
     - React
-  - RNScreens (2.9.0):
-    - React
+    - React-Core
+    - React-Core/DevSupport
+    - React-Core/RCTWebSocket
+    - React-CoreModules
+    - React-cxxreact
+    - React-jsi
+    - React-jsiexecutor
+    - React-jsinspector
+    - React-RCTActionSheet
+    - React-RCTAnimation
+    - React-RCTBlob
+    - React-RCTImage
+    - React-RCTLinking
+    - React-RCTNetwork
+    - React-RCTSettings
+    - React-RCTText
+    - React-RCTVibration
+    - ReactCommon/callinvoker
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - RNScreens (2.18.1):
+    - React-Core
   - RNShare (3.8.5):
     - React-Core
   - TOCropViewController (2.6.0)
@@ -715,7 +742,7 @@ SPEC CHECKSUMS:
   EXConstants: f486f6b4a36b86e47ab258d4d2b7b2699786fdce
   EXErrorRecovery: ff58873bf2714fcd5290935d49b74d9fc589d575
   EXFileSystem: 76875135b61708b9afa7e6a89b72a60ba0fdfa20
-  EXFirebaseCore: d5befdb22015f9b71168ed89dda0b50dbb07fed1
+  EXFirebaseCore: f986c71bdd1cb5941c9cfa686b2395fe588a53d0
   EXFont: e583875d5d37a9e272d1cdba7f383bd576952919
   EXImageLoader: 02ca02c9cd5cc8a97b423207a73a791e0a86bea5
   EXKeepAwake: 8b0f68242f036b971f9f8976341823cbe6f50812
@@ -778,10 +805,10 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: d059c3ee71738c39834a627476322a5a8cd5bf36
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
-  RNIap: 32921e87fd252b6e439ce7a369b998811a4bc9c5
-  RNImageCropPicker: 16951bc02411f50c4d197488ed6406a23dc3b5f1
-  RNReanimated: b5ccb50650ba06f6e749c7c329a1bc3ae0c88b43
-  RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
+  RNIap: f00befe6581a5953191108cb97d9b3872473337b
+  RNImageCropPicker: 08ba3a2e2f4f8833d606f01906c371e382c4dea9
+  RNReanimated: a011e4c7b9425881102ade3ef83a2774a23c1d16
+  RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
   RNShare: 7e22ba3bf66294ff7c122a1f2da8a8ec642091a0
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   UMAppLoader: 61049c8d55590b74e9ae1d5429bf68d96b4a2528

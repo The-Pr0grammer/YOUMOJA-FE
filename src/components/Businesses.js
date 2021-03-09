@@ -57,7 +57,7 @@ class Businesses extends Component {
 	componentDidMount(props) {
 		// Linking.addEventListener("url", this.handleOpenURL);
 
-		this.props.filteredBizs.length < 1 &&
+		this.props.filtered_ubizs.length < 1 &&
 			this.props.fetchBizs() &&
 			this.loadUser();
 
@@ -147,7 +147,7 @@ class Businesses extends Component {
 			// isFocused && console.log("focused");
 			// isFocused && this.props.fetchBizs();
 		}
-		let emptyCheck = this.props.filteredBizs.length;
+		let emptyCheck = this.props.filtered_ubizs.length;
 
 		// console.log(
 		// 	"HEARTS ARE",
@@ -184,7 +184,7 @@ class Businesses extends Component {
 							alignItems: "center",
 						}}
 					>
-						<ActivityIndicator
+						{/* <ActivityIndicator
 							animating={this.props.reduxState.isFetching}
 							size="large"
 							color="#00ff00"
@@ -192,7 +192,7 @@ class Businesses extends Component {
 							style={{
 								top: vh(35),
 							}}
-						/>
+						/> */}
 						<ImageBackground
 							source={require("../images/BlackPowerSplash.gif")}
 							style={styles.bg}
@@ -250,14 +250,14 @@ class Businesses extends Component {
 							alignItems: "flex-start",
 							justifyContent: "flex-start",
 						}}
-						data={this.props.filteredBizs}
+						data={this.props.filtered_ubizs}
 						keyExtractor={(item) => item.id.toString()}
 						// keyExtractor={(item) => item.name}
 						// keyExtractor={(item, index) => item.key}
 						// keyExtractor={(item, index) => index.toString()}
 						renderItem={({ item }) => (
 							<ListBiz
-								biz={item}
+								ubiz={item}
 								navigation={this.props.navigation}
 								lastScreen={"Home"}
 							/>
@@ -300,7 +300,6 @@ const styles = StyleSheet.create({
 		width: "100%",
 		backgroundColor: "black",
 		flexDirection: "column",
-		
 	},
 	bg: {
 		// flex: 1,
@@ -371,7 +370,7 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
 	return {
 		reduxState: state,
-		businesses: state.businesses,
+		ubizs: state.ubizs,
 		userInfo: state.userInfo,
 		isFetching: state.isFetching,
 		sorters: {
@@ -379,23 +378,23 @@ function mapStateToProps(state) {
 			badgesSort: state.badgesSort,
 			locationSort: state.locationSort,
 		},
-		filteredBizs: state.businesses
-			.sort((a, b) => b.business.name < a.business.name)
-			.filter((biz) => biz.business.categories.includes(state.category))
+		filtered_ubizs: state.ubizs
+			// .sort((a, b) => b.business.name < a.business.name)
+			.filter((ubiz) => ubiz.business.categories.includes(state.category))
 			.filter(
-				(biz) =>
-					biz.business.summary
+				(ubiz) =>
+					ubiz.business.summary
 						.toUpperCase()
 						.includes(state.search.toUpperCase()) ||
-					biz.business.name
+					ubiz.business.name
 						.toUpperCase()
 						.includes(state.search.toUpperCase()) ||
-					biz.business.city.toUpperCase().includes(state.search.toUpperCase())
+					ubiz.business.city.toUpperCase().includes(state.search.toUpperCase())
 			)
 			.sort((a, b) => {
 				return state.heartsSort
 					? b.business.hearts - a.business.hearts
-					: b.business.name < a.business.name;
+					: b.business.id > a.business.id;
 			}),
 	};
 }

@@ -17,7 +17,7 @@ import { connect } from "react-redux";
 import { setUserInfo, setIsFetching } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 import Header from "./Header.js";
-import { set } from "react-native-reanimated";
+// import { set } from "react-native-reanimated";
 
 const PeerProfile = (props) => {
 	const navigation = useNavigation();

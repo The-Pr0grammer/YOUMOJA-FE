@@ -11,7 +11,11 @@ import React from "react";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { Icon } from "react-native-elements";
 import { connect } from "react-redux";
-import { fetchComments, sortByScoresTogg } from "../redux/actions/bizAction";
+import {
+	fetchComments,
+	sortByScoresTogg,
+	setIsFetching,
+} from "../redux/actions/bizAction";
 import Comment from "./Comment.js";
 import NewComment from "./NewComment.js";
 import { FontAwesome } from "@expo/vector-icons";
@@ -23,7 +27,7 @@ class CommentList extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			newCommentTogg: false,
+			newCommentTogg: this.props.commentTogg,
 			// successTogg: false,
 			expandTogg: false,
 			commExpand: false,
@@ -31,14 +35,23 @@ class CommentList extends React.Component {
 			sortedComms: [],
 		};
 	}
+
 	componentDidMount() {
 		!this.props.successTogg &&
-			setTimeout(() => this.props.fetchComments(this.props.bizId), 250);
+			setTimeout(() => this.props.fetchComments(this.props.id), 250);
 		this.props.sortByScoresTogg(true);
 		// setTimeout(
 		// 	() => this.flatList.scrollToIndex({ animated: false, index: 3 }),
 		// 	1000
 		// );
+	}
+
+	componentDidUpdate(prevProps) {
+		// Typical usage (don't forget to compare props):
+		if (this.props.id !== prevProps.id) {
+			setTimeout(() => this.props.fetchComments(this.props.id), 250);
+			this.props.sortByScoresTogg(true);
+		}
 	}
 
 	handleCancel = () => {
@@ -279,7 +292,7 @@ class CommentList extends React.Component {
 						<View>
 							{this.state.newCommentTogg && (
 								<NewComment
-									bizId={this.props.bizId}
+									bizId={this.props.id}
 									handleCancel={this.handleCancel}
 									handleSuccess={this.props.handleSuccess}
 									handleClose={this.props.handleClose}
@@ -306,7 +319,7 @@ class CommentList extends React.Component {
 							renderItem={({ item }) => (
 								<Comment
 									comment={item}
-									bizId={this.props.bizId}
+									bizId={this.props.id}
 									navigation={this.props.navigation}
 								/>
 							)}
@@ -347,6 +360,7 @@ class CommentList extends React.Component {
 export default connect(mapStateToProps, {
 	fetchComments,
 	sortByScoresTogg,
+	setIsFetching,
 })(CommentList);
 
 const styles = StyleSheet.create({

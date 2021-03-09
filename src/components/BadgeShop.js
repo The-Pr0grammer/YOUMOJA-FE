@@ -371,7 +371,6 @@ function mapStateToProps(state) {
 		userHeartBizs: state.userHearts.map((uh) => uh.user_biz),
 		profileLoading: state.profileLoading,
 		isFetching: state.isFetching,
-		userBizs: state.userBizs,
 		userHearts: state.userHearts,
 	};
 }

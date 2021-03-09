@@ -37,15 +37,15 @@ class ListBiz extends React.Component {
 			error: null,
 			page: 1,
 			isVisible: false,
-			summaryLength: props.biz.business.summary,
+			summaryLength: props.ubiz.business.summary.length,
 		};
 	}
 
 	componentDidMount() {}
 
 	renderImages = () => {
-		let strings = this.props.biz.business.images.map((image, index) => {
-			return { id: index, data: image };
+		let strings = this.props.ubiz.business.images.map((image, index) => {
+			return { id: index, data: uri };
 		});
 
 		// console.log("image strings in listbiz📸🧵::::", strings);
@@ -70,7 +70,7 @@ class ListBiz extends React.Component {
 				//IMAGES
 				style={styles.imgs}
 				source={{
-					uri: `http://192.168.1.211:3000/${data.data}`,
+					uri: `http://192.168.1.211:3000/${data.uri}`,
 				}}
 				// resizeMode={"stretch"}
 				resizeMode={"cover"}
@@ -78,24 +78,30 @@ class ListBiz extends React.Component {
 		</View>
 	);
 
+	handleNavigation = (commentTogg = false) => {
+		this.props.navigation.navigate("BizPage", {
+			ubiz: this.props.ubiz,
+			id: this.props.ubiz.id,
+			userInfo: this.props.ubiz.user,
+			lastScreen: this.props.lastScreen,
+			page: this.state.page,
+			commentTogg: commentTogg,
+		});
+	};
+
 	render() {
-		// this.props.type == "Profile" && console.log(this.props.biz.user.name);
-		// this.props.biz.business.images && console.log(this.props.biz.business.images[0]);
-		// console.log(this.props.biz);
+		// this.props.type == "Profile ID" && console.log(this.props.ubiz.user_id);
+		// this.props.biz.business.images && console.log(this.props.ubiz.business.images[0]);
+		// console.log(this.props.ubiz);
 		return (
 			<View style={styles.container}>
 				<TouchableOpacity
 					// style={{ zIndex: 10 }}
 					onPress={() => {
-						this.props.navigation.navigate("BizPage", {
-							biz: this.props.biz,
-							userInfo: this.props.biz.user,
-							lastScreen: this.props.lastScreen,
-							page: this.state.page,
-						});
+						this.handleNavigation();
 					}}
 				>
-					<Text style={styles.bizName}>{this.props.biz.business.name}</Text>
+					<Text style={styles.bizName}>{this.props.ubiz.business.name}</Text>
 					<View style={styles.bizSummView}>
 						<TextTicker
 							style={styles.bizSumm}
@@ -105,7 +111,7 @@ class ListBiz extends React.Component {
 							duration={Math.random * 18000}
 							marqueeDelay={Math.random() * 2000}
 						>
-							{this.props.biz.business.summary}
+							{this.props.ubiz.business.summary}
 						</TextTicker>
 					</View>
 					<Card
@@ -124,8 +130,8 @@ class ListBiz extends React.Component {
 						<View
 							style={{
 								// flex: 1,
-								position: "relative",
 								// backgroundColor: "darkslategray",
+								position: "relative",
 								width: vw(66),
 								height: vh(30),
 								flexDirection: "column",
@@ -133,16 +139,19 @@ class ListBiz extends React.Component {
 								zIndex: -1,
 							}}
 						>
-							{this.props.biz.business.images && this.renderImages()}
-							{!this.props.biz.business.images && (
+							{this.props.ubiz.business.images && this.renderImages()}
+							{!this.props.ubiz.business.images && (
 								<Image
 									style={styles.img}
-									source={{ uri: this.props.biz.business.img_url }}
+									source={{ uri: this.props.ubiz.business.img_url }}
 									resizeMode={"cover"}
 								/>
 							)}
 						</View>
-						<ListBizDash biz={this.props.biz} />
+						<ListBizDash
+							ubiz={this.props.ubiz}
+							handleNavigation={this.handleNavigation}
+						/>
 					</Card>
 				</TouchableOpacity>
 			</View>
@@ -200,12 +209,11 @@ const styles = StyleSheet.create({
 		paddingHorizontal: vw(2),
 		fontFamily: "Marker Felt",
 		zIndex: 2,
-
 	},
 	imgs: {
 		position: "relative",
-		width: vw(67),
 		// height: vh(34),
+		width: vw(67),
 		height: undefined,
 		aspectRatio: 1 / 1.15,
 		opacity: 1.0,

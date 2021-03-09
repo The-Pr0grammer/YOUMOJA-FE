@@ -46,98 +46,13 @@ const Blackboard = (props) => {
 			<Header
 				name={"Blackboard"}
 				navigation={navigation}
+				lastScreen={"Home"}
 				// loading={props.profileLoading}
 			/>
 			<ScrollView scrollIndicatorInsets={{ right: 1 }}>
-				{props.badge_sums.map((business, index) => {
+				{props.badgeSums.map((ubiz, index) => {
 					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
-				})}
-				{props.badge_sums.map((business, index) => {
-					rankItr++;
-					return (
-						<BlackboardBiz key={index} business={business} rank={rankItr} />
-					);
+					return <BlackboardBiz key={index} ubiz={ubiz} rank={rankItr} />;
 				})}
 			</ScrollView>
 			<View
@@ -186,6 +101,6 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
 	return {
 		reduxState: state,
-		badge_sums: state.badge_sums,
+		badgeSums: state.badgeSums,
 	};
 }

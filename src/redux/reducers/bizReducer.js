@@ -26,7 +26,7 @@ import {
 const initialState = {
 	isFetching: false,
 	errorMessage: "",
-	businesses: [],
+	ubizs: [],
 	comments: [],
 	category: "",
 	search: "",
@@ -36,9 +36,9 @@ const initialState = {
 	scoresSort: true,
 	userInfo: {},
 	userHearts: [],
-	userBizs: [],
+	myUbizs: [],
 	profileLoading: true,
-	badge_sums: [],
+	badgeSums: [],
 };
 
 const bizReducer = (state = initialState, action) => {
@@ -63,7 +63,7 @@ const bizReducer = (state = initialState, action) => {
 		case FETCH_BIZS_SUCCESS:
 			return {
 				...state,
-				businesses: [...action.payload],
+				ubizs: [...action.payload],
 				isFetching: false,
 			};
 		case FETCH_COMMENTS_REQUEST:
@@ -115,7 +115,7 @@ const bizReducer = (state = initialState, action) => {
 		case FETCH_BADGE_SUMS_SUCCESS:
 			return {
 				...state,
-				badge_sums: [...action.payload],
+				badgeSums: [...action.payload],
 			};
 		case CHANGE_CAT:
 			return action.payload == "All Categories"
@@ -168,7 +168,7 @@ const bizReducer = (state = initialState, action) => {
 					timeSent: action.payload.timeSent,
 				},
 				userHearts: action.payload.user_hearts,
-				userBizs: action.payload.user_bizs,
+				myUbizs: action.payload.user_bizs,
 			};
 		case SET_IS_FETCHING:
 			// console.log("reducing isFetching");

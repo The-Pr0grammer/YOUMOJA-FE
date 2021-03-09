@@ -34,25 +34,25 @@ class ListBizDash extends React.Component {
 		// let countArr = this.mapBadges();
 
 		this.setState({
-			biz: this.props.biz,
-			hearts: this.props.biz.business.hearts,
-			comments: this.props.biz.business.comments.length,
-			badgeCounts: this.mapBadges(),
+			ubiz: this.props.ubiz,
+			hearts: this.props.ubiz.business.hearts,
+			comments: this.props.ubiz.business.comments,
+			badgeCounts: this.props.ubiz.business.badges,
 		});
 	}
 
 	componentDidUpdate(prevProps) {
 		// Typical usage (don't forget to compare props):
-		if (this.props.biz.business.badges !== prevProps.biz.business.badges) {
+		if (this.props.ubiz.business.badges !== prevProps.ubiz.business.badges) {
 			this.setState({
-				badgeCounts: this.mapBadges(),
+				badgeCounts: this.props.ubiz.business.badges,
 			});
 		}
 	}
 
 	fetchHearts = () => {
 		axios
-			.get(`http://192.168.1.211:3000/users/1`)
+			.get(`http://192.168.1.211:3000/users/${currentUserId}`)
 			.then((response) => {
 				this.setState({ userHearts: response.data.user_hearts });
 			})
@@ -66,10 +66,10 @@ class ListBizDash extends React.Component {
 		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
 		axios
 			.patch(
-				`http://192.168.1.211:3000/businesses/${this.props.biz.business.id}`,
+				`http://192.168.1.211:3000/businesses/${this.props.ubiz.business.id}`,
 				{
 					business: {
-						id: this.props.biz.business.id,
+						id: this.props.ubiz.business.id,
 						hearts: this.state.hearts + 1,
 					},
 				},
@@ -83,7 +83,7 @@ class ListBizDash extends React.Component {
 			});
 		axios
 			.post(`http://192.168.1.211:3000/user_hearts`, {
-				user_heart: { user_id: 1, user_biz_id: this.props.biz.id },
+				user_heart: { user_id: 1, business_id: this.props.ubiz.business.id }, //NEEDS TO BE REFACTORED TO POST W/ LOGGED IN USER ID NOT A HARDCODED "1"
 			})
 			.then(function (response) {
 				let userRsp = axios(
@@ -96,28 +96,28 @@ class ListBizDash extends React.Component {
 			});
 	};
 
-	mapBadges = () => {
-		let countArr = [];
+	// mapBadges = () => {
+	// 	let countArr = [];
 
-		this.props.biz.business.badges
-			.map((badge) => {
-				let badgeObj = countArr.find((x) => x.color == badge.color);
-				if (badgeObj) {
-					badgeObj["quantity"]++;
-					badgeObj["sum"] += parseFloat(badge.price);
-				} else {
-					countArr.push({
-						color: badge.color,
-						price: parseFloat(badge.price),
-						quantity: 1,
-						sum: parseFloat(badge.price),
-					});
-				}
-			})
-			.sort((a, b) => (a.price > b.price ? 1 : -1));
+	// 	this.props.ubiz.business.badges
+	// 		.map((badge) => {
+	// 			let badgeObj = countArr.find((x) => x.color == badge.color);
+	// 			if (badgeObj) {
+	// 				badgeObj["quantity"]++;
+	// 				badgeObj["sum"] += parseFloat(badge.price);
+	// 			} else {
+	// 				countArr.push({
+	// 					color: badge.color,
+	// 					price: parseFloat(badge.price),
+	// 					quantity: 1,
+	// 					sum: parseFloat(badge.price),
+	// 				});
+	// 			}
+	// 		})
+	// 		.sort((a, b) => (a.price > b.price ? 1 : -1));
 
-		return countArr;
-	};
+	// 	return countArr;
+	// };
 
 	handleShopTogg = async () => {
 		this.setState({ shopTogg: !this.state.shopTogg });
@@ -125,11 +125,11 @@ class ListBizDash extends React.Component {
 	};
 
 	render() {
-		// console.log(this.props.biz.id);
+		// console.log(this.props.ubiz.id);
 
 		// console.log(
 		// 	"BADGE PROPS ",
-		// 	this.props.biz.business.name,
+		// 	this.props.ubiz.business.name,
 		// 	":",
 		// 	this.state.badgeCounts
 		// );
@@ -185,11 +185,11 @@ class ListBizDash extends React.Component {
 						// backgroundColor: "blue",
 					}}
 				>
-					{this.props.biz.business.hearts > 0 &&
+					{this.props.ubiz.business.hearts > 0 &&
 						numFormat(
-							this.state.hearts > this.props.biz.business.hearts
+							this.state.hearts > this.props.ubiz.business.hearts
 								? this.state.hearts
-								: this.props.biz.business.hearts
+								: this.props.ubiz.business.hearts
 						)}
 				</Text>
 				{/* COMMENTS ICON */}
@@ -201,7 +201,10 @@ class ListBizDash extends React.Component {
 						height: vh(5),
 						width: vw(13),
 					}}
-					disabled={true}
+					// disabled={true}
+					onPress={() => {
+						this.props.handleNavigation(true);
+					}}
 				>
 					<Icon
 						name="chat"
@@ -224,8 +227,8 @@ class ListBizDash extends React.Component {
 						alignSelf: "center",
 					}}
 				>
-					{this.props.biz.business.comments.length > 0 &&
-						numFormat(this.props.biz.business.comments.length)}
+					{this.props.ubiz.business.comments > 0 &&
+						numFormat(this.props.ubiz.business.comments)}
 				</Text>
 
 				<ScrollView
@@ -253,9 +256,12 @@ class ListBizDash extends React.Component {
 				>
 					{colors.map((badge, key = index) => {
 						colorItr++;
-						let badgeObj = this.state.badgeCounts.find(
-							(badgeObj) => badgeObj.color == trueColors[colorItr]
-						);
+						// let badgeObj = this.state.badgeCounts.find(
+						// 	(badgeObj) => badgeObj.color == trueColors[colorItr]
+						// );
+
+						// trueColors[colorItr] in this.state.badgeCounts
+
 						return (
 							<TouchableOpacity
 								key={key}
@@ -278,9 +284,11 @@ class ListBizDash extends React.Component {
 									style={[colorItr == 0 ? { marginRight: vw(10) } : {}]}
 								/>
 
-								{badgeObj && (
+								{trueColors[colorItr] in this.state.badgeCounts && (
 									<Badge
-										value={numFormat(badgeObj.quantity)}
+										value={numFormat(
+											this.state.badgeCounts[trueColors[colorItr]]
+										)}
 										status="success"
 										containerStyle={[
 											colorItr == 0 ? styles.greenBadgeInd : styles.badgeInd,
@@ -293,7 +301,7 @@ class ListBizDash extends React.Component {
 				</ScrollView>
 				{this.state.shopTogg && (
 					<BadgeShop
-						biz={this.props.biz}
+						ubiz={this.props.ubiz}
 						handleShopTogg={this.handleShopTogg}
 						badgeKeyPressed={this.state.badgeKeyPressed}
 					/>

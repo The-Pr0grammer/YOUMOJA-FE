@@ -37,7 +37,7 @@ const MyBusinesses = (props) => {
 	// });
 
 	// console.log("HEARTS IS🤎♥️🧡", props.userHearts[0]);
-	// console.log("userbizs is 💼💼💼", props.userBizs);
+	console.log("My user_bizs are 💼💼💼", props.myUbizs);
 	return (
 		<View // START OF BIZLIST
 			style={{
@@ -60,7 +60,7 @@ const MyBusinesses = (props) => {
 			>
 				<Text style={styles.title}>
 					MY BUSINESSES(
-					{props.userBizs.length})
+					{props.ubizs.length})
 				</Text>
 
 				<TouchableOpacity onPress={() => props.handleAddBusinessTogg()}>
@@ -86,12 +86,12 @@ const MyBusinesses = (props) => {
 
 					// position: "relative",
 				}}
-				data={props.userBizs}
+				data={props.ubizs}
 				keyExtractor={(item) => item.id.toString()}
 				renderItem={({ item }) => (
 					<ListBiz biz={item} navigation={navigation} lastScreen={"Profile"} />
 				)}
-				extraData={props.userBizs}
+				extraData={props.ubizs}
 				legacyImplementation={true}
 			/>
 			{/* {props.loading && (
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
 	return {
-		userBizs: state.userBizs,
+		myUbizs: state.myUbizs,
 		userInfo: state.userInfo,
 	};
 }

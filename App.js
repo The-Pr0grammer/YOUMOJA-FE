@@ -147,7 +147,7 @@ function DrawerNav({ navigation }) {
 				},
 			}}
 			// initialRouteName="Home" //THIS BREAKS APP!!! USE "Main"
-			initialRouteName="Blackboard"
+			initialRouteName="Main"
 			drawerType="slide"
 			drawerContentOptions={{
 				activeBackgroundColor: "black",

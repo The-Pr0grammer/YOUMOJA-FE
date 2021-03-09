@@ -52,9 +52,16 @@ const Header = (props) => {
 						}}
 						icon={<Icon name="angle-left" size={40} color="black" />}
 						type="clear"
-						onPress={async () => {
+						onPress={() => {
 							if (props.lastScreen == "MyBusinesses") {
 								props.handleAddBusinessTogg();
+							} else if (props.lastScreen == "Home") {
+								props.navigation.reset({
+									index: 0,
+									routes: [{ name: "Home" }],
+								});
+							} else if (props.lastScreen == "Blackboard") {
+								props.navigation.navigate("Blackboard");
 							} else {
 								props.refresh && props.handleRefresh();
 								props.lastScreen == "Profile" &&
@@ -62,10 +69,10 @@ const Header = (props) => {
 								props.profileLoadingTogg(true);
 								props.navigation.goBack();
 								props.setIsFetching(true);
-								await props.fetchBizs();
-								setTimeout(() => {
-									props.setIsFetching(false);
-								}, 100);
+								props.fetchBizs();
+								// setTimeout(() => {
+								// 	props.setIsFetching(false);
+								// }, 100);
 							}
 						}}
 						titleStyle={{

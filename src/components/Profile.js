@@ -212,7 +212,7 @@ const Profile = (props) => {
 				}
 				{!props.isFetching && !addBusinessTogg && (
 					<>
-						{props.userBizs.length > 0 && (
+						{props.myUbizs.length > 0 && (
 							<MyBusinesses
 								userId={props.userInfo.id}
 								handleAddBusinessTogg={handleAddBusinessTogg}
@@ -379,7 +379,7 @@ function mapStateToProps(state) {
 		userHeartBizs: state.userHearts.map((uh) => uh.user_biz),
 		profileLoading: state.profileLoading,
 		isFetching: state.isFetching,
-		userBizs: state.userBizs,
+		myUbizs: state.myUbizs,
 		userHearts: state.userHearts,
 	};
 }

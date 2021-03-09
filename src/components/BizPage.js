@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
 	View,
 	StyleSheet,
 	Image,
 	Dimensions,
 	TouchableOpacity,
+	Text,
 	Share,
+	ImageBackground,
+	ActivityIndicator,
 } from "react-native";
 import { Modal } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
@@ -27,8 +30,10 @@ import Carousel, { PaginationLight } from "react-native-x2-carousel";
 import ImageViewer from "react-native-image-zoom-viewer";
 import FitImage from "react-native-fit-image";
 
+import axios from "axios";
+
 const BizPage = (props) => {
-	const [bizInfo, setBizinfo] = useState({});
+	const [ubiz, setUbiz] = useState(false);
 	const [comments, setComments] = useState([]);
 	const [isVisible, setIsVisible] = useState(false);
 	const [successTogg, setSuccessTogg] = useState(false);
@@ -37,35 +42,36 @@ const BizPage = (props) => {
 	const [page, setPage] = useState(0);
 	const [fixedPage, setFixedPage] = useState(0);
 	const isFocused = useIsFocused();
-
 	// console.log(props.route.params.lastScreen);
-	// console.log("URLLLLLLLLLLL", props.route.params["biz"].business.images);
+	// console.log("URLLLLLLLLLLL", props.route.params["ubiz"].business.images);
 	console.log("IMAGES LIVE FROM THE BIZPAGE", images);
+	console.log("It's Aliiiiiive; ubiz from the BizPage:", ubiz);
 
 	useEffect(() => {
-		props.route.params["biz"].business.images
-			? setImages(
-					props.route.params["biz"].business.images.map((image, index) => {
-						return (
-							{
-								url: `http://192.168.1.211:3000/${image}`,
-							},
-							{
-								url: `http://192.168.1.211:3000/${image}`,
-								props: {
-									// source: require("data:image/gif;base64,${item.data}"),
-								},
-								id: index,
-							}
-						);
-					})
-			  )
-			: setImages([{ url: props.route.params["biz"].business.img_url }]);
+		fetchData();
 
 		return () => {
+			// setUbiz(false);
+
 			console.log("please come again");
 		};
 	}, [isFocused]);
+
+	const fetchData = async () => {
+		props.setIsFetching(true);
+		await axios(`http://192.168.1.211:3000/user_bizs/${props.route.params.id}`)
+			.then((res) => {
+				setUbiz(res.data);
+			})
+			.then(() => {
+				buildImagesArray();
+			})
+			.then(() => {
+				props.setIsFetching(false);
+			})
+
+			.catch((error) => console.log(error));
+	};
 
 	const handleSuccess = () => {
 		setTimeout(() => {
@@ -83,12 +89,31 @@ const BizPage = (props) => {
 		setSuccessTogg(false);
 	};
 
+	buildImagesArray = () => {
+		ubiz.business.images
+			? setImages(
+					ubiz.business.images.map((image, index) => {
+						return (
+							{
+								url: `http://192.168.1.211:3000/${image}`,
+							},
+							{
+								url: `http://192.168.1.211:3000/${image}`,
+								props: {
+									// source: require("data:image/gif;base64,${item.data}"),
+								},
+								id: index,
+							}
+						);
+					})
+			  )
+			: setImages([{ url: ubiz.business.img_url }]);
+	};
+
 	renderImages = () => {
-		let strings = props.route.params["biz"].business.images.map(
-			(image, index) => {
-				return { id: index, data: image };
-			}
-		);
+		let strings = ubiz.business.images.map((image, index) => {
+			return { id: index, uri: image };
+		});
 
 		// console.log("image strings in bIzPaGe📸🧵::::", strings);
 		return (
@@ -110,7 +135,7 @@ const BizPage = (props) => {
 				//IMAGES
 				style={styles.imgs}
 				source={{
-					uri: `http://192.168.1.211:3000/${data.data}`,
+					uri: `http://192.168.1.211:3000/${data.uri}`,
 				}}
 				// resizeMode={"stretch"}
 				resizeMode={"cover"}
@@ -120,156 +145,186 @@ const BizPage = (props) => {
 
 	return (
 		<View style={styles.container}>
-			{props.route.params["biz"].business.images && isVisible && (
-				<Modal visible={isVisible} transparent={true}>
-					<ImageViewer
-						imageUrls={images}
-						// imageIndex={page}
-						// visible={isVisible}
-						onCancel={() => setIsVisible(false)}
-						enableSwipeDown={true}
-						index={fixedPage}
-					/>
-				</Modal>
-			)}
-			{!props.route.params["biz"].business.images && isVisible && (
-				<Modal visible={isVisible} transparent={true}>
-					<ImageViewer
-						imageUrls={images}
-						// imageIndex={page}
-						// visible={isVisible}
-						onCancel={() => setIsVisible(false)}
-						enableSwipeDown={true}
-						index={fixedPage}
-					/>
-				</Modal>
-			)}
-
-			<View
-				style={{
-					flex: 1,
-					flexDirection: "column",
-				}}
-			>
-				<Header
-					name={props.route.params["biz"].business.name}
-					navigation={props.navigation}
-					lastScreen={props.route.params.lastScreen}
-				/>
-			</View>
-
-			<View style={styles.bizCon}>
-				{successTogg && (
-					<SuccessModal
-						handleDismiss={handleDismiss}
-						message={"Your comment was posted✅"}
-					/>
-				)}
-				<View style={{ flexDirection: "row", justifyContent: "center" }}>
-					<View
-						style={{
-							backgroundColor: "rgba(40, 40, 40, 0.5)",
-							borderLeftWidth: 4,
-							width: vw(16),
-							height: vh(6.8),
-							alignItems: "center",
-							justifyContent: "center",
-						}}
-					>
-						<TouchableOpacity
-							onPress={() => {
-								console.log(props.route.params.userInfo);
-								props.navigation.navigate("PeerProfile", {
-									prevScreen: "BizPage",
-									userShowInfo: props.route.params.userInfo,
-								});
-							}}
-						>
-							<Image
-								resizeMode={"cover"}
-								source={{
-									uri: props.route.params.userInfo.image
-										? `http://192.168.1.211:3000/${props.userInfo.image}`
-										: props.route.params.userInfo.img_url,
-								}}
-								style={styles.profilePic}
-							></Image>
-						</TouchableOpacity>
-					</View>
-					<TextTicker
-						shouldAnimateTreshold={vw(8)}
-						duration={Math.random * 18000}
-						loop
-						bounce
-						repeatSpacer={25}
-						marqueeDelay={3200}
-						style={styles.bizSumm}
-					>
-						{props.route.params["biz"].business.summary}
-					</TextTicker>
-				</View>
-				<View style={styles.cardView}>
+			{ubiz ? (
+				<View style={styles.container}>
+					{isVisible && ubiz.business.images && (
+						<Modal visible={isVisible} transparent={true}>
+							<ImageViewer
+								imageUrls={images}
+								// imageIndex={page}
+								// visible={isVisible}
+								onCancel={() => setIsVisible(false)}
+								enableSwipeDown={true}
+								index={fixedPage}
+							/>
+						</Modal>
+					)}
+					{isVisible && !ubiz.business.images && (
+						<Modal visible={isVisible} transparent={true}>
+							<ImageViewer
+								imageUrls={images}
+								// imageIndex={page}
+								// visible={isVisible}
+								onCancel={() => setIsVisible(false)}
+								enableSwipeDown={true}
+								index={fixedPage}
+							/>
+						</Modal>
+					)}
+					{/* REFACTOR THIS; MAKE DRY*/}
 					<View
 						style={{
 							flex: 1,
-							position: "absolute",
-							// backgroundColor: "darkslategray",
-							width: vw(60),
-							height: vh(30),
-							// zIndex: 3,
 							flexDirection: "column",
-							alignSelf: "flex-start",
 						}}
 					>
-						<TouchableOpacity
-							style={{
-								position: "absolute",
-								alignSelf: "flex-end",
-								width: vw(6.5),
-								right: vw(1.5),
-								marginTop: vh(0.2),
-								opacity: 0.5,
-								zIndex: 2,
-								// backgroundColor: "red",
-							}}
-							onPress={() => {
-								setIsVisible(true);
-								setFixedPage(page);
-							}}
-						>
-							<Icon
-								name="arrows-expand"
-								type="foundation"
-								color={"white"}
-								size={24}
-							/>
-						</TouchableOpacity>
-						{props.route.params["biz"].business.images && renderImages()}
-						{props.route.params["biz"].business.img_url && (
-							<Image
-								style={styles.img}
-								source={{
-									uri: props.route.params["biz"].business.img_url,
-								}}
+						<Header
+							name={ubiz.business.name}
+							navigation={props.navigation}
+							lastScreen={props.route.params.lastScreen}
+						/>
+					</View>
+					<View style={styles.bizCon}>
+						{successTogg && (
+							<SuccessModal
+								handleDismiss={handleDismiss}
+								message={"Your comment was posted✅"}
 							/>
 						)}
+						<View style={{ flexDirection: "row", justifyContent: "center" }}>
+							<View
+								style={{
+									backgroundColor: "rgba(40, 40, 40, 0.5)",
+									borderLeftWidth: 4,
+									width: vw(16),
+									height: vh(6.8),
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+							>
+								<TouchableOpacity
+									onPress={() => {
+										console.log(props.route.params.userInfo);
+										props.navigation.navigate("PeerProfile", {
+											prevScreen: "BizPage",
+											userShowInfo: props.route.params.userInfo,
+										});
+									}}
+								>
+									<Image
+										resizeMode={"cover"}
+										source={{
+											uri: ubiz.user.image
+												? `http://192.168.1.211:3000/${props.userInfo.image}`
+												: ubiz.user.img_url,
+										}}
+										style={styles.profilePic}
+									></Image>
+								</TouchableOpacity>
+							</View>
+							<TextTicker
+								shouldAnimateTreshold={vw(8)}
+								duration={Math.random * 18000}
+								loop
+								bounce
+								repeatSpacer={25}
+								marqueeDelay={3200}
+								style={styles.bizSumm}
+							>
+								{ubiz.business.summary}
+							</TextTicker>
+						</View>
+						<View style={styles.cardView}>
+							<View
+								style={{
+									flex: 1,
+									position: "absolute",
+									// backgroundColor: "darkslategray",
+									width: vw(60),
+									height: vh(30),
+									// zIndex: 3,
+									flexDirection: "column",
+									alignSelf: "flex-start",
+								}}
+							>
+								<TouchableOpacity
+									style={{
+										position: "absolute",
+										alignSelf: "flex-end",
+										width: vw(6.5),
+										right: vw(1.5),
+										marginTop: vh(0.2),
+										opacity: 0.5,
+										zIndex: 2,
+										// backgroundColor: "red",
+									}}
+									onPress={() => {
+										setIsVisible(true);
+										setFixedPage(page);
+									}}
+								>
+									<Icon
+										name="arrows-expand"
+										type="foundation"
+										color={"white"}
+										size={24}
+									/>
+								</TouchableOpacity>
+								{ubiz.business.images && renderImages()}
+								{ubiz.business.img_url && (
+									<Image
+										style={styles.img}
+										source={{
+											uri: ubiz.business.img_url,
+										}}
+									/>
+								)}
+							</View>
+							<BizPageDash ubiz={ubiz} />
+						</View>
+						<View style={styles.bizSupport}>
+							<BizPageSupport ubiz={ubiz} />
+						</View>
 					</View>
-					<BizPageDash business={props.route.params["biz"].business} />
+					<View style={styles.commentCon}>
+						<CommentList
+							id={props.route.params.id}
+							navigation={navigation}
+							handleSuccess={handleSuccess}
+							handleClose={handleClose}
+							successTogg={successTogg}
+							commentTogg={props.route.params.commentTogg}
+							// comments={comments}
+						/>
+					</View>
 				</View>
-				<View style={styles.bizSupport}>
-					<BizPageSupport business={props.route.params["biz"].business} />
+			) : (
+				<View
+					style={{
+						// flex: 1,
+						height: vh(100),
+						width: vw(100),
+						position: "relative",
+						zIndex: 7,
+						backgroundColor: "rgba(165,5,65,9)",
+						// backgroundColor: "black",
+						justifyContent: "center",
+						alignItems: "center",
+						borderWidth: 20,
+						borderRadius: 75,
+					}}
+				>
+					{/* <ActivityIndicator
+						size="large"
+						color="#00ff00"
+						hidesWhenStopped={true}
+					/> */}
+					<ImageBackground
+						source={require("../images/transparentloadingsauce.gif")}
+						style={styles.bg}
+					></ImageBackground>
 				</View>
-			</View>
-			<View style={styles.commentCon}>
-				<CommentList
-					bizId={props.route.params["biz"].business.id}
-					navigation={navigation}
-					handleSuccess={handleSuccess}
-					handleClose={handleClose}
-					successTogg={successTogg}
-					// comments={comments}
-				/>
-			</View>
+			)}
 		</View>
 	);
 };
@@ -353,10 +408,26 @@ const styles = StyleSheet.create({
 		opacity: 1.0,
 		backgroundColor: "black",
 	},
+	activityView: {
+		flex: 1,
+		justifyContent: "center",
+	},
+	bg: {
+		// flex: 1,
+		resizeMode: "cover",
+		opacity: 0.5,
+		// padding: 150,
+		// borderWidth: 7,
+		width: vw(100),
+		height: vh(35),
+		// marginTop: vh(10),
+		justifyContent: "center",
+	},
 });
 
 function mapStateToProps(state) {
 	return {
 		userInfo: state.userInfo,
+		isFetching: state.isFetching,
 	};
 }

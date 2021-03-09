@@ -8,10 +8,12 @@ import TextTicker from "react-native-text-ticker";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
 import { connect } from "react-redux";
-import {} from "../redux/actions/bizAction";
+import { setIsFetching } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 
 import NumberFormat from "react-number-format";
+
+
 
 const BlackboardBiz = (props) => {
 	const navigation = useNavigation();
@@ -31,92 +33,105 @@ const BlackboardBiz = (props) => {
 	// }, []);
 
 	// console.log("TOP 25📈!!! SCRATCH THAT: BLACKBOARD 💯 WE MADE IT");
-	// console.log("user img:", props.business.user_img_url);
+	// console.log("user img:", props.ubiz.user_img_url);
 	// console.log("rank:", props.rank);
-	// console.log("business:", props.business);
+	// console.log("ubiz:", props.ubiz);
 
 	return (
 		<View style={styles.container}>
-			{/* <Text>Hello World</Text> */}
-			<View style={styles.totalView}>
-				<Text
-					style={{
-						// backgroundColor:"red",
-						textAlign: "auto",
-						fontFamily: "Marker Felt",
-						color: "darkslategray",
-						// alignSelf:"flex-end"
-					}}
-				>
-					🚀Total:
-				</Text>
-				<View>
-					<NumberFormat
-						value={`
-						${props.business.badges_sum}`}
-						displayType={"text"}
-						thousandSeparator={true}
-						prefix={"$"}
-						renderText={(formattedValue) => (
-							<Text
-								style={[
-									// { ...styles.total, color: `rgb(119,${shimmerInt},153)` },
-									{
-										...styles.total,
-										color:
-											props.rank % 2 == 1
-												? `rgb(119,135,153)`
-												: `rgb(119,175,150)`,
-									},
-								]}
-							>
-								{formattedValue}
-							</Text>
-						)}
-					/>
-				</View>
-			</View>
-			<View style={styles.firstRow}>
-				<View style={styles.rankView}>
-					<Text style={styles.rank}>{props.rank}</Text>
-				</View>
-				<Text style={styles.bizName}>{props.business.business_name}</Text>
-			</View>
-			<View style={{ flexDirection: "row" }}>
-				<TouchableOpacity
-					onPress={() => {
-						console.log(props.route.params.userInfo);
-						props.navigation.navigate("PeerProfile", {
-							prevScreen: "Blackboard",
-							// userShowInfo: props.route.params.userInfo,
+			<TouchableOpacity
+				onPress={() => {
+					props.setIsFetching(true);
+					this.setTimeout(() => {
+						navigation.navigate("BizPage", {
+							id: props.ubiz.id,
+							lastScreen: "Blackboard",
+							commentTogg: false,
 						});
-					}}
-				>
-					<Image
-						resizeMode={"cover"}
-						source={{
-							// uri: `http://192.168.1.211:3000/${props.business["user_img_url"]}`
-							uri: props.business.user_img_url,
+					}, 300);
+				}}
+			>
+				{/* <Text>Hello World</Text> */}
+				<View style={styles.totalView}>
+					<Text
+						style={{
+							// backgroundColor:"red",
+							textAlign: "auto",
+							fontFamily: "Marker Felt",
+							color: "darkslategray",
+							// alignSelf:"flex-end"
 						}}
-						style={styles.profilePic}
-					></Image>
-				</TouchableOpacity>
-				<TextTicker
-					style={styles.bizSumm}
-					loop
-					bounce
-					repeatSpacer={vw(91)}
-					duration={Math.random * 18000}
-					marqueeDelay={Math.random() * 2000}
-				>
-					{props.business.business_summary}
-				</TextTicker>
-			</View>
+					>
+						🚀Total:
+					</Text>
+					<View>
+						<NumberFormat
+							value={`
+						${props.ubiz.badges_sum}`}
+							displayType={"text"}
+							thousandSeparator={true}
+							prefix={"$"}
+							renderText={(formattedValue) => (
+								<Text
+									style={[
+										// { ...styles.total, color: `rgb(119,${shimmerInt},153)` },
+										{
+											...styles.total,
+											color:
+												props.rank % 2 == 1
+													? `rgb(119,135,153)`
+													: `rgb(119,175,150)`,
+										},
+									]}
+								>
+									{formattedValue}
+								</Text>
+							)}
+						/>
+					</View>
+				</View>
+				<View style={styles.firstRow}>
+					<View style={styles.rankView}>
+						<Text style={styles.rank}>{props.rank}</Text>
+					</View>
+					<Text style={styles.bizName}>{props.ubiz.business_name}</Text>
+				</View>
+				<View style={{ flexDirection: "row" }}>
+					<TouchableOpacity
+						onPress={() => {
+							console.log(props.route.params.userInfo);
+							props.navigation.navigate("PeerProfile", {
+								prevScreen: "Blackboard",
+								// userShowInfo: props.route.params.userInfo,
+							});
+						}}
+					>
+						<Image
+							resizeMode={"cover"}
+							source={{
+								// uri: `http://192.168.1.211:3000/${props.ubiz["user_img_url"]}`
+								uri: props.ubiz.user_img_url,
+							}}
+							style={styles.profilePic}
+						></Image>
+					</TouchableOpacity>
+					<TextTicker
+						style={styles.bizSumm}
+						loop
+						bounce
+						repeatSpacer={vw(91)}
+						duration={Math.random * 18000}
+						marqueeDelay={Math.random() * 2000}
+					>
+						{props.ubiz.business_summary}
+					</TextTicker>
+				</View>
+			</TouchableOpacity>
 		</View>
 	);
 };
 
-export default connect(mapStateToProps, {})(BlackboardBiz);
+export default connect(mapStateToProps, { setIsFetching })(BlackboardBiz);
 
 const styles = StyleSheet.create({
 	container: {
