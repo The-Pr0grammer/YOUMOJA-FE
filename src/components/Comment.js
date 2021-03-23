@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
 import { FontAwesome } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
+import TextTicker from "react-native-text-ticker";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { fetchUserInfo, fetchComments } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
@@ -272,7 +273,7 @@ class Comment extends PureComponent {
 					>
 						<FontAwesome
 							name="caret-square-o-up"
-							size={28}
+							size={25}
 							color={this.state.vote == 1 ? "gold" : "lightslategray"}
 						/>
 					</TouchableOpacity>
@@ -304,7 +305,7 @@ class Comment extends PureComponent {
 					>
 						<FontAwesome
 							name="caret-square-o-down"
-							size={28}
+							size={25}
 							color={this.state.vote == -1 ? "gold" : "lightslategray"}
 						/>
 					</TouchableOpacity>
@@ -367,7 +368,8 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-end",
 		marginLeft: vh(0.7),
 		height: undefined,
-		aspectRatio: 135 / 128,
+		// aspectRatio: 135 / 128,
+		aspectRatio: 85 / 80,
 	},
 	CommScore: {
 		flexDirection: "row",

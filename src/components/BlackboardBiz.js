@@ -12,8 +12,7 @@ import { setIsFetching } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 
 import NumberFormat from "react-number-format";
-
-
+import FastImage from "react-native-fast-image";
 
 const BlackboardBiz = (props) => {
 	const navigation = useNavigation();
@@ -106,14 +105,14 @@ const BlackboardBiz = (props) => {
 							});
 						}}
 					>
-						<Image
-							resizeMode={"cover"}
+						<FastImage
+							resizeMode={FastImage.resizeMode.cover}
 							source={{
 								// uri: `http://192.168.1.211:3000/${props.ubiz["user_img_url"]}`
 								uri: props.ubiz.user_img_url,
 							}}
 							style={styles.profilePic}
-						></Image>
+						></FastImage>
 					</TouchableOpacity>
 					<TextTicker
 						style={styles.bizSumm}

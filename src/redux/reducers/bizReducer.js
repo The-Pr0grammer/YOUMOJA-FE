@@ -21,6 +21,7 @@ import {
 	SET_IS_FETCHING,
 	HANDLE_REFRESH,
 	PROFILE_LOADING_TOGG,
+	SET_USER_LISTINGS,
 } from "../actions/types";
 
 const initialState = {
@@ -36,7 +37,7 @@ const initialState = {
 	scoresSort: true,
 	userInfo: {},
 	userHearts: [],
-	myUbizs: [],
+	userListings: [],
 	profileLoading: true,
 	badgeSums: [],
 };
@@ -158,17 +159,21 @@ const bizReducer = (state = initialState, action) => {
 				...state,
 				userInfo: {
 					id: action.payload.id,
-					email: action.payload.email,
 					name: action.payload.name,
 					username: action.payload.username,
+					linkedin: action.payload.linkedin,
+					twitter: action.payload.twitter,
+					email: action.payload.email,
+					allow_emails: action.payload.allow_emails,
 					img_url: action.payload.img_url,
 					image: action.payload.image,
-					emailVerified: action.payload.emailVerified,
+					badges: action.payload.badges,
+					heart_ids: action.payload.heart_ids,
+					comment_scores_sum: action.payload.comment_scores_sum,
+					email_verified: action.payload.email_verified,
 					opaque: action.payload.opaque,
 					timeSent: action.payload.timeSent,
 				},
-				userHearts: action.payload.user_hearts,
-				myUbizs: action.payload.user_bizs,
 			};
 		case SET_IS_FETCHING:
 			// console.log("reducing isFetching");
@@ -202,6 +207,11 @@ const bizReducer = (state = initialState, action) => {
 			return {
 				...state,
 				profileLoading: action.payload,
+			};
+		case SET_USER_LISTINGS:
+			return {
+				...state,
+				userListings: action.payload,
 			};
 
 		default:

@@ -5,6 +5,7 @@ import {
 	StyleSheet,
 	Text,
 	ImageBackground,
+	Modal,
 } from "react-native";
 import { Icon } from "react-native-elements";
 import { Button } from "react-native-elements";
@@ -29,16 +30,16 @@ function EmailConfirmation(props) {
 				"checking for verification and time sent was",
 				props.userInfo.timeSent
 			);
-			if (user.emailVerified && props.route.params.purpose == "Signup") {
-				setTimeout(() => navigation.navigate("Welcome Splash"), 500);
-				return clearInterval(check);
-			} else if (user.emailVerified && props.route.params.purpose == "Reset") {
-				props.setUserInfo({
-					...props.userInfo,
-					emailVerified: true,
-				});
-				return clearInterval(check);
-			}
+			// if (user.emailVerified && props.route.params.purpose == "Signup") {
+			// 	setTimeout(() => navigation.navigate("Welcome Splash"), 500);
+			// 	return clearInterval(check);
+			// } else if (user.emailVerified && props.route.params.purpose == "Reset") {
+			// 	props.setUserInfo({
+			// 		...props.userInfo,
+			// 		emailVerified: true,
+			// 	});
+			// 	return clearInterval(check);
+			// }
 		});
 	};
 
@@ -90,18 +91,22 @@ function EmailConfirmation(props) {
 	};
 	const changeEmailAlert = () => {
 		setErrorMessage("");
-		Alert.prompt("Change Email", "Enter the email you would like to use", [
-			{
-				text: "Cancel",
-				style: "cancel",
-			},
-			{
-				text: "OK",
-				onPress: (newEmail) => {
-					emailPatch(newEmail);
+		Alert.prompt(
+			"Change Email",
+			"Enter the email that you would like to use.",
+			[
+				{
+					text: "Cancel",
+					style: "cancel",
 				},
-			},
-		]);
+				{
+					text: "OK",
+					onPress: (newEmail) => {
+						emailPatch(newEmail);
+					},
+				},
+			]
+		);
 	};
 	const handleEmailChange = (newEmail) => {
 		console.log(props.userInfo);
@@ -155,74 +160,73 @@ function EmailConfirmation(props) {
 	};
 
 	return (
-		<View style={styles.container}>
-			<Text
-				style={{
-					color: "red",
-					fontSize: 30,
-					marginTop: vh(2.5),
-					top: vh(2.5),
-					fontFamily: "Marker Felt",
-				}}
-			>
-				CHECK YOUR EMAIL
-			</Text>
+		<Modal>
+			<View style={styles.container}>
+				<Text
+					style={{
+						color: "darkslategray",
+						fontSize: 30,
+						// marginTop: vh(2.5),
+						top: vh(4),
+						fontFamily: "Marker Felt",
+					}}
+				>
+					CHECK YOUR EMAIL
+				</Text>
 
-			<View>
-				<Text style={styles.changeEmailError}>{errorMessage}</Text>
-			</View>
+				<View>
+					<Text style={styles.errorMessage}>{errorMessage}</Text>
+				</View>
 
-			<Icon
-				name="ios-mail-unread"
-				type="ionicon"
-				color="red"
-				size={102}
-				style={{ marginTop: vh(1.5) }}
-			/>
-			<View
-				style={{
-					height: vh(24),
-					top: vh(35.75),
-				}}
-			>
-				<ScrollView scrollEnabled={true}>
-					<Text style={styles.message}>Success! We sent a confirmation to</Text>
-					<Text style={styles.message}>{props.userInfo.email}</Text>
-					<Text style={styles.message}>
-						If you don't see it in your inbox check your Spam folder. It can
-						take up to 10 minutes to receive this email.
-					</Text>
-				</ScrollView>
-			</View>
-			<View
-				style={{
-					position: "absolute",
-					flexDirection: "row",
-					display: "flex",
-					width: vw(100),
-					top: vh(82),
-				}}
-			>
+				<Icon
+					name="ios-mail-unread"
+					type="ionicon"
+					color="lightslategray"
+					size={102}
+					style={{ marginTop: vh(5) }}
+				/>
 				<View
 					style={{
-						flex: 1,
-						marginHorizontal: vw(5),
+						position: "relative",
+						height: vh(24),
+						top: vh(17.5),
+						paddingHorizontal: vw(5),
+					}}
+				>
+					<Text style={styles.message}>We sent a confirmation email to</Text>
+					<Text style={styles.message}>{props.userInfo.email}</Text>
+					<Text style={styles.message}>
+						If you don't see it in your inbox, check your Spam folder. It can
+						take up to 10 minutes to receive this email.
+					</Text>
+				</View>
+				<View
+					style={{
+						// position: "absolute",
+						flexDirection: "row",
+						display: "flex",
+						width: vw(100),
+						alignItems: "center",
+						justifyContent: "center",
+						top: vh(15),
+						backgroundColor: "darkslategray",
 					}}
 				>
 					<Button
 						title="Send Again"
 						buttonStyle={{
 							backgroundColor: "transparent",
-							borderRadius: 18,
+							// borderRadius: 18,
+							backgroundColor: "rgba(0,0,0,0.7)",
+							width: vw(33.3),
 						}}
-						style={{ alignSelf: "flex-start" }}
-						titleStyle={{ color: "gray" }}
+						// style={{ alignSelf: "flex-start" }}
+						titleStyle={{ color: "lightslategray" }}
 						onPress={() => {
 							handleResend();
 						}}
 					/>
-				</View>
-				{props.route.params.purpose == "Signup" && (
+					{/* {props.route.params.purpose == "Signup" && (
 					<View style={{ marginHorizontal: vw(5) }}>
 						<Button
 							title="Change Email"
@@ -231,7 +235,7 @@ function EmailConfirmation(props) {
 								borderRadius: 18,
 							}}
 							style={{ alignSelf: "flex-end" }}
-							titleStyle={{ color: "gray" }}
+							titleStyle={{ color: "lightslategray" }}
 							onPress={() => {
 								changeEmailAlert();
 							}}
@@ -247,30 +251,78 @@ function EmailConfirmation(props) {
 								borderRadius: 18,
 							}}
 							style={{ alignSelf: "flex-end" }}
-							titleStyle={{ color: "gray" }}
+							titleStyle={{ color: "lightslategray" }}
 							onPress={() => {
 								handleResetCheck();
 							}}
 						/>
 					</View>
-				)}
+				)} */}
+					{true && (
+						//TESTING
+
+						<Button
+							title="Change Email"
+							buttonStyle={{
+								backgroundColor: "transparent",
+								// borderRadius: 18,
+								// backgroundColor: "red",
+								backgroundColor: "rgba(0,0,0,0.7)",
+
+								width: vw(33.3),
+
+								// marginHorizontal: vw(2),
+							}}
+							// style={{ alignSelf: "flex-end" }}
+							titleStyle={{ color: "lightslategray" }}
+							onPress={() => {
+								changeEmailAlert();
+							}}
+						/>
+					)}
+					{true && (
+						<Button
+							title="Continue"
+							buttonStyle={{
+								backgroundColor: "transparent",
+								// borderRadius: 18,
+								backgroundColor: "rgba(0,0,0,0.7)",
+
+								// backgroundColor: "blue",
+								width: vw(33.3),
+
+								// alignSelf: "flex-end",
+							}}
+							style={{ alignSelf: "flex-end" }}
+							titleStyle={{ color: "lightslategray" }}
+							onPress={() => {
+								handleResetCheck();
+							}}
+						/>
+					)}
+				</View>
+				<View
+					style={{
+						position: "absolute",
+						flex: 1,
+						height: vh(50),
+						top: vh(15),
+						width: vw(70),
+						opacity: 0.05,
+						zIndex: -1,
+						justifyContent: "center",
+						// backgroundColor: "blue",
+						alignSelf: "center",
+						alignItems: "center",
+					}}
+				>
+					<ImageBackground
+						style={styles.background}
+						source={require("../images/message_sent.gif")}
+					></ImageBackground>
+				</View>
 			</View>
-			<View
-				style={{
-					position: "absolute",
-					flex: 1,
-					height: vh(100),
-					width: vw(100),
-					opacity: 0.1,
-					zIndex: -1,
-				}}
-			>
-				<ImageBackground
-					style={styles.background}
-					source={require("../images/blackvibesonly.jpg")}
-				></ImageBackground>
-			</View>
-		</View>
+		</Modal>
 	);
 }
 
@@ -281,27 +333,33 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		backgroundColor: "black",
+		backgroundColor: "rgba(0,0,0,0.975)",
+
+		justifyContent: "center",
 	},
 	background: {
 		flex: 1,
-		height: vh(92.5),
+		height: vh(50),
 		width: vw(100),
+		resizeMode: "cover",
 		alignItems: "center",
 	},
 	message: {
-		color: "seagreen",
+		color: "darkslategray",
 		fontSize: 18,
 		textAlign: "center",
 		fontFamily: "Chalkduster",
 	},
-	changeEmailError: {
+	errorMessage: {
 		height: vh(3),
 		width: vw(85),
 		position: "relative",
 		color: "red",
 		textAlign: "center",
 		zIndex: -1,
-		top: vh(49.5),
+		// fontFamily:"Times New Roman",
+		// top: vh(49.5),
+		bottom: vh(5),
 		// backgroundColor: "purple",
 	},
 });

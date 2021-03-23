@@ -11,9 +11,11 @@ import { Icon } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import axios from "axios";
-import * as WebBrowser from "expo-web-browser";
+// import * as WebBrowser from "expo-web-browser";
 import * as Sharing from "expo-sharing";
 import * as ExpoLinking from "expo-linking";
+
+import { WebView } from 'react-native-webview';
 
 const BizPageDash = (props) => {
 	// let redirectUrl = ExpoLinking.makeUrl("BizPage", {
@@ -97,7 +99,7 @@ const BizPageDash = (props) => {
 					zIndex: 1,
 				}}
 				onPress={() => {
-					WebBrowser.openBrowserAsync("https://twitter.com");
+					// WebBrowser.openBrowserAsync("https://twitter.com");
 				}}
 			>
 				<Icon name="twitter" type="feather" color="rgb(0,172,238)" size={30} />
@@ -133,7 +135,7 @@ const BizPageDash = (props) => {
 					marginVertical: "15%",
 				}}
 				onPress={() => {
-					WebBrowser.openBrowserAsync("https://facebook.com");
+					// WebBrowser.openBrowserAsync("https://facebook.com");
 				}}
 			>
 				<Icon

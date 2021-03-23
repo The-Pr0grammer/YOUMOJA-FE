@@ -21,6 +21,7 @@ import {
 	SET_IS_FETCHING,
 	HANDLE_REFRESH,
 	PROFILE_LOADING_TOGG,
+	SET_USER_LISTINGS,
 } from "./types";
 import axios from "axios";
 
@@ -181,4 +182,9 @@ export const setUserInfo = (user) => ({
 export const profileLoadingTogg = (togg) => ({
 	type: PROFILE_LOADING_TOGG,
 	payload: togg,
+});
+
+export const setUserListings = (json) => ({
+	type: SET_USER_LISTINGS,
+	payload: json,
 });

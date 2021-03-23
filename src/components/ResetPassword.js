@@ -72,7 +72,7 @@ const ResetPassword = (props) => {
 							validators: [validateContent, emailCheck],
 							inputProps: {
 								placeholder: "Enter your email address",
-								placeholderTextColor: "#D50000",
+								placeholderTextColor: "lightslategray",
 								textAlign: "center",
 							},
 						},
@@ -91,7 +91,7 @@ const ResetPassword = (props) => {
 					<ImageBackground
 						resizeMode="stretch"
 						style={styles.background}
-						source={require("../images/black-economic-empowerment-onyx-truth-620x400.png")}
+						source={require("../images/blackpowerdollars.png")}
 					></ImageBackground>
 				</View>
 			</View>

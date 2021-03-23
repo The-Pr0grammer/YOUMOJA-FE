@@ -137,6 +137,7 @@ class ListBizDash extends React.Component {
 		const colors = ["green", "blue", "firebrick", "slateblue", "gold"];
 		const trueColors = ["green", "blue", "red", "ultraviolet", "gold"];
 		let colorItr = -1;
+
 		const numFormat = (n) => {
 			if (n < 1e3) return n;
 			if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
@@ -254,7 +255,7 @@ class ListBizDash extends React.Component {
 					snapToInterval={33}
 					scrollEventThrottle={1}
 				>
-					{colors.map((badge, key = index) => {
+					{colors.map((color, key = index) => {
 						colorItr++;
 						// let badgeObj = this.state.badgeCounts.find(
 						// 	(badgeObj) => badgeObj.color == trueColors[colorItr]
@@ -277,7 +278,7 @@ class ListBizDash extends React.Component {
 								<Icon
 									name="rocket1"
 									type="ant-design"
-									color={colors[colorItr]}
+									color={color}
 									size={45}
 									// reverse
 									// reverseColor="lawngreen"

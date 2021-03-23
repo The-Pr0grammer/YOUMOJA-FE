@@ -17,29 +17,39 @@ export const validateLength = (text) => {
 };
 
 export const lengthCap = (text) => {
-	if (text && text.length > 64) {
-		return "Cannot exceed 64 characters";
+	if (text && text.length > 24) {
+		return "Cannot exceed 24 characters";
 	}
 };
 
 export const nameCheck = (name) => {
-	if (/^[\w'\-,.]*[^_!¡?÷?¿\/\\+=@#$%ˆ&*(){}|~<>;:[\]]*$/.test(name)) {
-		// console.log("valid name");
-	}
 	if (
 		!/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(
 			name
 		)
 	) {
-		// console.log("no emojis");
+		console.log("valid name");
+		if (/^[\w'\-,.]*[^_!¡?÷?¿\/\\+=@#$%ˆ&*(){}|~<>;:[\]]*$/.test(name)) {
+			console.log("no emojis");
+			if (/^ *$/.test(name)) {
+				console.log("not blank");
+				return "Can't be blank";
+			}
+		}
+		return;
 	} else {
 		return "Enter a valid name";
 	}
 };
 
 export const usernameCheck = (username) => {
-	if (/^\w+$/.test(username)) {
+	if (/^\w/.test(username)) {
+		if (/\s/.test(username)) {
+			return "No spaces allowed";
+		}
 		return;
+	} else if (/^ *$/.test(username)) {
+		return "Can't be blank";
 	} else {
 		return "Contains invalid characters";
 	}
@@ -80,15 +90,18 @@ export const validateField = (validators, value, values, key) => {
 	return error;
 };
 
-export const urlCheck = (url) => {
+export const urlCheck = (url, values, key) => {
 	if (
-		/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(
+		/^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(
 			url
 		)
 	) {
 		return;
+		// console.log("valid");
 	} else {
-		return "Enter a valid url ie twitter.com/Y0UM0JA";
+		// console.log(test2);
+		// let site = Object.keys(test)[0]
+		return `Enter a valid url ie https://${key}.com/username`;
 	}
 };
 

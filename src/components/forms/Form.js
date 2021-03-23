@@ -7,11 +7,16 @@ import {
 	Keyboard,
 	ScrollView,
 } from "react-native";
-import { Button } from "react-native-elements";
+import { Button, CheckBox } from "react-native-elements";
 import { useFocusEffect } from "@react-navigation/native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
-import { hasValidationError, validateFields } from "./validation";
+import {
+	hasValidationError,
+	usernameCheck,
+	validateFields,
+} from "./validation";
 import Field from "./Field";
+import { sub } from "react-native-reanimated";
 
 const getInitialState = (fieldKeys) => {
 	const state = {};
@@ -27,79 +32,133 @@ const Form = ({
 	buttonText,
 	action,
 	afterSubmit,
+	handleCancel,
 	type,
 	buttonSpinner,
 	handleChange,
+	userInfo,
 }) => {
 	useFocusEffect(
 		React.useCallback(() => {
 			setValues("");
 			setValidationErrors("");
 			setErrorMessage("");
+
+			// type == "ProfileEdit" && setValues(userInfo);
 		}, [])
 	);
 
 	const fieldKeys = Object.keys(fields);
 	const [values, setValues] = useState(getInitialState(fieldKeys));
 	const [errorMessage, setErrorMessage] = useState("");
+	const [allowEmails, setAllowEmails] = useState(userInfo.allow_emails);
 	const [validationErrors, setValidationErrors] = useState(
 		getInitialState(fieldKeys)
 	);
 	const onChangeValue = (key, value) => {
 		handleChange && handleChange(key, value);
 		const newState = { ...values, [key]: value };
-		setValues(newState);
+		type == "ProfileEdit"
+			? setValues(removeEmptyStrings(newState))
+			: setValues(newState);
 
 		if (validationErrors[key]) {
 			const newErrors = { ...validationErrors, [key]: "" };
 			setValidationErrors(newErrors);
 		}
 	};
+
 	const getValues = () => {
 		return fieldKeys.sort().map((key) => values[key]);
 	};
 
-	const submit = async () => {
-		const result = await action(...getValues());
-		await afterSubmit(result);
-		// TEST SHIT
+	const removeEmptyStrings = (obj) => {
+		let newObj = {};
+		Object.keys(obj).forEach((prop) => {
+			if (obj[prop] !== "") {
+				newObj[prop] = obj[prop];
+			}
+		});
+		newObj.allow_emails == userInfo.allow_emails && delete newObj.allow_emails;
+		return newObj;
+	};
 
+	const trimValues = (obj) => {
+		let newObj = {};
+		Object.keys(obj).forEach((prop) => {
+			console.log(prop);
+			newObj[prop] = prop == "allow_emails" ? obj[prop] : obj[prop].trim();
+		});
+		return newObj;
+	};
+
+	const submit = async () => {
 		Keyboard.dismiss();
 		setErrorMessage("");
 		setValidationErrors(getInitialState(fieldKeys));
 
-		const errors = validateFields(fields, values);
+		let newFields = { ...fields };
+		if (type == "ProfileEdit") {
+			for (var key in newFields) {
+				if (!Object.keys(values).includes(key)) {
+					delete newFields[key];
+				}
+			}
+		}
+
+		let errors = [];
+		type == "ProfileEdit"
+			? (errors = validateFields(newFields, trimValues(values)))
+			: (errors = validateFields(fields, values));
+
 		if (hasValidationError(errors)) {
 			console.log(errors);
+
+			// console.log(fields);
 			return setValidationErrors(errors); //VALIDATIONSSSSSSS
 		}
+
 		try {
-			const result = await action(...getValues());
-			// console.log("RESULT IS", result);
-			await afterSubmit(result);
+			type == "ProfileEdit"
+				? (result = await action(trimValues(values)))
+				: (result = await action(...getValues()));
+
+			if (type == "ProfileEdit" && result.status !== "200") {
+				// console.log("result is", result);
+				// console.log("result is", result);
+
+				var parsedData = JSON.parse(result);
+
+				let newObj = {};
+
+				for (let [k, v] of Object.entries(parsedData)) {
+					k == "username"
+						? (newObj[k] = `that ${k} ${v[0]}`)
+						: (newObj[k] = `that ${k} is associated with another account`);
+				}
+
+				// console.log("newObj is ", newObj);
+
+				{
+					!Object.keys(newObj).includes("email") &&
+						!Object.keys(newObj).includes("username") &&
+						setErrorMessage("Something went wrong. Please try again later");
+				}
+
+				setValidationErrors(newObj);
+				return;
+			}
+
+			afterSubmit(result);
 		} catch (e) {
-			setErrorMessage(e.message);
+			console.log("caught error IN THE FORM ‼️", e);
+			setErrorMessage("Something went wrong. Please try again later");
 		}
 	};
 
-	// const submit = async () => {
-	// 	Keyboard.dismiss();
-	// 	setErrorMessage("");
-	// 	setValidationErrors(getInitialState(fieldKeys));
-
-	// 	const errors = validateFields(fields, values);
-	// 	if (hasValidationError(errors)) {
-	// 		console.log(errors);
-	// 		return setValidationErrors(errors); //VALIDATIONSSSSSSS
-	// 	}
-	// 	try {
-	// 		const result = await action(...getValues());
-	// 		// console.log("RESULT IS", result);
-	// 		await afterSubmit(result);
-	// 	} catch (e) {
-	// 		setErrorMessage(e.message);
-	// 	}
-	// }; WORKING TRIGGERRRRRR 🔫
+	console.log("VALUES:", values);
+	// console.log(removeEmptyStrings(userInfo));
+	// console.log("eM:", errorMessage);
 
 	return (
 		<View style={styles.container}>
@@ -156,7 +215,7 @@ const Form = ({
 									borderRadius: 18,
 								}}
 								style={styles.createButton}
-								titleStyle={{ color: "gray" }}
+								titleStyle={{ color: "lightslategray" }}
 								onPress={submit}
 								loading={buttonSpinner}
 								loadingProps={{ color: "green", size: "large" }}
@@ -202,7 +261,7 @@ const Form = ({
 							style={[
 								type == "Login" ? styles.loginButton : styles.createButton,
 							]}
-							titleStyle={{ color: "gray" }}
+							titleStyle={{ color: "lightslategray" }}
 							onPress={submit}
 							loading={buttonSpinner}
 							loadingProps={{ color: "green", size: "large" }}
@@ -211,7 +270,7 @@ const Form = ({
 				</View>
 			)}
 
-			{type == "NewBusiness" && (
+			{type == "NewListing" && (
 				<View
 					style={{
 						flex: 1,
@@ -251,11 +310,95 @@ const Form = ({
 								borderRadius: 18,
 							}}
 							// style={[styles.createButton]}
-							titleStyle={{ color: "gray" }}
+							titleStyle={{ color: "lightslategray" }}
 							onPress={submit}
 							// loading={buttonSpinner}
 							// loadingProps={{ color: "green", size: "large" }}
 						/>
+					</View>
+				</View>
+			)}
+
+			{type == "ProfileEdit" && (
+				<View
+					style={{
+						flex: 1,
+						position: "relative",
+						alignItems: "center",
+						justifyContent: "center",
+						zIndex: 1,
+						// top: vh(36.75),
+					}}
+				>
+					{fieldKeys.map((key) => {
+						return (
+							<Field
+								key={key}
+								fieldName={key}
+								field={fields[key]}
+								error={validationErrors[key]}
+								clearError={() => setErrorMessage("")}
+								onChangeText={onChangeValue}
+								value={values[key]}
+							/>
+						);
+					})}
+
+					<View
+						style={{
+							flex: 1,
+						}}
+					>
+						<CheckBox
+							title="Allow other users to email you?"
+							checked={allowEmails}
+							containerStyle={{
+								width: vw(70),
+								backgroundColor: "transparent",
+								borderWidth: 0,
+							}}
+							checkedColor="olivedrab"
+							activeOpacity={1}
+							onPress={() => {
+								setAllowEmails(!allowEmails);
+								onChangeValue("allow_emails", !allowEmails);
+							}}
+						/>
+						<Button
+							title={"Save Changes"}
+							activeOpacity={Object.keys(values).length > 0 ? 0.1 : 1}
+							buttonStyle={{
+								backgroundColor: "transparent",
+							}}
+							titleStyle={
+								Object.keys(values).length > 0
+									? { color: "lightslategray" }
+									: { color: "rgb(64,64,64)" }
+							}
+							onPress={() => {
+								Object.keys(values).length > 0 && submit();
+							}}
+						/>
+
+						<Button
+							title={"Cancel"}
+							buttonStyle={{
+								backgroundColor: "transparent",
+							}}
+							titleStyle={{ color: "lightslategray" }}
+							onPress={handleCancel}
+						/>
+						<Text
+							style={{
+								// width: vw(85),
+								position: "relative",
+								color: "red",
+								textAlign: "center",
+								zIndex: -1,
+							}}
+						>
+							{errorMessage}
+						</Text>
 					</View>
 				</View>
 			)}

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, MaskedViewComponent, Text } from "react-native";
+import { View, SafeAreaView, MaskedViewComponent, Text } from "react-native";
 import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -20,8 +20,14 @@ import ResetPassword from "./src/components/ResetPassword.js";
 import Profile from "./src/components/Profile.js";
 import PeerProfile from "./src/components/PeerProfile.js";
 import Blackboard from "./src/components/Blackboard.js";
+import Webview from "./src/components/Webview.js";
+import ProfileEdit from "./src/components/ProfileEdit.js";
 import * as firebase from "firebase";
 import * as Linking from "expo-linking";
+
+import "react-native-gesture-handler";
+
+import { WebView } from "react-native-webview";
 
 // const prefix = Linking.makeUrl("/");
 const createStoreWithMiddleWare = applyMiddleware(thunk)(createStore);
@@ -42,10 +48,26 @@ if (!firebase.apps.length) {
 
 function NotificationsScreen({ navigation }) {
 	return (
-		<View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-			<Button onPress={navigation.openDrawer} title="Open navigation drawer" />
-			<Button onPress={() => navigation.goBack()} title="Go back home" />
-		</View>
+		<SafeAreaView
+			style={{
+				alignSelf: "stretch",
+				flex: 1,
+				backgroundColor: "darkslategray",
+			}}
+		>
+			<WebView
+				containerStyle={{
+					flex: 1,
+					marginTop: vh(2),
+					width: vw(100),
+					height: vh(90),
+				}}
+				source={{ uri: "https://twitter.com/Youmoja_App" }}
+				// startInLoadingState={true}
+				// scalesPageToFit={true}
+				// style={{}}
+			/>
+		</SafeAreaView>
 	);
 }
 
@@ -164,12 +186,19 @@ function DrawerNav({ navigation }) {
 				},
 			}}
 		>
-			<Drawer.Screen name="Home" component={Main} />
+			<Drawer.Screen
+				name="Home"
+				component={Main}
+				options={{
+					headerShown: false,
+					swipeEnabled: true,
+				}}
+			/>
 			<Drawer.Screen
 				name="Profile"
 				component={Profile}
 				options={{
-					headerShown: true,
+					headerShown: false,
 					headerLeft: () => (
 						<Button
 							icon={<Icon name="arrow-circle-left" size={25} color="black" />}
@@ -261,6 +290,44 @@ function Main({ navigation }) {
 					headerShown: false,
 				}}
 			/>
+			<Stack.Screen
+				name="Webview"
+				component={Webview}
+				options={{
+					headerShown: true,
+					headerLeft: () => (
+						<Button
+							icon={
+								<Icon
+									name="angle-left"
+									size={40}
+									color="black"
+									style={{ height: vh(5.2), width: vw(12), left: vw(3.8) }}
+								/>
+							}
+							type="clear"
+							onPress={() => navigation.navigate("Profile")}
+							// title="Profile"
+							// titleStyle={{
+							// 	color: "olivedrab",
+							// 	fontSize: 16,
+							// 	marginLeft: vw(5),
+							// }}
+						/>
+					),
+				}}
+			/>
+			<Stack.Screen
+				name="ProfileEdit"
+				component={ProfileEdit}
+				options={{
+					headerShown: false,
+					gestureEnabled: false,
+					swipeEnabled: false,
+					drawerLabel: "Profile",
+					drawerLockMode: "locked-closed",
+				}}
+			/>
 		</Stack.Navigator>
 	);
 }
@@ -298,7 +365,7 @@ class App extends React.Component {
 				<NavigationContainer
 					// linking={linking}
 					fallback={<Text>Loading...</Text>}
-				>
+					>
 					<AppNav></AppNav>
 				</NavigationContainer>
 			</Provider>

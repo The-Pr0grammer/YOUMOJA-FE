@@ -226,7 +226,8 @@ class CategoriesList extends React.Component {
 				<View // MENU
 					style={{
 						position: "absolute",
-						top: vh(9.5),
+						// borderWidth: 1,
+						top: vh(9.75),
 					}}
 				>
 					<Menu
@@ -256,7 +257,10 @@ class CategoriesList extends React.Component {
 					</View> //LIL WAYNE INTRO*/}
 
 					<TouchableOpacity
-						style={{ backgroundColor: "transparent", height: vh(83.3) }}
+						style={{
+							backgroundColor: "transparent",
+							height: vh(83.3),
+						}}
 						onPress={() => this.props.handleCatsTogg()}
 					>
 						{!this.state.loadedState && (

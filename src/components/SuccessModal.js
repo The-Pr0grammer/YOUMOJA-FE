@@ -16,7 +16,7 @@ export default class SuccessModal extends React.Component {
 				style={{
 					backgroundColor: "transparent",
 					alignContent: "center",
-					flex: 1,
+					// flex: 1,
 				}}
 			>
 				<Modal

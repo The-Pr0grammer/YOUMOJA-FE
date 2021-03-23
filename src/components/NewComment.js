@@ -32,7 +32,7 @@ class NewComment extends React.Component {
 		});
 	};
 
-	handleSubmit = async() => {
+	handleSubmit = async () => {
 		if (/\S/.test(this.state.text)) {
 			const data = {
 				user_id: this.props.userInfo.id,
@@ -113,7 +113,7 @@ class NewComment extends React.Component {
 								// marginLeft: vw(5),
 							}}
 							titleStyle={{
-								color: "gray",
+								color: "lightslategray",
 							}}
 							onPress={() => this.props.handleCancel()}
 							// loading={buttonSpinner}
@@ -136,7 +136,7 @@ class NewComment extends React.Component {
 							justifyContent: "center",
 						}}
 						titleStyle={{
-							color: "gray",
+							color: "lightslategray",
 						}}
 						onPress={() => this.handleSubmit()}
 						// loading={buttonSpinner}

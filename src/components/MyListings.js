@@ -20,7 +20,7 @@ import { setUserInfo, setIsFetching } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 import ListBiz from "./ListBiz.js";
 
-const MyBusinesses = (props) => {
+const MyListings = (props) => {
 	const navigation = useNavigation();
 	const [active, toggleActive] = useState("");
 	const [userShow, setUserShow] = useState("");
@@ -37,7 +37,7 @@ const MyBusinesses = (props) => {
 	// });
 
 	// console.log("HEARTS IS🤎♥️🧡", props.userHearts[0]);
-	console.log("My user_bizs are 💼💼💼", props.myUbizs);
+	// console.log("My user_bizs are 💼💼💼", props.userListings);
 	return (
 		<View // START OF BIZLIST
 			style={{
@@ -58,10 +58,7 @@ const MyBusinesses = (props) => {
 					// marginTop: vh(1.2),
 				}}
 			>
-				<Text style={styles.title}>
-					MY BUSINESSES(
-					{props.ubizs.length})
-				</Text>
+				<Text style={styles.title}>LISTINGS</Text>
 
 				<TouchableOpacity onPress={() => props.handleAddBusinessTogg()}>
 					<Icon
@@ -86,12 +83,12 @@ const MyBusinesses = (props) => {
 
 					// position: "relative",
 				}}
-				data={props.ubizs}
+				data={props.userListings}
 				keyExtractor={(item) => item.id.toString()}
 				renderItem={({ item }) => (
-					<ListBiz biz={item} navigation={navigation} lastScreen={"Profile"} />
+					<ListBiz ubiz={item} navigation={navigation} lastScreen={"Profile"} />
 				)}
-				extraData={props.ubizs}
+				extraData={props.userListings}
 				legacyImplementation={true}
 			/>
 			{/* {props.loading && (
@@ -110,7 +107,7 @@ const MyBusinesses = (props) => {
 export default connect(mapStateToProps, {
 	setUserInfo,
 	setIsFetching,
-})(MyBusinesses);
+})(MyListings);
 
 const styles = StyleSheet.create({
 	badge: {
@@ -145,7 +142,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
 	return {
-		myUbizs: state.myUbizs,
+		userListings: state.userListings,
 		userInfo: state.userInfo,
 	};
 }

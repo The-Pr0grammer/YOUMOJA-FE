@@ -125,7 +125,7 @@ const CreateAccount = (props) => {
 							inputProps: {
 								autoCapitalize: "words",
 								placeholder: "Who are you?",
-								placeholderTextColor: "#D50000",
+								placeholderTextColor: "lightslategray",
 								textAlign: "center",
 							},
 						},
@@ -134,7 +134,7 @@ const CreateAccount = (props) => {
 							validators: [validateContent, usernameCheck, lengthCap],
 							inputProps: {
 								placeholder: "choose a username",
-								placeholderTextColor: "#D50000",
+								placeholderTextColor: "lightslategray",
 								textAlign: "center",
 							},
 						},
@@ -146,7 +146,7 @@ const CreateAccount = (props) => {
 								autoCapitalize: "none",
 								keyboardType: "email-address",
 								placeholder: "enter your email address",
-								placeholderTextColor: "#D50000",
+								placeholderTextColor: "lightslategray",
 								textAlign: "center",
 							},
 						},
@@ -157,7 +157,7 @@ const CreateAccount = (props) => {
 								textContentType: "newPassword",
 								secureTextEntry: true,
 								placeholder: "choose a password",
-								placeholderTextColor: "#D50000",
+								placeholderTextColor: "lightslategray",
 								textAlign: "center",
 							},
 						},
@@ -168,7 +168,7 @@ const CreateAccount = (props) => {
 								textContentType: "newPassword",
 								secureTextEntry: true,
 								placeholder: "confirm your password",
-								placeholderTextColor: "#D50000",
+								placeholderTextColor: "lightslategray",
 								textAlign: "center",
 							},
 						},
@@ -182,7 +182,7 @@ const CreateAccount = (props) => {
 							borderRadius: 18,
 						}}
 						style={{ alignSelf: "flex-end" }}
-						titleStyle={{ color: "gray" }}
+						titleStyle={{ color: "lightslategray" }}
 						onPress={() => {
 							props.setUserInfo({ email: "yo", emailVerified: false });
 							navigation.navigate("Email Confirmation", { purpose: "Signup" });
@@ -192,12 +192,13 @@ const CreateAccount = (props) => {
 				{/* <View style={{ zIndex: 4 }}>
 					<Button
 						title="Check for phone auth"
+						
 						buttonStyle={{
 							backgroundColor: "transparent",
 							borderRadius: 18,
 						}}
 						style={{ alignSelf: "flex-end" }}
-						titleStyle={{ color: "gray" }}
+						titleStyle={{ color: "lightslategray" }}
 						onPress={() => {
 							navigation.navigate("Welcome Splash");
 						}}

@@ -23,8 +23,8 @@ import { connect } from "react-redux";
 import { setUserInfo } from "../redux/actions/bizAction";
 import Header from "./Header.js";
 import CommentList from "./CommentList.js";
-import NewBusinessDash from "./NewBusinessDash.js";
-import NewBusinessSupport from "./NewBusinessSupport.js";
+import NewBusinessDash from "./NewListingDash.js";
+import NewBusinessSupport from "./NewListingSupport.js";
 import Form from "./forms/Form";
 import {
 	validateContent,
@@ -41,7 +41,7 @@ import RNFetchBlob from "rn-fetch-blob";
 import axios from "axios";
 // import { DirectUpload } from "activestorage";
 
-const NewBusiness = (props) => {
+const NewListing = (props) => {
 	const [inputs, setInputs] = useState({
 		name: "Business Name",
 		summary: "Business Summary",
@@ -237,7 +237,7 @@ const NewBusiness = (props) => {
 							</TextTicker>
 						</View>
 						<View style={styles.cardView}>
-							<NewBusinessDash
+							<NewListingDash
 								business={business}
 								inputs={inputs}
 								setInputs={setInputs}
@@ -247,9 +247,9 @@ const NewBusiness = (props) => {
 							/>
 						</View>
 						<View style={styles.bizSupport}>
-							<NewBusinessSupport
+							<NewListingSupport
 								business={business}
-								purpose={"NewBusiness"}
+								purpose={"NewListing"}
 								support={inputs.support}
 								setErrorMessage={setErrorMessage}
 							/>
@@ -287,7 +287,7 @@ const NewBusiness = (props) => {
 							<CommentList
 								bizId={0}
 								navigation={navigation}
-								newBusiness={true}
+								newListing={true}
 								// comments={comments}
 							/>
 						</View>
@@ -302,7 +302,7 @@ const NewBusiness = (props) => {
 									handleChange={handleChange}
 									// buttonText="Create Account"
 									// buttonSpinner={spinner}
-									type="NewBusiness"
+									type="NewListing"
 									fields={{
 										name: {
 											label: "Name",
@@ -310,7 +310,7 @@ const NewBusiness = (props) => {
 											inputProps: {
 												autoCapitalize: "words",
 												placeholder: "What's the name of your business?",
-												placeholderTextColor: "#D50000",
+												placeholderTextColor: "lightslategray",
 												textAlign: "center",
 											},
 										},
@@ -319,7 +319,7 @@ const NewBusiness = (props) => {
 											validators: [validateContent],
 											inputProps: {
 												placeholder: "Enter a summary for your business",
-												placeholderTextColor: "#D50000",
+												placeholderTextColor: "lightslategray",
 												textAlign: "center",
 											},
 										},
@@ -329,7 +329,7 @@ const NewBusiness = (props) => {
 											inputProps: {
 												autoCapitalize: "none",
 												placeholder: "Business Facebook url",
-												placeholderTextColor: "#D50000",
+												placeholderTextColor: "lightslategray",
 												textAlign: "center",
 											},
 										},
@@ -338,7 +338,7 @@ const NewBusiness = (props) => {
 											validators: [urlCheck],
 											inputProps: {
 												placeholder: "Business Instagram url",
-												placeholderTextColor: "#D50000",
+												placeholderTextColor: "lightslategray",
 												textAlign: "center",
 											},
 										},
@@ -347,7 +347,7 @@ const NewBusiness = (props) => {
 											validators: [urlCheck],
 											inputProps: {
 												placeholder: "Business Twitter url",
-												placeholderTextColor: "#D50000",
+												placeholderTextColor: "lightslategray",
 												textAlign: "center",
 											},
 										},
@@ -356,7 +356,7 @@ const NewBusiness = (props) => {
 											validators: [urlCheck],
 											inputProps: {
 												placeholder: "Business website url",
-												placeholderTextColor: "#D50000",
+												placeholderTextColor: "lightslategray",
 												textAlign: "center",
 											},
 										},
@@ -367,7 +367,7 @@ const NewBusiness = (props) => {
 												keyboardType: "phone-pad",
 												placeholder:
 													"Enter a telephone number for this business",
-												placeholderTextColor: "#D50000",
+												placeholderTextColor: "lightslategray",
 												textAlign: "center",
 											},
 										},
@@ -376,7 +376,7 @@ const NewBusiness = (props) => {
 											validators: [urlCheck],
 											inputProps: {
 												placeholder: "Enter a url to support this business",
-												placeholderTextColor: "#D50000",
+												placeholderTextColor: "lightslategray",
 												textAlign: "center",
 											},
 										},
@@ -389,7 +389,7 @@ const NewBusiness = (props) => {
 								borderRadius: 18,
 							}}
 							style={styles.createButton}
-							titleStyle={{ color: "gray" }}
+							titleStyle={{ color: "lightslategray" }}
 							onPress={handleResult}
 							// loading={buttonSpinner}
 							// loadingProps={{ color: "green", size: "large" }}
@@ -401,7 +401,7 @@ const NewBusiness = (props) => {
 								borderRadius: 18,
 							}}
 							style={styles.createButton}
-							titleStyle={{ color: "gray" }}
+							titleStyle={{ color: "lightslategray" }}
 							onPress={handleResult}
 							// loading={buttonSpinner}
 							// loadingProps={{ color: "green", size: "large" }}
@@ -417,7 +417,7 @@ const NewBusiness = (props) => {
 
 export default connect(mapStateToProps, {
 	setUserInfo,
-})(NewBusiness);
+})(NewListing);
 
 const styles = StyleSheet.create({
 	container: {

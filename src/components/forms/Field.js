@@ -24,7 +24,7 @@ const Field = ({
 				blurOnSubmit={false}
 				onSubmitEditing={() => {
 					field.label !== "Summary" && Keyboard.dismiss();
-					console.log("field name is 😁", field.label);
+					// console.log("field name is 😁", field.label);
 				}}
 				onFocus={clearError}
 			/>
@@ -39,11 +39,13 @@ export default Field;
 const styles = StyleSheet.create({
 	input: {
 		height: vh(6.5),
-		width: vw(90),
+		width: vw(87),
 		borderRadius: 30,
 		paddingHorizontal: vw(3),
-		backgroundColor: "maroon",
+		backgroundColor: "transparent",
 		lineHeight: vh(2.5),
+		borderBottomWidth: 3.5,
+		color: "olivedrab",
 	},
 	summaryInput: {
 		height: vh(6.5),
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
 	},
 	inputContainer: {
 		// flex: 1,
-		paddingTop: vh(0.7),
+		paddingTop: vh(0.5),
 		alignItems: "center",
 		width: vw(90),
 		shadowColor: "#000",
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
 	},
 	label: {
 		paddingLeft: vw(1.1),
-		color: "red",
+		color: "darkslategray",
 		alignSelf: "flex-start",
 	},
 	error: { textAlign: "center", color: "red", width: vw(85) },

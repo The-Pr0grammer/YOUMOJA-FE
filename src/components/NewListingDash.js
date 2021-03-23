@@ -37,7 +37,7 @@ import axios from "axios";
 import { TouchableHighlight } from "react-native-gesture-handler";
 // import * as ExpoLinking from "expo-linking";
 
-const NewBusinessDash = (props) => {
+const NewListingDash = (props) => {
 	const [hearts, setHearts] = useState(0);
 	const [browserResult, setBrowserResult] = useState("");
 	const [images, setImages] = useState([]);
@@ -595,14 +595,14 @@ const NewBusinessDash = (props) => {
 						opacity: 0.01,
 					}}
 				>
-					<Ionicons name="md-share-alt" size={35} color="gray" />
+					<Ionicons name="md-share-alt" size={35} color="lightslategray" />
 				</View>
 			</View>
 		</View>
 	);
 };
 
-export default NewBusinessDash;
+export default NewListingDash;
 
 const styles = StyleSheet.create({
 	container: {

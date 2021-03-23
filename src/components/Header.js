@@ -62,6 +62,8 @@ const Header = (props) => {
 								});
 							} else if (props.lastScreen == "Blackboard") {
 								props.navigation.navigate("Blackboard");
+							} else if (props.lastScreen == "Webview") {
+								props.handleWebviewTogg();
 							} else {
 								props.refresh && props.handleRefresh();
 								props.lastScreen == "Profile" &&
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
 	container: {
 		// flex: 1,
 		position: "relative",
-		height: vh(10),
+		height: vh(9.8),
 		alignItems: "center",
 		justifyContent: "center",
 		backgroundColor: "darkslategray",

@@ -45,7 +45,7 @@ const BizPage = (props) => {
 	// console.log(props.route.params.lastScreen);
 	// console.log("URLLLLLLLLLLL", props.route.params["ubiz"].business.images);
 	console.log("IMAGES LIVE FROM THE BIZPAGE", images);
-	console.log("It's Aliiiiiive; ubiz from the BizPage:", ubiz);
+	// console.log("It's Aliiiiiive; ubiz from the BizPage:", ubiz);
 
 	useEffect(() => {
 		fetchData();
@@ -156,6 +156,9 @@ const BizPage = (props) => {
 								onCancel={() => setIsVisible(false)}
 								enableSwipeDown={true}
 								index={fixedPage}
+								renderIndicator={() => {}}
+								menus={() => null}
+								renderIndicator={() => (<></>)}
 							/>
 						</Modal>
 					)}
@@ -171,7 +174,7 @@ const BizPage = (props) => {
 							/>
 						</Modal>
 					)}
-					{/* REFACTOR THIS; MAKE DRY*/}
+					{/* REFACTOR THIS; MAKE DRY ^^^*/}
 					<View
 						style={{
 							flex: 1,

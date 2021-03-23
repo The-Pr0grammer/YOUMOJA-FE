@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import React, { Component } from "react";
 import {
 	View,
@@ -31,6 +32,7 @@ import FocusedSearch from "./FocusedSearch.js";
 import Sorter from "./Sorter.js";
 import axios from "axios";
 import * as firebase from "firebase";
+
 
 class Businesses extends Component {
 	constructor(props) {

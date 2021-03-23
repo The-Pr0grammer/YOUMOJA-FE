@@ -13,7 +13,7 @@ import axios from "axios";
 import { urlCheck } from "./forms/validation";
 import * as WebBrowser from "expo-web-browser";
 
-const NewBusinessSupport = (props) => {
+const NewListingSupport = (props) => {
 	const [browserResult, setBrowserResult] = useState(0);
 	// console.log(props.support);
 	return (
@@ -68,7 +68,7 @@ const NewBusinessSupport = (props) => {
 					height: vh(8),
 					width: vw(66),
 					borderBottomWidth: 1,
-					opacity: props.purpose == "NewBusiness" ? 0.01 : 1,
+					opacity: props.purpose == "NewListing" ? 0.01 : 1,
 				}}
 				contentContainerStyle={{
 					position: "relative",
@@ -141,7 +141,7 @@ const NewBusinessSupport = (props) => {
 	);
 };
 
-export default NewBusinessSupport;
+export default NewListingSupport;
 
 const styles = StyleSheet.create({
 	container: {

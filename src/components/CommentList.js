@@ -161,7 +161,7 @@ class CommentList extends React.Component {
 									alignSelf: "flex-start",
 									backgroundColor: "rgba(0,0,0,0.7)",
 									width: vw(25),
-									height: vh(5),
+									height: vh(2),
 									marginTop: vh(0.3),
 									marginLeft: vw(3),
 									borderWidth: 2.2,
@@ -190,7 +190,7 @@ class CommentList extends React.Component {
 								>
 									<FontAwesome
 										name="caret-square-o-up"
-										size={28}
+										size={25}
 										color={this.props.scoresSort ? "gold" : "lightslategray"}
 										style={styles.add}
 									/>
@@ -213,7 +213,7 @@ class CommentList extends React.Component {
 										name="clockcircle"
 										type="antdesign"
 										color={!this.props.scoresSort ? "gold" : "lightslategray"}
-										size={26}
+										size={22}
 										style={styles.add}
 									/>
 								</TouchableOpacity>
@@ -259,8 +259,8 @@ class CommentList extends React.Component {
 									name="arrows-expand"
 									type="foundation"
 									color={this.state.expandTogg ? "gold" : "lightslategray"}
-									size={30}
-									style={styles.add}
+									size={22}
+									// style={styles.add}
 								/>
 							</TouchableOpacity>
 						</View>
@@ -284,7 +284,7 @@ class CommentList extends React.Component {
 									name="plus-circle"
 									type="feather"
 									color="lightslategray"
-									size={37}
+									size={32}
 									style={styles.add}
 								/>
 							</TouchableOpacity>
@@ -340,7 +340,7 @@ class CommentList extends React.Component {
 								height: vh(120),
 								width: vw(100),
 							}}
-						></View> //NEW BUINESS FILLER
+						></View> //NEW BUSINESS FILLER
 					)}
 					{this.props.isFetching && (
 						<View style={styles.activityView}>
