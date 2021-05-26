@@ -27,7 +27,7 @@ class WelcomeSplash extends React.Component {
 			isFocused &&
 				setTimeout(
 					() => this.props.navigation.navigate("DrawerNav", { screen: "Home" }),
-					6400
+					3200
 				);
 		}
 		return (

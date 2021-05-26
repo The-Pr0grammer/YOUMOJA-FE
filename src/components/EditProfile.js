@@ -27,26 +27,31 @@ import {
 } from "./forms/validation";
 import { useNavigation } from "@react-navigation/native";
 import Header from "./Header.js";
+import * as firebase from "firebase";
+import moment from "moment";
+
 import axios from "axios";
 
-const ProfileEdit = (props) => {
+const EditProfile = (props) => {
 	const navigation = useNavigation();
 	const [spinner, spinnerTogg] = useState(false);
 	const [errorMessages, setErrorMessages] = useState(false);
 
 	const handleEdit = (data) => {
 		// console.log("boutta edit. data is::::", data);
-		let inc = "email" in data;
-		
-		inc ? (data["email_verified"] = false) : null;
-		
+
+		// let inc = "email" in data;
+
+		// inc ? (data["email_verified"] = false) : null;
+
 		return axios
-		.patch(`http://192.168.1.211:3000/users/${props.userInfo.id}`, data)
-		.then((res) => {
-			props.setUserInfo(res.data);
-			// console.log("RES is ", res.data);
-			// console.log("EMAIL CHANGED:", inc);
-				return { status: "200", email: inc };
+			.patch(`http://192.168.1.211:3000/users/${props.userInfo.id}`, data)
+			.then((res) => {
+				props.setUserInfo(res.data);
+				// console.log("RES is ", res.data);
+				// console.log("EMAIL CHANGED:", inc);
+				// return { status: "200", email: inc };
+				return { status: "200" };
 			})
 			.catch((error) => {
 				// console.log("XXX", error.response.data);
@@ -67,7 +72,8 @@ const ProfileEdit = (props) => {
 			props.handleClose("info");
 		}
 	};
-	
+
+	const handleEmailChange = async () => {};
 	// console.log(props.userInfo.allow_emails);
 	// console.log("error message:⚠️", errorMessages);
 
@@ -89,7 +95,7 @@ const ProfileEdit = (props) => {
 							action={handleEdit}
 							afterSubmit={handleResult}
 							handleCancel={props.handleInfoEditTogg}
-							type="ProfileEdit"
+							type="EditProfile"
 							buttonText="Save Changes"
 							buttonSpinner={spinner}
 							userInfo={{
@@ -140,19 +146,19 @@ const ProfileEdit = (props) => {
 										textAlign: "center",
 									},
 								},
-								email: {
-									label: "Email",
-									validators: [emailCheck],
-									inputProps: {
-										keyboardType: "email-address",
-										autoCapitalize: "none",
-										keyboardType: "email-address",
-										placeholder: `${props.userInfo.email}`,
-										placeholderTextColor: "lightslategray",
-										textAlign: "center",
-										autoCorrect: false,
-									},
-								},
+								// email: {
+								// 	label: "Email",
+								// 	validators: [emailCheck],
+								// 	inputProps: {
+								// 		keyboardType: "email-address",
+								// 		autoCapitalize: "none",
+								// 		keyboardType: "email-address",
+								// 		placeholder: `${props.userInfo.email}`,
+								// 		placeholderTextColor: "lightslategray",
+								// 		textAlign: "center",
+								// 		autoCorrect: false,
+								// 	},
+								// },
 							}}
 						/>
 						<View
@@ -161,7 +167,7 @@ const ProfileEdit = (props) => {
 								flex: 1,
 								height: vh(100),
 								width: vw(100),
-								opacity: 0.1,
+								opacity: 0.15,
 							}}
 						>
 							<ImageBackground
@@ -176,7 +182,7 @@ const ProfileEdit = (props) => {
 	);
 };
 
-export default connect(mapStateToProps, { setUserInfo })(ProfileEdit);
+export default connect(mapStateToProps, { setUserInfo })(EditProfile);
 
 const styles = StyleSheet.create({
 	container: {

@@ -40,6 +40,7 @@ const Profile = (props) => {
 	const [posted, setPosted] = useState(false);
 	const [imgSaved, setImgSaved] = useState(false);
 	const [infoSaved, setInfoSaved] = useState(false);
+	const [credsSaved, setCredsSaved] = useState(false);
 	const [editTogg, setEditTogg] = useState(false);
 	const isFocused = useIsFocused();
 	const navigation = useNavigation();
@@ -86,9 +87,7 @@ const Profile = (props) => {
 		} else if (type === "profilePic") {
 			setTimeout(() => {
 				setImgSaved(true);
-				let response = axios(
-					`http://192.168.1.211:3000/users/${props.userInfo.id}`
-				)
+				axios(`http://192.168.1.211:3000/users/${props.userInfo.id}`)
 					.then((resp) => {
 						props.setUserInfo(resp.data);
 						setUserShow(resp.data);
@@ -98,9 +97,17 @@ const Profile = (props) => {
 		} else if (type === "info") {
 			setTimeout(() => {
 				setInfoSaved(true);
-				let response = axios(
-					`http://192.168.1.211:3000/users/${props.userInfo.id}`
-				)
+				axios(`http://192.168.1.211:3000/users/${props.userInfo.id}`)
+					.then((resp) => {
+						props.setUserInfo(resp.data);
+						setUserShow(resp.data);
+					})
+					.catch((error) => console.log(error));
+			}, 250);
+		} else if (type === "creds") {
+			setTimeout(() => {
+				setCredsSaved(true);
+				axios(`http://192.168.1.211:3000/users/${props.userInfo.id}`)
 					.then((resp) => {
 						props.setUserInfo(resp.data);
 						setUserShow(resp.data);
@@ -123,6 +130,10 @@ const Profile = (props) => {
 			setTimeout(() => {
 				setInfoSaved(false);
 			}, 3200);
+		} else if (type === "creds") {
+			setTimeout(() => {
+				setCredsSaved(false);
+			}, 3200);
 		}
 	};
 
@@ -130,11 +141,12 @@ const Profile = (props) => {
 		setPosted(false);
 		setImgSaved(false);
 		setInfoSaved(false);
+		setCredsSaved(false);
 	};
 
 	// console.log("userSHOW IS 🐛✋🏾", userShow);
 	// console.log("♻️", loading);
-	// console.log("userinfo:::::", props.userInfo);
+	console.log("userinfo:::::", props.userInfo);
 	// console.log("NEW BIZ TOGG IS 🆕:::::", addBusinessTogg);
 	// console.log("listings ARE:::::", props.userListings);
 	// console.log("EMAIL CONFIRMATION IS ON LINE 243");
@@ -240,28 +252,47 @@ const Profile = (props) => {
 					/>
 				)}
 
-				{!props.email_verified && (
+				{!props.userInfo.email_verified && (
 					<EmailConfirmation
 						animationType="fade"
 						transparent={true}
 						visible={true}
+						purpose="Reverify"
 						///EMAIL CONFIRMATIONNNNNNNNNNNNN
 					/>
 				)}
 
-				{imgSaved && (
+				{(imgSaved || infoSaved || credsSaved) && (
 					<SuccessModal
 						handleDismiss={this.handleDismiss}
-						message={"You updated your profile pic✅"}
+						message={
+							imgSaved
+								? "You updated your profile pic✅"
+								: "Your changes were saved✅"
+						}
+					/>
+				)}
+
+				{/* {imgSaved && (
+					<SuccessModal
+						handleDismiss={this.handleDismiss}
+						message={"Your changes were saved✅"}
 					/>
 				)}
 
 				{infoSaved && (
 					<SuccessModal
 						handleDismiss={this.handleDismiss}
-						message={"You updated your profile information✅"}
+						message={"Your changes were saved✅"}
 					/>
 				)}
+
+				{credsSaved && (
+					<SuccessModal
+						handleDismiss={this.handleDismiss}
+						message={"Your changes were saved✅"}
+					/>
+				)} */}
 
 				{props.isFetching && (
 					<View

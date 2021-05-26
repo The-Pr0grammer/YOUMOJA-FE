@@ -7,11 +7,13 @@ import {
 	Button,
 	ImageBackground,
 	KeyboardAvoidingView,
+	TouchableOpacity,
 } from "react-native";
+import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
 import { setUserInfo } from "../redux/actions/bizAction";
-import { createAccount } from "../api/authentication";
+// import { createAccount } from "../api/authentication";
 import Form from "./forms/Form";
 // import { setToken } from "../api/token";
 import {
@@ -22,98 +24,165 @@ import {
 	lengthCap,
 	usernameCheck,
 	nameCheck,
+	urlCheck,
 	passwordCheck,
 } from "./forms/validation";
 import * as firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
+import FastImage from "react-native-fast-image";
 import moment from "moment";
 import axios from "axios";
 
 const CreateAccount = (props) => {
 	const navigation = useNavigation();
 	const [spinner, spinnerTogg] = useState(false);
+
+	const apiPost = async (data) => {
+		console.log("boutta create. data is::::", data);
+
+		// let inc = "email" in data;
+
+		// inc ? (data["email_verified"] = false) : null;
+
+		return await axios
+			.post(`http://192.168.1.211:3000/users`, data)
+			.then((res) => {
+				// props.setUserInfo(res.data);
+				// console.log("RES is ", res.data);
+				// console.log("EMAIL CHANGED:", inc);
+				// return { status: "200", email: inc };
+				let result = {
+					data: res.data.user,
+					inputs: data,
+					status: "200",
+				};
+
+				return handleCreate(result);
+			})
+			.catch((error) => {
+				// error.response.data.errors.includes("username") ? "username" : null;
+				// return "username";
+
+				// return error;
+				// return JSON.stringify(errors);
+				// return JSON.stringify(error.response);
+				// return JSON.stringify(error);
+				return JSON.stringify(error.response.data.errors);
+			});
+	};
+
+	const handleCreate = async (result) => {
+		console.log("res from api::::", result);
+		spinnerTogg(true);
+
+		if (result.status === "200") {
+			await firebase
+				.auth()
+				.createUserWithEmailAndPassword(
+					result.data.email,
+					result.inputs.password
+				)
+				.then(() => {
+					firebase
+						.auth()
+						.signInWithEmailAndPassword(
+							result.data.email,
+							result.inputs.password
+						)
+						.then(() => {
+							firebase.auth().onAuthStateChanged(function (user) {
+								if (!user.email_verified) {
+									console.log("RESULT DATA IS", result.data);
+									// props.setUserInfo({
+									// 	id: result.data.user.id,
+									// 	email: user.email,
+									// 	email_verified: user.email_verified,
+									// 	timeSent: moment().utcOffset("-04:00"),
+									// 	opaque: result.body.user.opaque,
+									// });
+									user.sendEmailVerification();
+									setTimeout(() => {
+										spinnerTogg(false);
+										navigation.navigate("Email Confirmation", {
+											purpose: "Signup",
+											result: result,
+										});
+									}, 2500);
+								} else {
+									// props.setUserInfo({
+									// 	id: result.data.id,
+									// 	email: result.data.email,
+									// 	email_verified: user.email_verified,
+									// });
+									console.log("Verified?👀");
+								}
+							});
+						})
+						.catch((error) => {
+							// test = true;
+							console.log(error.message);
+							return error;
+						});
+				})
+				.catch((error) => {
+					console.log(error.message);
+					return error;
+				});
+		}
+
+		// 	if (true) {
+		// 		// spinnerTogg(false);
+		// 		// throw new Error("Something went wrong. Please try again.");
+		// 	}
+
+		// 	setTimeout(() => {
+		// 		spinnerTogg(false);
+		// 		navigation.navigate("Email Confirmation", { purpose: "Signup" });
+		// 	}, 2500);
+		// } else if (result.status === 422 && result.messChars === 44) {
+		// 	// console.log(result);
+		// 	spinnerTogg(false);
+		// 	throw new Error("That email is already registered");
+		// } else if (result.status === 422 && result.messChars === 34) {
+		// 	spinnerTogg(false);
+		// 	throw new Error("That username is taken.");
+		// }
+
+		return result;
+	};
+
 	const handleResult = async (result) => {
 		let test = false;
-		spinnerTogg(true);
-		if (result.ok && result.data) {
-			// await setToken(result.data.auth_token);
-			console.log("result body is", result.body);
-			try {
-				firebase
-					.auth()
-					.createUserWithEmailAndPassword(
-						result.body.user.email,
-						result.body.user.opaque
-					)
-					.then(() => {
-						try {
-							firebase
-								.auth()
-								.signInWithEmailAndPassword(
-									result.body.user.email,
-									result.body.user.opaque
-								)
-								.then(() => {
-									firebase.auth().onAuthStateChanged(function (user) {
-										if (!user.emailVerified) {
-											console.log("RESULT DATA IS", result.data);
-											props.setUserInfo({
-												id: result.data.user.id,
-												email: user.email,
-												emailVerified: user.emailVerified,
-												timeSent: moment().utcOffset("-04:00"),
-												opaque: result.body.user.opaque,
-											});
-											user.sendEmailVerification();
-										} else {
-											props.setUserInfo({
-												id: result.data.id,
-												email: result.data.email,
-												emailVerified: user.emailVerified,
-											});
-											console.log("Verified?👀");
-										}
-									});
-								})
-								.catch((error) => {
-									test = true;
-									console.log(error.message);
-								});
-						} catch (error) {
-							console.log(error.message);
-						}
-					})
-					.catch((error) => {
-						console.log(error.message);
-					});
-			} catch (error) {
-				console.log(error.message);
-			}
-
-			if (test) {
-				spinnerTogg(false);
-				throw new Error("Something went wrong. Try again.");
-			}
-
-			setTimeout(() => {
-				spinnerTogg(false);
-				navigation.navigate("Email Confirmation", { purpose: "Signup" });
-			}, 2500);
-		} else if (result.status === 422 && result.messChars === 44) {
-			// console.log(result);
-			spinnerTogg(false);
-			throw new Error("That email is already registered");
-		} else if (result.status === 422 && result.messChars === 34) {
-			spinnerTogg(false);
-			throw new Error("That username is taken.");
-		}
 	};
 
 	return (
 		<KeyboardAvoidingView behavior="padding" style={styles.container}>
 			<View style={styles.inner}>
+				{/* <View
+					styles={{
+						// flexDirection: "column-reverse",
+						height: vh(30),
+						width: vw(100),
+						up: vh(20),
+						backgroundColor: "blue",
+						position: "absolute",
+					}}
+				>
+					<TouchableOpacity
+						styles={{
+							// flexDirection: "column-reverse",
+							height: vh(30),
+							width: vw(30),
+							// backgroundColor: "blue",
+							position: "absolute",
+						}}
+						onPress={() => console.log("yerrrr")}
+					>
+						<Icon name="camera" type="feather" color="red" size={55} />
+					</TouchableOpacity>
+				</View> */}
 				<Form
-					action={createAccount}
+					action={apiPost}
 					afterSubmit={handleResult}
 					buttonText="Create Account"
 					buttonSpinner={spinner}
@@ -150,6 +219,25 @@ const CreateAccount = (props) => {
 								textAlign: "center",
 							},
 						},
+
+						linkedin: {
+							label: "Linkedin",
+							validators: [urlCheck],
+							inputProps: {
+								placeholder: `enter your LinkedIn page url`,
+								placeholderTextColor: "lightslategray",
+								textAlign: "center",
+							},
+						},
+						twitter: {
+							label: "Twitter",
+							validators: [urlCheck],
+							inputProps: {
+								placeholder: `enter your Twitter page url`,
+								placeholderTextColor: "lightslategray",
+								textAlign: "center",
+							},
+						},
 						password: {
 							label: "Password",
 							validators: [validateContent, validateLength],
@@ -174,7 +262,8 @@ const CreateAccount = (props) => {
 						},
 					}}
 				/>
-				<View style={{ zIndex: 4 }}>
+
+				{/* <View style={{ zIndex: 4 }}>
 					<Button
 						title="Change Email"
 						buttonStyle={{
@@ -184,11 +273,12 @@ const CreateAccount = (props) => {
 						style={{ alignSelf: "flex-end" }}
 						titleStyle={{ color: "lightslategray" }}
 						onPress={() => {
-							props.setUserInfo({ email: "yo", emailVerified: false });
+							props.setUserInfo({ email: "yo", email_verified: false });
 							navigation.navigate("Email Confirmation", { purpose: "Signup" });
 						}}
 					/>
-				</View>
+				</View> */}
+
 				{/* <View style={{ zIndex: 4 }}>
 					<Button
 						title="Check for phone auth"
@@ -227,10 +317,18 @@ export default connect(mapStateToProps, { setUserInfo })(CreateAccount);
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		// flex: 1,
 		height: vh(100),
-		alignItems: "center",
+		// alignItems: "center",
 		backgroundColor: "black",
+	},
+	inner: {
+		flex: 1,
+		paddingBottom: vh(14),
+		paddingTop: vh(2.5),
+		// justifyContent: "space-around",
+		alignItems: "center",
+		// backgroundColor: "blue",
 	},
 	background: {
 		flex: 1,
@@ -238,11 +336,14 @@ const styles = StyleSheet.create({
 		width: vw(100),
 		alignItems: "center",
 	},
-	inner: {
-		flex: 1,
-		padding: vh(10),
-		justifyContent: "space-around",
-		alignItems: "center",
+	img: {
+		position: "relative",
+		width: vw(39.6),
+		height: vh(18),
+		opacity: 1.0,
+		backgroundColor: "lightslategray",
+		// left: vw(10),
+		// borderRightWidth: 5,
 	},
 });
 

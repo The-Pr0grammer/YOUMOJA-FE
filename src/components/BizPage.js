@@ -9,8 +9,8 @@ import {
 	Share,
 	ImageBackground,
 	ActivityIndicator,
+	Modal,
 } from "react-native";
-import { Modal } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 
 import { Icon } from "react-native-elements";
@@ -158,7 +158,7 @@ const BizPage = (props) => {
 								index={fixedPage}
 								renderIndicator={() => {}}
 								menus={() => null}
-								renderIndicator={() => (<></>)}
+								renderIndicator={() => <></>}
 							/>
 						</Modal>
 					)}

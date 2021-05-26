@@ -32,6 +32,9 @@ import {
 } from "./forms/validation";
 import * as firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
+import FastImage from "react-native-fast-image";
+
+import axios from "axios";
 
 const Login = (props) => {
 	const navigation = useNavigation();
@@ -62,10 +65,17 @@ const Login = (props) => {
 		// console.log(result);
 		let test = false;
 		spinnerTogg(true);
-		console.log("🎱🎱🎱", result);
+		// console.log("🎱🎱🎱 LOGIN HANDLER RESULT", result.data.id);
 		if (result.ok && result.data) {
 			// await setToken(result.data.auth_token);
 			try {
+				await axios(`http://192.168.1.211:3000/users/${result.data.id}`)
+					.then((resp) => {
+						console.log("setting user info");
+						return props.setUserInfo(resp.data);
+					})
+					.catch((error) => console.log(error));
+
 				await firebase
 					.auth()
 					.signInWithEmailAndPassword(
@@ -75,36 +85,35 @@ const Login = (props) => {
 					.then(() => {
 						firebase.auth().onAuthStateChanged(function (user) {
 							if (!user.emailVerified) {
-								setErrorMessage(""),
-									props.setUserInfo({
-										id: result.data.id,
-										email: result.data.email,
-										emailVerified: false,
-										opaque: result.body.user.opaque,
-									});
+								setErrorMessage("");
+
+								axios(`http://192.168.1.211:3000/users/${result.data.id}`)
+									.then((resp) => props.setUserInfo(resp.data))
+									.catch((error) => console.log(error));
 
 								setTimeout(() => {
 									spinnerTogg(false);
 									navigation.navigate("Email Confirmation", {
 										purpose: "Signup",
+										id: result.data.id,
 									}),
 										5000;
 								});
 								console.log("Not Verified🚫", user.email);
 							} else {
-								setErrorMessage(""),
-									props.setUserInfo({
-										id: result.data.id,
-										email: result.data.email,
-										emailVerified: user.emailVerified,
-									});
+								setErrorMessage("");
+
+								axios(`http://192.168.1.211:3000/users/${result.data.id}`)
+									.then((resp) => props.setUserInfo(resp.data))
+									.catch((error) => console.log(error));
 
 								setTimeout(() => {
 									spinnerTogg(false);
-									navigation.navigate("Welcome Splash"), 5000;
+									navigation.navigate("Welcome Splash", { id: result.data.id }),
+										1500;
 								});
 								console.log("Verified😎", user.email);
-							}
+							} 
 						});
 					})
 					.catch((error) => {
@@ -166,20 +175,21 @@ const Login = (props) => {
 							alignItems: "center",
 							opacity: 1,
 							zIndex: 1,
-							// backgroundColor: "black",
+							backgroundColor: "black",
 							borderRadius: 6,
 						}}
 					>
-						<Image
+						<FastImage
 							style={{
 								height: vh(20),
-								width: vw(75),
+								width: vw(100),
 								resizeMode: "contain",
+								// backgroundColor: "blue",
 							}}
 							source={require("../images/name.png")}
-						></Image>
+						></FastImage>
 					</View>
-					<Image
+					<FastImage
 						style={{
 							height: vh(7.5),
 							width: vw(15),
@@ -189,7 +199,7 @@ const Login = (props) => {
 							// backgroundColor: "transparent",
 						}}
 						source={require("../images/LOGO.png")}
-					></Image>
+					></FastImage>
 
 					<View
 						style={{

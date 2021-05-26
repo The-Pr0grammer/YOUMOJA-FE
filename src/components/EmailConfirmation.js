@@ -17,46 +17,122 @@ import * as firebase from "firebase";
 import axios from "axios";
 import { Alert } from "react-native";
 import moment from "moment";
+import { useIsFocused } from "@react-navigation/native";
 
 function EmailConfirmation(props) {
-	console.log("USER INFO IS", props.userInfo);
+	let check = "";
 	const navigation = useNavigation();
 	const [errorMessage, setErrorMessage] = useState("");
-	let check;
-	const confirmationCheck = () => {
-		firebase.auth().onAuthStateChanged((user) => {
-			user ? user.reload() : null;
-			console.log(
-				"checking for verification and time sent was",
-				props.userInfo.timeSent
-			);
-			// if (user.emailVerified && props.route.params.purpose == "Signup") {
-			// 	setTimeout(() => navigation.navigate("Welcome Splash"), 500);
-			// 	return clearInterval(check);
-			// } else if (user.emailVerified && props.route.params.purpose == "Reset") {
-			// 	props.setUserInfo({
-			// 		...props.userInfo,
-			// 		emailVerified: true,
-			// 	});
-			// 	return clearInterval(check);
-			// }
-		});
-	};
+	const isFocused = useIsFocused();
+	let userData = {};
 
 	useEffect(() => {
-		check = setInterval(confirmationCheck, 3500);
+		check = setInterval(confirmationCheck, 1000);
+
+		firebaseLogin();
+
+		////DON'T FORGET TO REMOVE ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+		// firebase
+		// 	.auth()
+		// 	.signInWithEmailAndPassword(props.userInfo.email, "ajnchick")
+		// 	.then(async () => {
+		// 		console.log("signed into firebase");
+		// 	})
+		// 	.catch((error) => {
+		// 		console.log("Firebase error:", error);
+
+		// 		return error;
+		// 	});
+		////DON'T FORGET TO REMOVE ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
 		return () => {
 			clearInterval(check);
 		};
 	}, []);
 
+	const firebaseLogin = async (userData) => {
+		await firebase
+			.auth()
+			.signInWithEmailAndPassword(
+				props.route.params.result.data.email,
+				props.route.params.result.inputs.password
+			)
+			.then(async () => {
+				console.log("signed into firebase");
+			})
+			.catch((error) => {
+				console.log("Firebase error:", error);
+				return error;
+			});
+	};
+
+	const confirmationCheck = () => {
+		console.log(("!!!!focused:", isFocused));
+
+		const currentTime = moment()
+			.utcOffset("-04:00")
+			.format("dddd, MMMM Do YYYY, h:mm:ss a");
+
+		isFocused &&
+			firebase.auth().onAuthStateChanged((user) => {
+				user ? user.reload() : null;
+				// console.log(
+				// 	"checking for verification. Here's the firebase user object",
+				// 	user,
+				// 	props.userInfo.timeSent
+				// );
+
+				console.log("checking. Time is: ", currentTime);
+
+				if (user.emailVerified && props.purpose == "Reverify") {
+					verifiedPatch();
+
+					props.setUserInfo({
+						...props.userInfo,
+						email_verified: true,
+					});
+
+					return clearInterval(check);
+				} else if (
+					user.emailVerified &&
+					props.route.params.purpose == "Signup"
+				) {
+					setTimeout(() => navigation.navigate("Welcome Splash"), 500);
+					return clearInterval(check);
+				} else if (
+					user.emailVerified &&
+					props.route.params.purpose == "Reset"
+				) {
+					props.setUserInfo({
+						...props.userInfo,
+						email_verified: true,
+					});
+					return clearInterval(check);
+				}
+			});
+	};
+
 	// check = setInterval(confirmationCheck, 3500);
+
 	const reauthenticate = (opaque) => {
 		console.log(opaque);
 		const user = firebase.auth().currentUser;
 		const cred = firebase.auth.EmailAuthProvider.credential(user.email, opaque);
 		return user.reauthenticateWithCredential(cred);
 	};
+
+	const verifiedPatch = async () => {
+		return await axios
+			.patch(`http://192.168.1.211:3000/users/${props.userInfo.id}`, {
+				email_verified: true,
+			})
+			.then(async (res) => {})
+			.catch(function (error) {
+				console.log("ROR PATCH error:", error);
+				return error;
+			});
+	};
+
 	const emailPatch = async (newEmail) => {
 		setErrorMessage("");
 		await axios({
@@ -78,6 +154,7 @@ function EmailConfirmation(props) {
 					...props.userInfo,
 					email: response.data.email,
 				});
+
 				handleEmailChange(response.data.email);
 			})
 			.catch((error) => {
@@ -89,6 +166,7 @@ function EmailConfirmation(props) {
 				// }
 			});
 	};
+
 	const changeEmailAlert = () => {
 		setErrorMessage("");
 		Alert.prompt(
@@ -108,6 +186,7 @@ function EmailConfirmation(props) {
 			]
 		);
 	};
+
 	const handleEmailChange = (newEmail) => {
 		console.log(props.userInfo);
 		reauthenticate(props.userInfo.opaque).then(async () => {
@@ -130,6 +209,7 @@ function EmailConfirmation(props) {
 				});
 		});
 	};
+
 	const handleResend = () => {
 		const currentTime = moment().utcOffset("-04:00");
 		let difference = false;
@@ -158,6 +238,8 @@ function EmailConfirmation(props) {
 			setErrorMessage("Please confirm your email before continuing");
 		}
 	};
+
+	// console.log("USER INFO IS", props.userInfo);
 
 	return (
 		<Modal>
@@ -334,7 +416,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: "black",
 		backgroundColor: "rgba(0,0,0,0.975)",
-
 		justifyContent: "center",
 	},
 	background: {
@@ -357,9 +438,9 @@ const styles = StyleSheet.create({
 		color: "red",
 		textAlign: "center",
 		zIndex: -1,
+		bottom: vh(5),
 		// fontFamily:"Times New Roman",
 		// top: vh(49.5),
-		bottom: vh(5),
 		// backgroundColor: "purple",
 	},
 });

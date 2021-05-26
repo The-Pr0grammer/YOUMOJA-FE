@@ -8,8 +8,8 @@ import {
 	TouchableOpacity,
 	ActivityIndicator,
 	Image,
+	Modal,
 } from "react-native";
-import { Modal } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Button, Icon, Badge } from "react-native-elements";
 import TextTicker from "react-native-text-ticker";
@@ -20,11 +20,19 @@ import { setUserInfo, setIsFetching } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import ImageView from "react-native-image-viewing";
+
+import ImageViewer from "react-native-image-zoom-viewer";
+
 import ImagePicker from "react-native-image-crop-picker";
 import FastImage from "react-native-fast-image";
 import { Linking } from "react-native";
-import ProfileEdit from "./ProfileEdit.js";
+import EditProfile from "./EditProfile.js";
+import EditUserCreds from "./EditUserCreds.js";
 import Webview from "./Webview.js";
+
+import GestureRecognizer, {
+	swipeDirections,
+} from "react-native-swipe-gestures";
 
 import axios from "axios";
 
@@ -40,6 +48,7 @@ const ProfileCard = (props) => {
 	const [editPrompt, setEditPrompt] = useState(false);
 	const [infoEditTogg, setInfoEditTogg] = useState(false);
 	const [imgEditTogg, setImgEditTogg] = useState(false);
+	const [credsEditTogg, setCredsEditTogg] = useState(false);
 	const [webviewTogg, setWebviewTogg] = useState(false);
 	const [webviewUri, setWebviewUri] = useState("");
 	const colors = ["green", "blue", "firebrick", "slateblue", "gold"];
@@ -58,6 +67,10 @@ const ProfileCard = (props) => {
 					return (
 						{
 							url: `http://192.168.1.211:3000/${props.userInfo.image}`,
+
+							props: {
+								// headers: ...
+							},
 						},
 						{
 							url: `http://192.168.1.211:3000/${props.userInfo.image}`,
@@ -81,8 +94,9 @@ const ProfileCard = (props) => {
 					);
 			  });
 
-		setImage(imgToDisplay);
-		setImgView([{ uri: imgToDisplay[0].url }]);
+		// setImage(imgToDisplay);
+		// setImgView([{ uri: imgToDisplay[0].url }]);
+		setImgView(imgToDisplay);
 
 		// return () => {
 		// 	// console.log("please come again");
@@ -137,8 +151,8 @@ const ProfileCard = (props) => {
 					);
 				});
 
-				setImage(pick);
-				setImgView([{ uri: pick[0].url }]);
+				// setImage(pick);
+				setImgView(pick);
 				setImgEditTogg(true);
 
 				// console.log(
@@ -151,17 +165,17 @@ const ProfileCard = (props) => {
 			.catch((e) => console.log(e));
 	};
 
-	const handlePut = () => {
+	const handlePut = async () => {
 		console.log(
 			"IMAGE HASH IS 🖼  ",
-			image.map((img) => img.file_name)
+			imgView.map((img) => img.file_name)
 		);
 
-		let imageHash = image.map((image) => {
+		let imageHash = imgView.map((imageData) => {
 			// console.log(image.uri);
 			return {
-				image: image.uri,
-				file_name: image.file_name,
+				image: imageData.uri,
+				file_name: imageData.file_name,
 			};
 		});
 
@@ -171,7 +185,7 @@ const ProfileCard = (props) => {
 			},
 		};
 
-		fetch(`http://192.168.1.211:3000/users/${props.userInfo.id}`, {
+		await fetch(`http://192.168.1.211:3000/users/${props.userInfo.id}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
@@ -219,7 +233,7 @@ const ProfileCard = (props) => {
 					);
 			  });
 		setImage(pick);
-		setImgView([{ uri: pick[0].url }]);
+		setImgView(pick);
 		setImgEditTogg(false);
 	};
 
@@ -228,28 +242,120 @@ const ProfileCard = (props) => {
 		setEditPrompt(false);
 	};
 
+	const handleCredsEditTogg = () => {
+		setCredsEditTogg(false);
+		setEditPrompt(false);
+	};
+
 	const handleWebviewTogg = () => {
 		setWebviewUri("");
 		setWebviewTogg(false);
 	};
 
+	const config = {
+		velocityThreshold: 0.2,
+		directionalOffsetThreshold: 70,
+	};
 	// console.log("👤 USER INFO ISSS 👤 ", props.userInfo);
+	// console.log("image is: ", image[0]["url"]);
+	// console.log("badge count::::::", Object.values(props.userInfo.badges).length);
 
 	return (
 		<View style={styles.wrapper}>
+			{/* <GestureRecognizer
+				onSwipeUp={() => console.log("swiped")}
+				onSwipeDown={() => setIsVisible(false)}
+				config={config}
+				style={
+					{
+						// flex: 1,
+						// backgroundColor: "red",
+						// zIndex: 10,
+					}
+				}
+			> */}
 			{isVisible && (
-				<ImageView
-					images={imgView}
-					onRequestClose={() => setIsVisible(false)}
+				// <ImageView
+				// 	images={imgView}
+				// 	onRequestClose={() => setIsVisible(false)}
+				// 	visible={isVisible}
+				// 	index={0}
+				// 	doubleTapToZoomEnabled={true}
+				// />
+				<Modal
 					visible={isVisible}
-					index={0}
+					transparent={true}
+					style={{
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<ImageViewer
+						imageUrls={imgView}
+						onCancel={() => setIsVisible(false)}
+						enableSwipeDown={true}
+						index={0}
+						renderIndicator={() => {}}
+						menus={() => null}
+						renderIndicator={() => <></>}
+						style={{
+							justifyContent: "center",
+							alignItems: "center",
+						}}
+						renderImage={() => {
+							return (
+								<View
+									style={{
+										position: "absolute",
+										justifyContent: "center",
+										alignItems: "center",
+										// backgroundColor: "lightslategray",
+										height: "99%",
+										width: "99%",
+										// bottom: vh(0),
+										paddingVertical: vh(2.5),
+									}}
+								>
+									<Image
+										resizeMode={"cover"}
+										source={{
+											uri: imgView[0]["url"],
+										}}
+										style={{
+											borderRadius: 360,
+											width: "100%",
+											// height: "50%",
+											height: undefined,
+											opacity: 1.0,
+											zIndex: 2,
+											aspectRatio: 135 / 135,
+											alignSelf: "center",
+
+											// bottom: vh(12),
+										}}
+										//PROFILE PICTURE 📸 📸 📸
+									></Image>
+								</View>
+							);
+						}}
+					/>
+				</Modal>
+			)}
+			{/* </GestureRecognizer> */}
+
+			{infoEditTogg && (
+				<EditProfile
+					//PROFILE EDIT MODAL
+					handleInfoEditTogg={handleInfoEditTogg}
+					handleSuccess={props.handleSuccess}
+					handleClose={props.handleClose}
 				/>
 			)}
 
-			{infoEditTogg && (
-				<ProfileEdit
-					//PROFILE EDIT MODAL
-					handleInfoEditTogg={handleInfoEditTogg}
+			{credsEditTogg && (
+				<EditUserCreds
+					//CREDS EDIT MODAL
+					handleCredsEditTogg={handleCredsEditTogg}
 					handleSuccess={props.handleSuccess}
 					handleClose={props.handleClose}
 				/>
@@ -268,7 +374,7 @@ const ProfileCard = (props) => {
 					style={{
 						alignSelf: "center",
 						position: "absolute",
-						bottom: vh(32),
+						bottom: vh(32.7),
 						left: vw(64),
 						zIndex: 4,
 					}}
@@ -298,7 +404,7 @@ const ProfileCard = (props) => {
 					<FastImage
 						resizeMode={"cover"}
 						source={{
-							uri: image[0].url,
+							uri: imgView[0].url,
 						}}
 						style={styles.profilePic}
 						//PROFILE PICTURE 📸 📸 📸
@@ -308,40 +414,65 @@ const ProfileCard = (props) => {
 				{editPrompt && (
 					<View style={styles.editChoiceButtons}>
 						<Button
-							title="Edit Info"
+							title="Change Photo"
 							buttonStyle={{
 								backgroundColor: "transparent",
-								borderRadius: 18,
+								// borderRadius: 18,
 								zIndex: 5,
+								backgroundColor: "rgba(0,0,0,0.75)",
 							}}
 							style={{
 								position: "relative",
-								borderRadius: 20,
+								// borderRadius: 20,
 								width: vw(40),
 								zIndex: 5,
+								marginVertical: vh(0.1),
+							}}
+							titleStyle={{ color: "lightslategray" }}
+							onPress={() => {
+								handlePicker();
+								setEditPrompt(false);
+							}}
+						/>
+						<Button
+							title="Edit Info"
+							buttonStyle={{
+								backgroundColor: "transparent",
+								// borderRadius: 18,
+								zIndex: 5,
+								backgroundColor: "rgba(0,0,0,0.75)",
+							}}
+							style={{
+								position: "relative",
+								// borderRadius: 20,
+								width: vw(40),
+								zIndex: 5,
+								marginVertical: vh(0.1),
 							}}
 							titleStyle={{ color: "lightslategray" }}
 							onPress={() => {
 								setInfoEditTogg(true);
 							}}
 						/>
+
 						<Button
-							title="Change Photo"
+							title="Change Email/Password"
 							buttonStyle={{
 								backgroundColor: "transparent",
-								borderRadius: 18,
+								// borderRadius: 18,
 								zIndex: 5,
+								backgroundColor: "rgba(0,0,0,0.75)",
 							}}
 							style={{
 								position: "relative",
-								borderRadius: 20,
+								// borderRadius: 20,
 								width: vw(40),
 								zIndex: 5,
+								marginVertical: vh(0.1),
 							}}
 							titleStyle={{ color: "lightslategray" }}
 							onPress={() => {
-								handlePicker();
-								setEditPrompt(false);
+								setCredsEditTogg(true);
 							}}
 						/>
 					</View>
@@ -455,7 +586,9 @@ const ProfileCard = (props) => {
 						}}
 					>
 						{numFormat(
-							Object.values(props.userInfo.badges).reduce((t, n) => t + n)
+							Object.values(props.userInfo.badges).length > 0
+								? Object.values(props.userInfo.badges).reduce((t, n) => t + n)
+								: 0
 						)}
 					</Text>
 					<Text
@@ -606,8 +739,11 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		flexDirection: "column",
 		width: vw(40),
-		top: vh(6.25),
-		backgroundColor: "rgba(0,0,0,0.75)",
+		top: vh(2.75),
+		backgroundColor: "transparent",
+		// backgroundColor: "rgba(0,0,0,0.75)",
+
+		// backgroundColor: "darkslategray",
 		zIndex: 4,
 	},
 	leftView: {

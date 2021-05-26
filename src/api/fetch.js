@@ -19,7 +19,7 @@ import { API_URL } from "../../secrets.js";
 
 export const post = async (destination, body) => {
 	// const headers = await getHeaders();
-	// console.log("BODY IS", body);
+	console.log("BODY IS", body);
 	const result = await fetch(`${API_URL}${destination}`, {
 		method: "POST",
 		headers: {

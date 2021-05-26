@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, createRef } from "react";
 import {
 	Text,
 	TextInput,
@@ -6,17 +6,29 @@ import {
 	StyleSheet,
 	Keyboard,
 	ScrollView,
+	TouchableOpacity,
+	Modal,
+	Image,
 } from "react-native";
-import { Button, CheckBox } from "react-native-elements";
+import { Button, CheckBox, Icon } from "react-native-elements";
 import { useFocusEffect } from "@react-navigation/native";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
+import { connect } from "react-redux";
 import {
 	hasValidationError,
 	usernameCheck,
 	validateFields,
 } from "./validation";
 import Field from "./Field";
+import * as firebase from "firebase";
 import { sub } from "react-native-reanimated";
+
+import ImageViewer from "react-native-image-zoom-viewer";
+
+import ImagePicker from "react-native-image-crop-picker";
+import FastImage from "react-native-fast-image";
+
+// i apologize in advance to anyone who is tasked with refactoring the code in this file, especially if that person is me.
 
 const getInitialState = (fieldKeys) => {
 	const state = {};
@@ -44,21 +56,30 @@ const Form = ({
 			setValidationErrors("");
 			setErrorMessage("");
 
-			// type == "ProfileEdit" && setValues(userInfo);
+			// type == "EditProfile" && setValues(userInfo);
 		}, [])
 	);
 
 	const fieldKeys = Object.keys(fields);
 	const [values, setValues] = useState(getInitialState(fieldKeys));
 	const [errorMessage, setErrorMessage] = useState("");
-	const [allowEmails, setAllowEmails] = useState(userInfo.allow_emails);
+	const [user, setUser] = useState({});
+	const [newAllowEmails, setNewAllowEmails] = useState(userInfo.allow_emails);
+	const [allowEmails, setAllowEmails] = useState(false);
+	const [profileImg, setProfileImg] = useState("");
+	const [isVisible, setIsVisible] = useState(false);
 	const [validationErrors, setValidationErrors] = useState(
 		getInitialState(fieldKeys)
 	);
+	const refs = [];
+
 	const onChangeValue = (key, value) => {
 		handleChange && handleChange(key, value);
 		const newState = { ...values, [key]: value };
-		type == "ProfileEdit"
+
+		// console.log("newState is", newState);
+
+		type == "EditProfile" || type == "EditUserCreds"
 			? setValues(removeEmptyStrings(newState))
 			: setValues(newState);
 
@@ -85,11 +106,117 @@ const Form = ({
 
 	const trimValues = (obj) => {
 		let newObj = {};
+
+		if (type == "Signup" && !Object.keys(obj).includes("allow_emails")) {
+			obj.allow_emails = allowEmails;
+		}
+
 		Object.keys(obj).forEach((prop) => {
-			console.log(prop);
+			console.log(obj);
 			newObj[prop] = prop == "allow_emails" ? obj[prop] : obj[prop].trim();
 		});
 		return newObj;
+	};
+
+	const checkForChanges = (obj) => {
+		let present = false;
+
+		Object.keys(obj)
+			.sort()
+			.forEach((prop) => {
+				present = prop !== "currentPassword" ? true : false;
+			});
+
+		// console.log("changes present:", present);
+
+		return present;
+	};
+
+	const signIn = async () => {
+		let firstPass = {};
+
+		return await firebase
+			.auth()
+			.signInWithEmailAndPassword(userInfo.email, values["currentPassword"])
+			.then(async () => {
+				firebase.auth().onAuthStateChanged(async (firebaseUser) => {
+					firstPass = firebaseUser;
+					// return setUser(firebaseUser);
+				});
+			})
+			.then(async () => {
+				return { status: "200", user: firstPass };
+			})
+			.catch((error) => {
+				console.log("Firebase error:", error);
+
+				if (error.message.includes("invalid")) {
+					return { currentPassword: "Invalid password" };
+				} else if (error.message.includes("disabled")) {
+					return {
+						currentPassword: "Too many failed attempts. Try again later",
+					};
+				} else {
+					return error;
+				}
+			});
+	};
+
+	const handlePicker = () => {
+		ImagePicker.openPicker({
+			// multiple: true,
+			// waitAnimationEnd: false,
+			// includeExif: true,
+			// compressImageQuality: 0.8,
+			// mediaType: "photo",
+			maxFiles: 1,
+			multiple: true,
+			cropping: true,
+			includeBase64: true,
+			compressImageMaxHeight: 1080,
+			compressImageMaxWidth: 1080,
+		})
+			.then((resp) => {
+				const pick = resp.map((item, index) => {
+					// console.log("IMAGE📸 DATA", item);
+
+					const b = require("based-blob");
+
+					const blob = b.toBlob(item.data);
+
+					console.log("BLOB 🧴", blob._data.blobId); // true
+
+					return (
+						{
+							url: `data:image/gif;base64,${item.data}`,
+						},
+						{
+							url: `data:image/gif;base64,${item.data}`,
+							props: {
+								// source: require("data:image/gif;base64,${item.data}"),
+							},
+							id: index,
+							file_name: item.filename,
+							uri: item.data,
+						}
+					);
+				});
+
+				// setImage(pick);
+				setErrorMessage("");
+				setProfileImg(pick);
+
+				// console.log(
+				// 	"IMAGES 👀🌃👀🌃👀🌃",
+				// 	JSON.stringify(item.sourceURL.replace("file://", ""))
+				// );
+				// console.log("IMAGES PICKED::::", resp);
+				// console.log("IMAGES 📸✨", images);
+			})
+			.catch((e) => {
+				console.log(e);
+				// setErrorMessage(e);
+			});
 	};
 
 	const submit = async () => {
@@ -98,16 +225,27 @@ const Form = ({
 		setValidationErrors(getInitialState(fieldKeys));
 
 		let newFields = { ...fields };
-		if (type == "ProfileEdit") {
+
+		if (type == "EditUserCreds") {
+			for (var key in newFields) {
+				if (key == "email" && !Object.keys(values).includes(key)) {
+					delete newFields[key];
+				}
+			}
+			// console.log(newFields);
+		}
+
+		if (type == "EditProfile") {
 			for (var key in newFields) {
 				if (!Object.keys(values).includes(key)) {
 					delete newFields[key];
 				}
 			}
+			// console.log(newFields);
 		}
 
 		let errors = [];
-		type == "ProfileEdit"
+		type == "EditProfile" || type == "EditUserCreds"
 			? (errors = validateFields(newFields, trimValues(values)))
 			: (errors = validateFields(fields, values));
 
@@ -115,16 +253,66 @@ const Form = ({
 			console.log(errors);
 
 			// console.log(fields);
+			console.log(errors);
 			return setValidationErrors(errors); //VALIDATIONSSSSSSS
 		}
 
-		try {
-			type == "ProfileEdit"
-				? (result = await action(trimValues(values)))
-				: (result = await action(...getValues()));
+		if (type == "Signup" && profileImg == "") {
+			return setErrorMessage("Please choose a profile picture");
+		}
 
-			if (type == "ProfileEdit" && result.status !== "200") {
-				// console.log("result is", result);
+		//SIGN IN FOR CREDENTIAL CHANGES
+		signInRes = {};
+
+		if (type == "EditUserCreds") {
+			signInRes = await signIn();
+			if (type == "EditUserCreds" && signInRes.status !== "200") {
+				console.log("Sign in res is", signInRes);
+
+				let newObj = {};
+
+				for (let [k, v] of Object.entries(signInRes)) {
+					newObj[k] = v;
+				}
+
+				// // console.log("newObj is ", newObj);
+
+				{
+					!Object.keys(newObj).includes("currentPassword") &&
+						setErrorMessage("Something went wrong. Please try again later");
+				}
+
+				setValidationErrors(newObj);
+				return;
+			}
+		}
+		//SIGN IN FOR CREDENTIAL CHANGES
+
+		try {
+			switch (type) {
+				case "EditProfile":
+					result = await action(trimValues(values));
+					break;
+				case "EditUserCreds":
+					console.log("FIRST TIME THRU♥️", signInRes);
+					result = await action(trimValues(values), signInRes.user);
+					break;
+				case "Signup":
+					console.log("CREATING 👨🏾‍🎨");
+					result = await action(trimValues(values));
+					break;
+				default:
+					result = await action(...getValues());
+				// code block
+			}
+
+			// type == "EditProfile" || type == "EditUserCreds"
+			// 	? (result = await action(trimValues(values)))
+			// 	: (result = await action(...getValues()));
+
+			console.log("result is", result);
+
+			if (type == "EditProfile" && result.status !== "200") {
 				// console.log("result is", result);
 
 				var parsedData = JSON.parse(result);
@@ -133,16 +321,64 @@ const Form = ({
 
 				for (let [k, v] of Object.entries(parsedData)) {
 					k == "username"
-						? (newObj[k] = `that ${k} ${v[0]}`)
+						? (newObj[k] = `${k} ${v[0]}`)
 						: (newObj[k] = `that ${k} is associated with another account`);
 				}
 
 				// console.log("newObj is ", newObj);
 
 				{
+					!Object.keys(newObj).includes("username") &&
+						setErrorMessage("Something went wrong. Please try again.");
+				}
+
+				setValidationErrors(newObj);
+				return;
+			}
+
+			if (type == "EditUserCreds" && result.status !== "200") {
+				console.log("result izzzzz", result);
+
+				var parsedData = JSON.parse(result);
+
+				let newObj = {};
+
+				for (let [k, v] of Object.entries(parsedData)) {
+					newObj[k] = `that ${k} is associated with another account`;
+				}
+
+				console.log("newObj is ", newObj);
+
+				{
+					!Object.keys(newObj).includes("email") &&
+						setErrorMessage("Something went wrong. Please try again.");
+				}
+
+				setValidationErrors(newObj);
+				return;
+			}
+
+			if (type == "Signup" && result.status !== "200") {
+				console.log("signup result status izzzzz", result.status);
+
+				var parsedData = JSON.parse(result);
+
+				let newObj = {};
+
+				for (let [k, v] of Object.entries(parsedData)) {
+					if (v[0].includes("blank")) {
+						newObj[k] = "can't be blank";
+					} else if (v[0].includes("taken")) {
+						newObj[k] = `that ${k} is associated with another account`;
+					} else newObj[k] = `invalid entry. try again`;
+				}
+
+				console.log("newObj is ", newObj);
+
+				{
 					!Object.keys(newObj).includes("email") &&
 						!Object.keys(newObj).includes("username") &&
-						setErrorMessage("Something went wrong. Please try again later");
+						setErrorMessage("Something went wrong. Please try again.");
 				}
 
 				setValidationErrors(newObj);
@@ -152,36 +388,193 @@ const Form = ({
 			afterSubmit(result);
 		} catch (e) {
 			console.log("caught error IN THE FORM ‼️", e);
-			setErrorMessage("Something went wrong. Please try again later");
+			setErrorMessage("Something went wrong. Please try again.");
+		}
+	};
+
+	handleRefocus = () => {
+		if (!validationErrors == "") {
+			let find = fieldKeys.find((key) =>
+				Object.keys(validationErrors).includes(key)
+			);
+
+			let index = fieldKeys.findIndex((ele) => ele == find);
+
+			console.log("find is", find);
+			console.log("index is", index);
+
+			console.log("refs", refs);
+
+			return refs[index].current && refs[index].current.focus();
+			// return find.current && find.current.focus();
 		}
 	};
 
 	console.log("VALUES:", values);
 	// console.log(removeEmptyStrings(userInfo));
 	// console.log("eM:", errorMessage);
+	// console.log("vEs:", validationErrors);
 
 	return (
 		<View style={styles.container}>
 			{type == "Signup" && (
 				<View
 					style={{
-						flex: 1,
+						// flex: 1,
 						alignItems: "center",
 						justifyContent: "center",
 						zIndex: 1,
 					}}
 				>
+					{isVisible && (
+						// <ImageView
+						// 	images={imgView}
+						// 	onRequestClose={() => setIsVisible(false)}
+						// 	visible={isVisible}
+						// 	index={0}
+						// 	doubleTapToZoomEnabled={true}
+						// />
+						<Modal
+							visible={isVisible}
+							transparent={true}
+							style={{
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<ImageViewer
+								imageUrls={profileImg}
+								onCancel={() => setIsVisible(false)}
+								enableSwipeDown={true}
+								index={0}
+								renderIndicator={() => {}}
+								menus={() => null}
+								renderIndicator={() => <></>}
+								style={{
+									justifyContent: "center",
+									alignItems: "center",
+								}}
+								renderImage={() => {
+									return (
+										<View
+											style={{
+												position: "absolute",
+												justifyContent: "center",
+												alignItems: "center",
+												// backgroundColor: "lightslategray",
+												height: "99%",
+												width: "99%",
+												// bottom: vh(0),
+												paddingVertical: vh(2.5),
+											}}
+										>
+											<Image
+												resizeMode={"cover"}
+												source={{
+													uri: profileImg[0]["url"],
+												}}
+												style={{
+													borderRadius: 360,
+													width: "100%",
+													// height: "50%",
+													height: undefined,
+													opacity: 1.0,
+													zIndex: 2,
+													aspectRatio: 135 / 135,
+													alignSelf: "center",
+
+													// bottom: vh(12),
+												}}
+												//PROFILE PICTURE 📸 📸 📸
+											></Image>
+										</View>
+									);
+								}}
+							/>
+						</Modal>
+					)}
+
 					{/* {errorMessage !== "" && (
 						<Text style={styles.signupError}>{errorMessage}</Text>
 					)} */}
 
 					<Text style={styles.signupError}>{errorMessage}</Text>
 
+					<View
+						styles={{
+							width: vw(100),
+							backgroundColor: "blue",
+							position: "absolute",
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "center",
+							// down: vh(120),
+						}}
+					>
+						<TouchableOpacity
+							styles={{
+								// flexDirection: "column-reverse",
+								height: vh(30),
+								width: vw(30),
+								backgroundColor: "blue",
+								position: "absolute",
+							}}
+							onPress={() => {
+								profileImg !== "" ? setIsVisible(true) : handlePicker();
+							}}
+						>
+							{profileImg !== "" ? (
+								<FastImage
+									resizeMode={"cover"}
+									source={{
+										uri: profileImg[0].url,
+									}}
+									style={styles.profilePic}
+									//PROFILE PICTURE 📸 📸 📸
+								></FastImage>
+							) : (
+								<Icon
+									name="camera"
+									type="feather"
+									color="olivedrab"
+									// color="gray"
+									size={115}
+								/>
+							)}
+						</TouchableOpacity>
+
+						<TouchableOpacity
+							styles={{
+								// flexDirection: "column-reverse",
+								height: vh(30),
+								width: vw(30),
+								backgroundColor: "blue",
+								// position: "absolute",
+							}}
+							// onPress={() => {
+							// 	profileImg !== "" ? setIsVisible(true) : handlePicker();
+							// }}
+							onPress={() => {
+								profileImg !== "" ? setIsVisible(true) : handlePicker();
+							}}
+						>
+							<Button
+								type={"clear"}
+								title={profileImg !== "" ? "Change Image" : "Choose Image"}
+								titleStyle={{ color: "lightslategray" }}
+								onPress={() => {
+									handlePicker();
+								}}
+							></Button>
+						</TouchableOpacity>
+					</View>
+
 					<ScrollView
 						enableAutoAutomaticScroll={false}
 						keyboardShouldPersistTaps="handled"
 						contentContainerStyle={{
 							alignItems: "center",
+
 							// paddingVertical: vh(2.5),
 						}}
 						style={{
@@ -191,23 +584,61 @@ const Form = ({
 							// backgroundColor: "rgba(0, 0, 0, 0.8)",
 							width: vw(95),
 							height: vh(70),
+
 							marginTop: vh(0.1),
 						}}
 					>
-						{fieldKeys.map((key) => {
+						{fieldKeys.map((key, index) => {
+							let keyRef = key;
+
+							keyRef = createRef();
+
+							refs.push(keyRef);
+						})}
+
+						{fieldKeys.map((key, index) => {
+							// console.log(refs);
+
 							return (
 								<Field
 									key={key}
 									fieldName={key}
 									field={fields[key]}
-									error={validationErrors[key]}
+									error={validationErrors[key] || false}
 									onChangeText={onChangeValue}
 									value={values[key]}
+									keyRef={refs[index]}
+									nextRef={refs[index + 1]}
+									lastKey={fieldKeys.length - 1 == index}
 									// handleChange={props.handleChange}
 								/>
 							);
 						})}
-						<View style={{ top: vh(1) }}>
+						<View
+							style={{
+								top: vh(0),
+								flex: 1,
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							<CheckBox
+								title="Allow other users to email you?"
+								checked={allowEmails}
+								containerStyle={{
+									width: vw(70),
+									backgroundColor: "transparent",
+									borderWidth: 0,
+									marginBottom: vh(2),
+								}}
+								checkedColor="olivedrab"
+								activeOpacity={1}
+								onPress={() => {
+									setAllowEmails(!allowEmails);
+									onChangeValue("allow_emails", !allowEmails);
+								}}
+							/>
+
 							<Button
 								title={buttonText}
 								buttonStyle={{
@@ -216,7 +647,10 @@ const Form = ({
 								}}
 								style={styles.createButton}
 								titleStyle={{ color: "lightslategray" }}
-								onPress={submit}
+								onPress={async () => {
+									await submit();
+									handleRefocus();
+								}}
 								loading={buttonSpinner}
 								loadingProps={{ color: "green", size: "large" }}
 							/>
@@ -234,7 +668,14 @@ const Form = ({
 						zIndex: 1,
 					}}
 				>
-					{fieldKeys.map((key) => {
+					{fieldKeys.map((key, index) => {
+						let keyRef = key;
+
+						keyRef = createRef();
+
+						refs.push(keyRef);
+					})}
+					{fieldKeys.map((key, index) => {
 						return (
 							<Field
 								key={key}
@@ -244,6 +685,9 @@ const Form = ({
 								clearError={() => setErrorMessage("")}
 								onChangeText={onChangeValue}
 								value={values[key]}
+								keyRef={refs[index]}
+								nextRef={refs[index + 1]}
+								lastKey={fieldKeys.length - 1 == index}
 							/>
 						);
 					})}
@@ -262,7 +706,10 @@ const Form = ({
 								type == "Login" ? styles.loginButton : styles.createButton,
 							]}
 							titleStyle={{ color: "lightslategray" }}
-							onPress={submit}
+							onPress={async () => {
+								await submit();
+								handleRefocus();
+							}}
 							loading={buttonSpinner}
 							loadingProps={{ color: "green", size: "large" }}
 						/>
@@ -281,7 +728,14 @@ const Form = ({
 						// top: vh(36.75),
 					}}
 				>
-					{fieldKeys.map((key) => {
+					{fieldKeys.map((key, index) => {
+						let keyRef = key;
+
+						keyRef = createRef();
+
+						refs.push(keyRef);
+					})}
+					{fieldKeys.map((key, index) => {
 						return (
 							<Field
 								key={key}
@@ -291,6 +745,9 @@ const Form = ({
 								clearError={() => setErrorMessage("")}
 								onChangeText={onChangeValue}
 								value={values[key]}
+								keyRef={refs[index]}
+								nextRef={refs[index + 1]}
+								lastKey={fieldKeys.length - 1 == index}
 							/>
 						);
 					})}
@@ -311,15 +768,17 @@ const Form = ({
 							}}
 							// style={[styles.createButton]}
 							titleStyle={{ color: "lightslategray" }}
-							onPress={submit}
-							// loading={buttonSpinner}
+							onPress={async () => {
+								await submit();
+								handleRefocus();
+							}} // loading={buttonSpinner}
 							// loadingProps={{ color: "green", size: "large" }}
 						/>
 					</View>
 				</View>
 			)}
 
-			{type == "ProfileEdit" && (
+			{type == "EditProfile" && (
 				<View
 					style={{
 						flex: 1,
@@ -327,10 +786,17 @@ const Form = ({
 						alignItems: "center",
 						justifyContent: "center",
 						zIndex: 1,
-						// top: vh(36.75),
+						top: vh(5),
 					}}
 				>
-					{fieldKeys.map((key) => {
+					{fieldKeys.map((key, index) => {
+						let keyRef = key;
+
+						keyRef = createRef();
+
+						refs.push(keyRef);
+					})}
+					{fieldKeys.map((key, index) => {
 						return (
 							<Field
 								key={key}
@@ -340,6 +806,9 @@ const Form = ({
 								clearError={() => setErrorMessage("")}
 								onChangeText={onChangeValue}
 								value={values[key]}
+								keyRef={refs[index]}
+								nextRef={refs[index + 1]}
+								lastKey={fieldKeys.length - 1 == index}
 							/>
 						);
 					})}
@@ -347,23 +816,26 @@ const Form = ({
 					<View
 						style={{
 							flex: 1,
+							// marginTop: vh(2.5),
 						}}
 					>
 						<CheckBox
 							title="Allow other users to email you?"
-							checked={allowEmails}
+							checked={newAllowEmails}
 							containerStyle={{
 								width: vw(70),
 								backgroundColor: "transparent",
 								borderWidth: 0,
+								marginBottom: vh(2),
 							}}
 							checkedColor="olivedrab"
 							activeOpacity={1}
 							onPress={() => {
-								setAllowEmails(!allowEmails);
-								onChangeValue("allow_emails", !allowEmails);
+								setNewAllowEmails(!newAllowEmails);
+								onChangeValue("allow_emails", !newAllowEmails);
 							}}
 						/>
+
 						<Button
 							title={"Save Changes"}
 							activeOpacity={Object.keys(values).length > 0 ? 0.1 : 1}
@@ -375,8 +847,12 @@ const Form = ({
 									? { color: "lightslategray" }
 									: { color: "rgb(64,64,64)" }
 							}
-							onPress={() => {
-								Object.keys(values).length > 0 && submit();
+							// onPress={() => {
+							// 	Object.keys(values).length > 0 && submit();
+							// }}
+							onPress={async () => {
+								Object.keys(values).length > 0 && (await submit());
+								handleRefocus();
 							}}
 						/>
 
@@ -388,6 +864,94 @@ const Form = ({
 							titleStyle={{ color: "lightslategray" }}
 							onPress={handleCancel}
 						/>
+
+						<Text
+							style={{
+								// width: vw(85),
+								position: "relative",
+								color: "red",
+								textAlign: "center",
+								zIndex: -1,
+							}}
+						>
+							{errorMessage}
+						</Text>
+					</View>
+				</View>
+			)}
+
+			{type == "EditUserCreds" && (
+				<View
+					style={{
+						flex: 1,
+						position: "relative",
+						alignItems: "center",
+						justifyContent: "center",
+						zIndex: 1,
+						top: vh(5),
+					}}
+				>
+					{fieldKeys.map((key, index) => {
+						let keyRef = key;
+
+						keyRef = createRef();
+
+						refs.push(keyRef);
+					})}
+					{fieldKeys.map((key, index) => {
+						return (
+							<Field
+								key={key}
+								fieldName={key}
+								field={fields[key]}
+								error={validationErrors[key]}
+								clearError={() => setErrorMessage("")}
+								onChangeText={onChangeValue}
+								value={values[key]}
+								keyRef={refs[index]}
+								nextRef={refs[index + 1]}
+								lastKey={fieldKeys.length - 1 == index}
+							/>
+						);
+					})}
+
+					<View
+						style={{
+							flex: 1,
+							marginTop: vh(2.5),
+						}}
+					>
+						<Button
+							title={"Save Changes"}
+							activeOpacity={checkForChanges(values) ? 0.1 : 1}
+							buttonStyle={{
+								backgroundColor: "transparent",
+								width: vw(70),
+							}}
+							titleStyle={
+								checkForChanges(values)
+									? { color: "lightslategray" }
+									: { color: "rgb(64,64,64)" }
+							}
+							// onPress={() => {
+							// 	checkForChanges(values) && submit();
+							// }}
+							onPress={async () => {
+								checkForChanges(values) && (await submit());
+								handleRefocus();
+							}}
+						/>
+
+						<Button
+							title={"Cancel"}
+							buttonStyle={{
+								backgroundColor: "transparent",
+								marginTop: vh(1.5),
+							}}
+							titleStyle={{ color: "lightslategray" }}
+							onPress={handleCancel}
+						/>
+
 						<Text
 							style={{
 								// width: vw(85),
@@ -406,7 +970,7 @@ const Form = ({
 	);
 };
 
-export default Form;
+export default connect(mapStateToProps, {})(Form);
 
 const styles = StyleSheet.create({
 	container: {
@@ -448,4 +1012,18 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		zIndex: -1,
 	},
+	profilePic: {
+		borderRadius: 119,
+		width: "100%",
+		opacity: 1.0,
+		zIndex: 2,
+		height: vh(15),
+		aspectRatio: 100 / 100,
+	},
 });
+
+function mapStateToProps(state) {
+	return {
+		userInfo: state.userInfo,
+	};
+}

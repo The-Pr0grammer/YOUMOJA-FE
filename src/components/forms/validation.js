@@ -5,6 +5,9 @@ export const validateContent = (text, values, key) => {
 	if (!text && key == "email") {
 		return `Enter an email`;
 	}
+	if (!text && key == "currentPassword") {
+		return `For security purposes you must enter your current password`;
+	}
 	if (!text) {
 		return `Enter a ${key}`;
 	}
@@ -12,13 +15,7 @@ export const validateContent = (text, values, key) => {
 
 export const validateLength = (text) => {
 	if (text && text.length < 6) {
-		return "Must be 6 characters or more.";
-	}
-};
-
-export const lengthCap = (text) => {
-	if (text && text.length > 24) {
-		return "Cannot exceed 24 characters";
+		return "Must be 6 characters or more";
 	}
 };
 
@@ -28,30 +25,46 @@ export const nameCheck = (name) => {
 			name
 		)
 	) {
-		console.log("valid name");
+		console.log("no emojis");
 		if (/^[\w'\-,.]*[^_!¡?÷?¿\/\\+=@#$%ˆ&*(){}|~<>;:[\]]*$/.test(name)) {
-			console.log("no emojis");
+			console.log("valid name");
 			if (/^ *$/.test(name)) {
 				console.log("not blank");
 				return "Can't be blank";
 			}
+			return;
+		} else {
+			return "Contains invalid characters";
 		}
-		return;
 	} else {
 		return "Enter a valid name";
 	}
 };
 
 export const usernameCheck = (username) => {
-	if (/^\w/.test(username)) {
+	if (
+		!/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(
+			username
+		)
+	) {
 		if (/\s/.test(username)) {
 			return "No spaces allowed";
 		}
+		if (!/^[\w'\-,.]*[^_!¡?÷?¿\/\\+=@#$%ˆ&*(){}|~<>;:[\]]*$/.test(username)) {
+			return "Contains invalid characters";
+		}
+		if (/^ *$/.test(username)) {
+			return "Can't be blank";
+		}
 		return;
-	} else if (/^ *$/.test(username)) {
-		return "Can't be blank";
 	} else {
 		return "Contains invalid characters";
+	}
+};
+
+export const lengthCap = (text) => {
+	if (text && text.length > 24) {
+		return "Cannot exceed 24 characters";
 	}
 };
 
@@ -59,7 +72,7 @@ export const passwordMatch = (conf, values) => {
 	if (conf === values.password) {
 		return;
 	} else {
-		return "Passwords do not match";
+		return "Try again. Your passwords do not match";
 	}
 };
 

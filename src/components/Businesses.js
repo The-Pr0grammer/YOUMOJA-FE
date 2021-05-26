@@ -33,7 +33,6 @@ import Sorter from "./Sorter.js";
 import axios from "axios";
 import * as firebase from "firebase";
 
-
 class Businesses extends Component {
 	constructor(props) {
 		super(props);
@@ -50,20 +49,58 @@ class Businesses extends Component {
 		};
 	}
 
-	loadUser = async (id) => {
-		let response = await axios(`http://192.168.1.211:3000/users/${1}`)
-			.then((resp) => this.props.setUserInfo(resp.data))
-			.catch((error) => console.log(error));
-	};
-
 	componentDidMount(props) {
-		// Linking.addEventListener("url", this.handleOpenURL);
-
-		this.props.filtered_ubizs.length < 1 &&
-			this.props.fetchBizs() &&
-			this.loadUser();
-
 		setTimeout(() => this.props.setIsFetching(false), 2200);
+		// Linking.addEventListener("url", this.handleOpenURL);
+		navigateToLogin = () => {
+			return this.props.navigation.navigate("Auth");
+		};
+
+		// ADHOC LOAD USER ⬇
+
+		loadUser = (id) => {
+			console.log("♼♼♼ LOADING USER::: REFACTOR TO USE RES ID ‼️");
+
+			let response = axios(
+				`http://192.168.1.211:3000/users/${this.props.userInfo.id}`
+				// `http://192.168.1.211:3000/users/${1}`
+				// `http://192.168.1.211:3000/users/${12}`
+			)
+				.then((resp) => this.props.setUserInfo(resp.data))
+				.catch((error) => console.log(error));
+		};
+
+		this.props.filtered_ubizs.length < 1 && this.props.fetchBizs();
+
+		// this.loadUser();
+
+		firebase.auth().onAuthStateChanged(async function (user) {
+			if (user) {
+				// console.log("FIREBASE USER SIGNED IN: ACCESS GRANTED✅", user);
+				console.log("FIREBASE USER SIGNED IN: ACCESS GRANTED✅");
+
+				let email = user.email;
+
+				// ADHOC LOAD USER ⬇
+
+				await axios
+					.post("http://192.168.1.211:3000/users/login", {
+						user: { email },
+					})
+					.then((res) => {
+						// console.log("♼♼♼ LOADING USER");
+
+						loadUser(res.data.id);
+					})
+					.catch((error) => {
+						console.log(error);
+						return error;
+					});
+			} else {
+				navigateToLogin();
+			}
+		});
+
 		// this.props.setUserInfo({
 		// 	email: "anthonyh202x@gmail.com",
 		// 	emailVerified: true,

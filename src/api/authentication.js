@@ -6,8 +6,24 @@ export const login = (email, opaque) => {
 	});
 };
 
-export const createAccount = (email, name, opaque, opaque_two, username) => {
+export const createAccount = (
+	email,
+	linkedin,
+	name,
+	opaque,
+	opaque_two,
+	twitter,
+	username
+) => {
 	return post("/users", {
-		user: { email, name, opaque, opaque_two, username },
+		user: {
+			email,
+			linkedin,
+			name,
+			opaque,
+			opaque_two,
+			twitter,
+			username,
+		},
 	});
 };

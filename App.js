@@ -21,7 +21,7 @@ import Profile from "./src/components/Profile.js";
 import PeerProfile from "./src/components/PeerProfile.js";
 import Blackboard from "./src/components/Blackboard.js";
 import Webview from "./src/components/Webview.js";
-import ProfileEdit from "./src/components/ProfileEdit.js";
+import EditProfile from "./src/components/EditProfile.js";
 import * as firebase from "firebase";
 import * as Linking from "expo-linking";
 
@@ -318,8 +318,8 @@ function Main({ navigation }) {
 				}}
 			/>
 			<Stack.Screen
-				name="ProfileEdit"
-				component={ProfileEdit}
+				name="EditProfile"
+				component={EditProfile}
 				options={{
 					headerShown: false,
 					gestureEnabled: false,
@@ -336,15 +336,15 @@ function AppNav({ navigation }) {
 	return (
 		<Stack.Navigator>
 			<Stack.Screen
-				name="DrawerNav"
-				component={DrawerNav}
+				name="Auth"
+				component={AuthFlow}
 				options={{
 					headerShown: false,
 				}}
 			/>
 			<Stack.Screen
-				name="Auth"
-				component={AuthFlow}
+				name="DrawerNav"
+				component={DrawerNav}
 				options={{
 					headerShown: false,
 				}}
@@ -365,7 +365,7 @@ class App extends React.Component {
 				<NavigationContainer
 					// linking={linking}
 					fallback={<Text>Loading...</Text>}
-					>
+				>
 					<AppNav></AppNav>
 				</NavigationContainer>
 			</Provider>
