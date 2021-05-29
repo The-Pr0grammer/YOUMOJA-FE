@@ -61,6 +61,15 @@ const Login = (props) => {
 	// 	await setToken("");
 	// };
 
+	const loadUser = async (result) => {
+		axios(`http://192.168.1.211:3000/users/${result.data.id}`)
+			.then((resp) => {
+				console.log("setting user info");
+				return props.setUserInfo(resp.data);
+			})
+			.catch((error) => console.log(error));
+	};
+
 	const handleResult = async (result) => {
 		// console.log(result);
 		let test = false;
@@ -69,12 +78,7 @@ const Login = (props) => {
 		if (result.ok && result.data) {
 			// await setToken(result.data.auth_token);
 			try {
-				await axios(`http://192.168.1.211:3000/users/${result.data.id}`)
-					.then((resp) => {
-						console.log("setting user info");
-						return props.setUserInfo(resp.data);
-					})
-					.catch((error) => console.log(error));
+				await loadUser(result);
 
 				await firebase
 					.auth()
@@ -87,25 +91,40 @@ const Login = (props) => {
 							if (!user.emailVerified) {
 								setErrorMessage("");
 
-								axios(`http://192.168.1.211:3000/users/${result.data.id}`)
-									.then((resp) => props.setUserInfo(resp.data))
-									.catch((error) => console.log(error));
+								// axios(`http://192.168.1.211:3000/users/${result.data.id}`)
+								// 	.then((resp) => props.setUserInfo(resp.data))
+								// 	.catch((error) => console.log(error));
 
+								{
+									/* REMEMBER TO UNCOMMENT💯💯💯💯💯💯💯💯💯💯💯💯💯💯 */
+								}
+								// setTimeout(() => {
+								// 	spinnerTogg(false);
+								// 	navigation.navigate("Email Confirmation", {
+								// 		purpose: "Signup",
+								// 		id: result.data.id,
+								// 	}),
+								// 		5000;
+								// });
+								{
+									/* REMEMBER TO UNCOMMENT💯💯💯💯💯💯💯💯💯💯💯💯💯💯 */
+								}
+
+								//TESTING
 								setTimeout(() => {
 									spinnerTogg(false);
-									navigation.navigate("Email Confirmation", {
-										purpose: "Signup",
-										id: result.data.id,
-									}),
-										5000;
+									navigation.navigate("Welcome Splash", { id: result.data.id }),
+										1500;
 								});
+								//TESTING
+
 								console.log("Not Verified🚫", user.email);
 							} else {
 								setErrorMessage("");
 
-								axios(`http://192.168.1.211:3000/users/${result.data.id}`)
-									.then((resp) => props.setUserInfo(resp.data))
-									.catch((error) => console.log(error));
+								// axios(`http://192.168.1.211:3000/users/${result.data.id}`)
+								// 	.then((resp) => props.setUserInfo(resp.data))
+								// 	.catch((error) => console.log(error));
 
 								setTimeout(() => {
 									spinnerTogg(false);
@@ -113,7 +132,7 @@ const Login = (props) => {
 										1500;
 								});
 								console.log("Verified😎", user.email);
-							} 
+							}
 						});
 					})
 					.catch((error) => {

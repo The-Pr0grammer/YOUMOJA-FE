@@ -79,9 +79,11 @@ const Form = ({
 
 		// console.log("newState is", newState);
 
-		type == "EditProfile" || type == "EditUserCreds"
-			? setValues(removeEmptyStrings(newState))
-			: setValues(newState);
+		// type == "EditProfile" || type == "EditUserCreds"
+		// 	? setValues(removeEmptyStrings(newState))
+		// 	: setValues(newState);
+
+		setValues(removeEmptyStrings(newState));
 
 		if (validationErrors[key]) {
 			const newErrors = { ...validationErrors, [key]: "" };
@@ -112,8 +114,11 @@ const Form = ({
 		}
 
 		Object.keys(obj).forEach((prop) => {
-			console.log(obj);
-			newObj[prop] = prop == "allow_emails" ? obj[prop] : obj[prop].trim();
+			// console.log("obj is", obj);
+			newObj[prop] =
+				prop == "allow_emails" || prop == "image"
+					? obj[prop]
+					: obj[prop].trim();
 		});
 		return newObj;
 	};
@@ -130,6 +135,50 @@ const Form = ({
 		// console.log("changes present:", present);
 
 		return present;
+	};
+
+	const handleRefocus = () => {
+		if (!validationErrors == "") {
+			let find = fieldKeys.find((key) =>
+				Object.keys(validationErrors).includes(key)
+			);
+
+			let index = fieldKeys.findIndex((ele) => ele == find);
+
+			// console.log("find is", find);
+			// console.log("index is", index);
+			// console.log("refs", refs);
+
+			return refs[index].current && refs[index].current.focus();
+			// return find.current && find.current.focus();
+		}
+	};
+
+	const formatUrls = (obj) => {
+		let newObj = {};
+		let prefix = "https://www.";
+
+		Object.keys(obj).forEach((prop) => {
+			if (
+				prop !== "twitter" &&
+				prop !== "linkedin" &&
+				prop !== "facebook" &&
+				prop !== "instagram"
+			) {
+				newObj[prop] = obj[prop];
+			} else {
+				url = obj[prop];
+				urlLower = obj[prop].toLowerCase();
+				if (urlLower.includes(`${prop}.com`)) {
+					url = prefix + url.substring(urlLower.indexOf(`${prop}.com`));
+					newObj[prop] = url;
+				} else {
+					newObj[prop] = url;
+				}
+			}
+		});
+
+		return newObj;
 	};
 
 	const signIn = async () => {
@@ -205,6 +254,7 @@ const Form = ({
 				// setImage(pick);
 				setErrorMessage("");
 				setProfileImg(pick);
+				setValues({ ...values, image: pick });
 
 				// console.log(
 				// 	"IMAGES 👀🌃👀🌃👀🌃",
@@ -223,6 +273,7 @@ const Form = ({
 		Keyboard.dismiss();
 		setErrorMessage("");
 		setValidationErrors(getInitialState(fieldKeys));
+		setValues(formatUrls(values));
 
 		let newFields = { ...fields };
 
@@ -247,13 +298,13 @@ const Form = ({
 		let errors = [];
 		type == "EditProfile" || type == "EditUserCreds"
 			? (errors = validateFields(newFields, trimValues(values)))
-			: (errors = validateFields(fields, values));
+			: (errors = validateFields(fields, trimValues(values)));
 
 		if (hasValidationError(errors)) {
 			console.log(errors);
-
 			// console.log(fields);
-			console.log(errors);
+			// console.log(values);
+
 			return setValidationErrors(errors); //VALIDATIONSSSSSSS
 		}
 
@@ -392,28 +443,23 @@ const Form = ({
 		}
 	};
 
-	handleRefocus = () => {
-		if (!validationErrors == "") {
-			let find = fieldKeys.find((key) =>
-				Object.keys(validationErrors).includes(key)
-			);
-
-			let index = fieldKeys.findIndex((ele) => ele == find);
-
-			console.log("find is", find);
-			console.log("index is", index);
-
-			console.log("refs", refs);
-
-			return refs[index].current && refs[index].current.focus();
-			// return find.current && find.current.focus();
-		}
+	const consoleVals = (obj) => {
+		newObj = {};
+		Object.keys(values).map((prop) => {
+			if (prop !== "image") {
+				newObj[prop] = obj[prop];
+			} else {
+				newObj[prop] = obj[prop][0].uri.substring(0, 16);
+			}
+		});
+		return newObj;
 	};
 
-	console.log("VALUES:", values);
+	// console.log("VALUES:", values);
 	// console.log(removeEmptyStrings(userInfo));
 	// console.log("eM:", errorMessage);
 	// console.log("vEs:", validationErrors);
+	// console.log("console vals",consoleVals(values));
 
 	return (
 		<View style={styles.container}>
@@ -471,7 +517,7 @@ const Form = ({
 											<Image
 												resizeMode={"cover"}
 												source={{
-													uri: profileImg[0]["url"],
+													uri: values["image"] && values["image"][0]["url"],
 												}}
 												style={{
 													borderRadius: 360,
@@ -520,14 +566,14 @@ const Form = ({
 								position: "absolute",
 							}}
 							onPress={() => {
-								profileImg !== "" ? setIsVisible(true) : handlePicker();
+								values["image"] ? setIsVisible(true) : handlePicker();
 							}}
 						>
-							{profileImg !== "" ? (
+							{values["image"] ? (
 								<FastImage
 									resizeMode={"cover"}
 									source={{
-										uri: profileImg[0].url,
+										uri: values["image"] && values["image"][0]["url"],
 									}}
 									style={styles.profilePic}
 									//PROFILE PICTURE 📸 📸 📸
@@ -543,30 +589,14 @@ const Form = ({
 							)}
 						</TouchableOpacity>
 
-						<TouchableOpacity
-							styles={{
-								// flexDirection: "column-reverse",
-								height: vh(30),
-								width: vw(30),
-								backgroundColor: "blue",
-								// position: "absolute",
-							}}
-							// onPress={() => {
-							// 	profileImg !== "" ? setIsVisible(true) : handlePicker();
-							// }}
+						<Button
+							type={"clear"}
+							title={values["image"] ? "Change Image" : "Choose Image"}
+							titleStyle={{ color: "lightslategray" }}
 							onPress={() => {
-								profileImg !== "" ? setIsVisible(true) : handlePicker();
+								handlePicker();
 							}}
-						>
-							<Button
-								type={"clear"}
-								title={profileImg !== "" ? "Change Image" : "Choose Image"}
-								titleStyle={{ color: "lightslategray" }}
-								onPress={() => {
-									handlePicker();
-								}}
-							></Button>
-						</TouchableOpacity>
+						></Button>
 					</View>
 
 					<ScrollView
@@ -821,6 +851,22 @@ const Form = ({
 					>
 						<CheckBox
 							title="Allow other users to email you?"
+							checked={newAllowEmails}
+							containerStyle={{
+								width: vw(70),
+								backgroundColor: "transparent",
+								borderWidth: 0,
+								marginBottom: vh(2),
+							}}
+							checkedColor="olivedrab"
+							activeOpacity={1}
+							onPress={() => {
+								setNewAllowEmails(!newAllowEmails);
+								onChangeValue("allow_emails", !newAllowEmails);
+							}}
+						/>
+						<CheckBox
+							title="Display ♥️s on your profile?"
 							checked={newAllowEmails}
 							containerStyle={{
 								width: vw(70),

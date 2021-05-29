@@ -83,6 +83,7 @@ class CommentList extends React.Component {
 		this.setState({
 			expandTogg: false,
 		});
+		Keyboard.dismiss();
 		console.log("SWIPING💳");
 	}
 

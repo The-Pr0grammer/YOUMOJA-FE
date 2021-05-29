@@ -25,9 +25,9 @@ export const nameCheck = (name) => {
 			name
 		)
 	) {
-		console.log("no emojis");
+		// console.log("no emojis");
 		if (/^[\w'\-,.]*[^_!¡?÷?¿\/\\+=@#$%ˆ&*(){}|~<>;:[\]]*$/.test(name)) {
-			console.log("valid name");
+			// console.log("valid name");
 			if (/^ *$/.test(name)) {
 				console.log("not blank");
 				return "Can't be blank";
@@ -104,17 +104,39 @@ export const validateField = (validators, value, values, key) => {
 };
 
 export const urlCheck = (url, values, key) => {
+	// if (
+	// 	/^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(
+	// 		url
+	// 	)
+	// )
 	if (
-		/^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(
+		/((ftp|http|https):\/\/)?(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
 			url
 		)
 	) {
-		return;
-		// console.log("valid");
+		// let prefix = "https://";
+		// let newUrl = url && url.toLowerCase();
+		// let index = url && newUrl.indexOf("//");
+		// console.log(index, newUrl);
+		// 	if (url.toLowerCase() && url.substring(0, prefix.length) !== prefix) {
+		// 		url = prefix + url;
+		// 		console.log("VALID:", "TRUE ", url);
+		// 	}
+
+		if (url) {
+			url = url.toLowerCase();
+			// let prefix = "https://www.";
+			if (url.includes(`${key}.com`)) {
+				// url = prefix + url.substring(url.indexOf(`${key}.com`));
+				return;
+			} else {
+				return `Enter a valid ${key} url ie www.${key}.com/username`;
+			}
+		}
 	} else {
 		// console.log(test2);
 		// let site = Object.keys(test)[0]
-		return `Enter a valid url ie https://${key}.com/username`;
+		return `Enter a valid ${key} url ie www.${key}.com/username`;
 	}
 };
 

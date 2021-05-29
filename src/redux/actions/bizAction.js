@@ -1,27 +1,27 @@
 import {
+	SET_IS_FETCHING,
+	HANDLE_SEARCH,
+	CHANGE_CAT,
 	FETCH_BIZS_REQUEST,
 	FETCH_BIZS_SUCCESS,
-	FETCH_BIZS_FAILURE,
 	FETCH_COMMENTS_REQUEST,
 	FETCH_COMMENTS_SUCCESS,
-	FETCH_COMMENTS_FAILURE,
 	POST_COMMENT_REQUEST,
 	POST_COMMENT_SUCCESS,
-	POST_COMMENT_FAILURE,
 	FETCH_BADGE_SUMS_REQUEST,
 	FETCH_BADGE_SUMS_SUCCESS,
-	FETCH_BADGE_SUMS_FAILURE,
-	CHANGE_CAT,
-	HANDLE_SEARCH,
+	FETCH_USER_INFO_REQUEST,
+	FETCH_USER_INFO_SUCCESS,
+	API_FAILURE,
 	SORT_BY_HEARTS_TOGG,
 	SORT_BY_BADGES_TOGG,
 	SORT_BY_LOCATION_TOGG,
 	SORT_BY_SCORES_TOGG,
-	SET_USER_INFO,
-	SET_IS_FETCHING,
-	HANDLE_REFRESH,
 	PROFILE_LOADING_TOGG,
+	HANDLE_REFRESH,
 	SET_USER_LISTINGS,
+	SET_USER_HEARTS,
+	SET_USER_INFO,
 } from "./types";
 import axios from "axios";
 
@@ -40,8 +40,8 @@ export const fetchBizsSuccess = (json) => ({
 	payload: json,
 });
 
-export const fetchBizsFailure = (error) => ({
-	type: FETCH_BIZS_FAILURE,
+export const ApiFailure = (error) => ({
+	type: API_FAILURE,
 	payload: error,
 });
 
@@ -55,21 +55,11 @@ export const fetchCommentsSuccess = (json) => ({
 	payload: json,
 });
 
-export const fetchCommentsFailure = (error) => ({
-	type: FETCH_COMMENTS_FAILURE,
-	payload: error,
-});
-
 export const postCommentRequest = () => ({ type: POST_COMMENT_REQUEST });
 
 export const postCommentSuccess = (json) => ({
 	type: POST_COMMENT_SUCCESS,
 	payload: json,
-});
-
-export const postCommentFailure = (error) => ({
-	type: POST_COMMENT_FAILURE,
-	payload: error,
 });
 
 export const fetchBadgeSumsRequest = () => ({
@@ -81,9 +71,13 @@ export const fetchBadgeSumsSuccess = (json) => ({
 	payload: json,
 });
 
-export const fetchBadgeSumsFailure = (error) => ({
-	type: FETCH_BADGE_SUMS_FAILURE,
-	payload: error,
+export const fetchUserInfoRequest = () => ({
+	type: FETCH_USER_INFO_REQUEST,
+});
+
+export const fetchUserInfoSuccess = (json) => ({
+	type: FETCH_USER_INFO_SUCCESS,
+	payload: json,
 });
 
 export const fetchBizs = (activityIndicator) => {
@@ -95,7 +89,7 @@ export const fetchBizs = (activityIndicator) => {
 			// console.log(response.data);
 			await dispatch(fetchBizsSuccess(response.data));
 		} catch (error) {
-			dispatch(fetchBizsFailure(error));
+			dispatch(ApiFailure(error));
 		}
 	};
 };
@@ -129,7 +123,7 @@ export const postComment = (comment) => {
 			// let json = await response.json();
 			dispatch(postCommentSuccess(response.data));
 		} catch (error) {
-			dispatch(postCommentFailure(error));
+			dispatch(ApiFailure(error));
 		}
 	};
 };
@@ -144,7 +138,22 @@ export const fetchBadgeSums = () => {
 
 			// let json = await response.json();
 		} catch (error) {
-			dispatch(fetchBadgeSumsFailure(error));
+			dispatch(ApiFailure(error));
+		}
+	};
+};
+
+export const fetchUserInfo = (id) => {
+	return async (dispatch) => {
+		dispatch(fetchUserInfoRequest());
+		try {
+			let response = await axios(`http://192.168.1.211:3000/users/${id}`);
+
+			dispatch(fetchUserInfoSuccess(response.data));
+
+			// let json = await response.json();
+		} catch (error) {
+			dispatch(ApiFailure(error));
 		}
 	};
 };
@@ -186,5 +195,10 @@ export const profileLoadingTogg = (togg) => ({
 
 export const setUserListings = (json) => ({
 	type: SET_USER_LISTINGS,
+	payload: json,
+});
+
+export const setUserHearts = (json) => ({
+	type: SET_USER_HEARTS,
 	payload: json,
 });

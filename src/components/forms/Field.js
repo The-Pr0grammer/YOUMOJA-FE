@@ -37,6 +37,8 @@ const Field = ({
 	// const reference = fieldName.toLowerCase();
 
 	// console.log(nextRef);
+	// console.log("field label is 😁", field.label);
+	// console.log("field name is 🖋", fieldName);
 
 	return (
 		<View style={styles.inputContainer}>
@@ -54,7 +56,7 @@ const Field = ({
 				returnKeyType={"next"}
 				onSubmitEditing={() => {
 					// field.label !== "Summary" && Keyboard.dismiss();
-					// console.log("field name is 😁", field.label);
+				
 
 					if (field.label !== "Summary" && !lastKey) {
 						nextRef.current && nextRef.current.focus();

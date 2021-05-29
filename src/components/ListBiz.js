@@ -150,6 +150,7 @@ class ListBiz extends React.Component {
 						</View>
 						<ListBizDash
 							ubiz={this.props.ubiz}
+							hearted={this.props.hearted}
 							handleNavigation={this.handleNavigation}
 						/>
 					</Card>

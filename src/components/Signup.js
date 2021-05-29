@@ -38,14 +38,31 @@ const CreateAccount = (props) => {
 	const [spinner, spinnerTogg] = useState(false);
 
 	const apiPost = async (data) => {
-		console.log("boutta create. data is::::", data);
+		// console.log("boutta create. data is::::", postData);
 
 		// let inc = "email" in data;
 
 		// inc ? (data["email_verified"] = false) : null;
 
+		let imageArray = [
+			{
+				image: data.image[0].uri,
+				file_name: data.image[0].file_name,
+			},
+		];
+
+		let postData = {};
+
+		Object.keys(data).map((prop) => {
+			prop !== "image"
+				? (postData[prop] = data[prop])
+				: (postData[prop] = imageArray);
+		});
+
+		console.log("boutta create. postData is::::", postData);
+
 		return await axios
-			.post(`http://192.168.1.211:3000/users`, data)
+			.post(`http://192.168.1.211:3000/users`, postData)
 			.then((res) => {
 				// props.setUserInfo(res.data);
 				// console.log("RES is ", res.data);
@@ -72,7 +89,7 @@ const CreateAccount = (props) => {
 	};
 
 	const handleCreate = async (result) => {
-		console.log("res from api::::", result);
+		// console.log("res from api::::", result);
 		spinnerTogg(true);
 
 		if (result.status === "200") {
@@ -92,7 +109,7 @@ const CreateAccount = (props) => {
 						.then(() => {
 							firebase.auth().onAuthStateChanged(function (user) {
 								if (!user.email_verified) {
-									console.log("RESULT DATA IS", result.data);
+									// console.log("RESULT DATA IS", result.data);
 									// props.setUserInfo({
 									// 	id: result.data.user.id,
 									// 	email: user.email,
@@ -192,7 +209,7 @@ const CreateAccount = (props) => {
 							label: "Name",
 							validators: [validateContent, nameCheck],
 							inputProps: {
-								autoCapitalize: "words",
+								// autoCapitalize: "words",
 								placeholder: "Who are you?",
 								placeholderTextColor: "lightslategray",
 								textAlign: "center",
@@ -202,6 +219,7 @@ const CreateAccount = (props) => {
 							label: "Username",
 							validators: [validateContent, usernameCheck, lengthCap],
 							inputProps: {
+								autoCapitalize: "none",
 								placeholder: "choose a username",
 								placeholderTextColor: "lightslategray",
 								textAlign: "center",
@@ -224,7 +242,7 @@ const CreateAccount = (props) => {
 							label: "Linkedin",
 							validators: [urlCheck],
 							inputProps: {
-								placeholder: `enter your LinkedIn page url`,
+								placeholder: `enter your LinkedIn page url (recommended)`,
 								placeholderTextColor: "lightslategray",
 								textAlign: "center",
 							},
@@ -233,7 +251,7 @@ const CreateAccount = (props) => {
 							label: "Twitter",
 							validators: [urlCheck],
 							inputProps: {
-								placeholder: `enter your Twitter page url`,
+								placeholder: `enter your Twitter page url (recommended)`,
 								placeholderTextColor: "lightslategray",
 								textAlign: "center",
 							},

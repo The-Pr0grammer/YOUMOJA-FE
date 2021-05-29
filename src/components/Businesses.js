@@ -21,6 +21,7 @@ import {
 	setUserInfo,
 	setIsFetching,
 	profileLoadingTogg,
+	fetchUserInfo,
 } from "../redux/actions/bizAction";
 // import { getUsers } from "../api/users.js";
 import PropTypes from "prop-types";
@@ -37,12 +38,12 @@ class Businesses extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			userHearts: [],
 			page: 1,
 			error: null,
 			searchFocus: false,
 			catTogg: false,
 			userLoadingErrorMessage: "",
+			userHearts: [],
 
 			// users: [],
 			// hasLoadedUsers: false,
@@ -52,32 +53,31 @@ class Businesses extends Component {
 	componentDidMount(props) {
 		setTimeout(() => this.props.setIsFetching(false), 2200);
 		// Linking.addEventListener("url", this.handleOpenURL);
-		navigateToLogin = () => {
-			return this.props.navigation.navigate("Auth");
-		};
 
-		// ADHOC LOAD USER ⬇
+		// navigateToLogin = () => {
+		// 	return this.props.navigation.navigate("Auth");
+		// };
 
-		loadUser = (id) => {
-			console.log("♼♼♼ LOADING USER::: REFACTOR TO USE RES ID ‼️");
-
-			let response = axios(
-				`http://192.168.1.211:3000/users/${this.props.userInfo.id}`
-				// `http://192.168.1.211:3000/users/${1}`
-				// `http://192.168.1.211:3000/users/${12}`
-			)
-				.then((resp) => this.props.setUserInfo(resp.data))
-				.catch((error) => console.log(error));
-		};
+		// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯ADHOC LOAD USER ⬇
+		// loadUser = (id) => {
+		// 	console.log("♼♼♼ LOADING USER::: REFACTOR TO USE RES ID ‼️");
+		// 	let response = axios(
+		// 		`http://192.168.1.211:3000/users/${1}`
+		// 		// `http://192.168.1.211:3000/users/${12}`
+		// 		// `http://192.168.1.211:3000/users/${this.props.userInfo.id}`
+		// 	)
+		// 		.then((resp) => this.props.setUserInfo(resp.data))
+		// 		.catch((error) => console.log(error));
+		// };
+		// loadUser();
+		//  💯💯💯💯💯💯💯💯💯💯💯💯💯💯ADHOC LOAD USER ⬆
 
 		this.props.filtered_ubizs.length < 1 && this.props.fetchBizs();
 
-		// this.loadUser();
-
 		firebase.auth().onAuthStateChanged(async function (user) {
 			if (user) {
-				// console.log("FIREBASE USER SIGNED IN: ACCESS GRANTED✅", user);
-				console.log("FIREBASE USER SIGNED IN: ACCESS GRANTED✅");
+				console.log("FIREBASE USER SIGNED IN: ACCESS GRANTED✅✅✅", user);
+				// console.log("FIREBASE USER SIGNED IN: ACCESS GRANTED✅");
 
 				let email = user.email;
 
@@ -97,6 +97,7 @@ class Businesses extends Component {
 						return error;
 					});
 			} else {
+				console.log("🎬🎬🎬BACK TO SQUARE NONE");
 				navigateToLogin();
 			}
 		});
@@ -195,6 +196,7 @@ class Businesses extends Component {
 		// console.log("isFETCHING", this.props.reduxState.isFetching);
 		// console.log("USERS:", this.state.users[0]);
 		// console.log("USER INFO 👤💯", this.props.userInfo);
+		// console.log("♥️  IDS:", this.props.userHearts);
 		// console.log("USER HEARTS ARE🧡", this.props.reduxState.userHearts[0]);
 		// Alert.prompt("Change Email", "Enter the email you would like to use", [
 		// 	{
@@ -297,6 +299,11 @@ class Businesses extends Component {
 						renderItem={({ item }) => (
 							<ListBiz
 								ubiz={item}
+								hearted={this.props.userHearts
+									.map((uh) => {
+										return uh.business_id;
+									})
+									.includes(item.id)}
 								navigation={this.props.navigation}
 								lastScreen={"Home"}
 							/>
@@ -315,6 +322,7 @@ export default connect(mapStateToProps, {
 	setUserInfo,
 	setIsFetching,
 	profileLoadingTogg,
+	fetchUserInfo,
 })(function (props) {
 	const isFocused = useIsFocused();
 	return <Businesses {...props} isFocused={isFocused} />;
@@ -410,8 +418,9 @@ function mapStateToProps(state) {
 	return {
 		reduxState: state,
 		ubizs: state.ubizs,
-		userInfo: state.userInfo,
 		isFetching: state.isFetching,
+		userInfo: state.userInfo,
+		userHearts: state.userInfo.heart_ids,
 		sorters: {
 			heartsSort: state.heartsSort,
 			badgesSort: state.badgesSort,

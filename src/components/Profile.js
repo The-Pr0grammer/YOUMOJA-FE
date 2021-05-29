@@ -20,6 +20,7 @@ import {
 	profileLoadingTogg,
 	fetchBizs,
 	setUserListings,
+	setUserHearts,
 } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 import Header from "./Header.js";
@@ -146,7 +147,7 @@ const Profile = (props) => {
 
 	// console.log("userSHOW IS 🐛✋🏾", userShow);
 	// console.log("♻️", loading);
-	console.log("userinfo:::::", props.userInfo);
+	// console.log("userinfo:::::", props.userInfo);
 	// console.log("NEW BIZ TOGG IS 🆕:::::", addBusinessTogg);
 	// console.log("listings ARE:::::", props.userListings);
 	// console.log("EMAIL CONFIRMATION IS ON LINE 243");
@@ -194,18 +195,6 @@ const Profile = (props) => {
 				</TextTicker>
 			</View>
 
-			{/* <ScrollView
-				indicatorStyle={"white"}
-				scrollIndicatorInsets={{ top: 0, left: vw(10), bottom: 0, right: 0 }}
-				contentContainerStyle={{ paddingBottom: vh(15) }}
-				style={{
-					flex: 1,
-					backgroundColor: "black",
-					flexDirection: "column",
-					zIndex: 1,
-				}}
-			> */}
-
 			<View
 				style={{
 					flex: 1,
@@ -222,37 +211,57 @@ const Profile = (props) => {
 					//PROFILE CARD 📇
 				/>
 
-				{!props.isFetching && !addBusinessTogg && (
-					<>
-						{props.userListings.length > 0 && (
-							<MyListings
-								userId={props.userInfo.id}
+				<ScrollView
+					indicatorStyle={"white"}
+					scrollIndicatorInsets={{ top: 0, left: vw(10), bottom: 0, right: 0 }}
+					contentContainerStyle={{ paddingBottom: vh(15) }}
+					style={{
+						flex: 1,
+						backgroundColor: "black",
+						flexDirection: "column",
+						zIndex: 1,
+					}}
+				>
+					{!props.isFetching && !addBusinessTogg && (
+						<>
+							{props.userListings.length > 0 && (
+								<MyListings
+									userId={props.userInfo.id}
+									handleAddBusinessTogg={handleAddBusinessTogg}
+									loading={loading}
+								/>
+							)}
+						</>
+					)}
+
+					{!props.isFetching && !addBusinessTogg && (
+						<>
+							{props.userListings.length > 0 && (
+								<ProfileHearts userId={props.userInfo.id} loading={loading} />
+							)}
+						</>
+					)}
+
+					{
+						addBusinessTogg && (
+							<NewListing
 								handleAddBusinessTogg={handleAddBusinessTogg}
-								loading={loading}
+								handleSuccess={handleSuccess}
+								handleClose={handleClose}
+								handleDismiss={handleDismiss}
 							/>
-						)}
-					</>
-				)}
+						) //NEW BUSINESS
+					}
 
-				{
-					addBusinessTogg && (
-						<NewListing
-							handleAddBusinessTogg={handleAddBusinessTogg}
-							handleSuccess={handleSuccess}
-							handleClose={handleClose}
-							handleDismiss={handleDismiss}
+					{posted && (
+						<SuccessModal
+							handleDismiss={this.handleDismiss}
+							message={"Your business has been listed✅"}
 						/>
-					) //NEW BUSINESS
-				}
+					)}
 
-				{posted && (
-					<SuccessModal
-						handleDismiss={this.handleDismiss}
-						message={"Your business has been listed✅"}
-					/>
-				)}
-
-				{!props.userInfo.email_verified && (
+					{/* REMEBER TO UNCOMMENT💯💯💯💯💯💯💯💯💯💯💯💯💯💯 */}
+					{/* {!props.userInfo.email_verified && (
 					<EmailConfirmation
 						animationType="fade"
 						transparent={true}
@@ -260,20 +269,21 @@ const Profile = (props) => {
 						purpose="Reverify"
 						///EMAIL CONFIRMATIONNNNNNNNNNNNN
 					/>
-				)}
+				)} */}
+					{/* REMEBER TO UNCOMMENT💯💯💯💯💯💯💯💯💯💯💯💯💯💯 */}
 
-				{(imgSaved || infoSaved || credsSaved) && (
-					<SuccessModal
-						handleDismiss={this.handleDismiss}
-						message={
-							imgSaved
-								? "You updated your profile pic✅"
-								: "Your changes were saved✅"
-						}
-					/>
-				)}
+					{(imgSaved || infoSaved || credsSaved) && (
+						<SuccessModal
+							handleDismiss={this.handleDismiss}
+							message={
+								imgSaved
+									? "You updated your profile pic✅"
+									: "Your changes were saved✅"
+							}
+						/>
+					)}
 
-				{/* {imgSaved && (
+					{/* {imgSaved && (
 					<SuccessModal
 						handleDismiss={this.handleDismiss}
 						message={"Your changes were saved✅"}
@@ -294,35 +304,35 @@ const Profile = (props) => {
 					/>
 				)} */}
 
-				{props.isFetching && (
-					<View
-						style={{
-							// flex: 1,
-							// height: vh(100),
-							width: vw(100),
-							justifyContent: "center",
-							backgroundColor: "rgba(0,0,0,0.9)",
-						}}
-					>
-						<ActivityIndicator
-							size="large"
-							color="lime"
-							hidesWhenStopped={true}
+					{props.isFetching && (
+						<View
 							style={{
-								top: vh(22),
+								// flex: 1,
+								// height: vh(100),
+								width: vw(100),
+								justifyContent: "center",
+								backgroundColor: "rgba(0,0,0,0.9)",
 							}}
-						></ActivityIndicator>
-						<View style={{ position: "relative", height: vh(5) }}>
-							<ImageBackground
-								source={require("../images/BlackLivesMatter.gif")}
-								style={styles.bg}
-								imageStyle={{ resizeMode: "stretch" }}
-							></ImageBackground>
+						>
+							<ActivityIndicator
+								size="large"
+								color="lime"
+								hidesWhenStopped={true}
+								style={{
+									top: vh(22),
+								}}
+							></ActivityIndicator>
+							<View style={{ position: "relative", height: vh(5) }}>
+								<ImageBackground
+									source={require("../images/BlackLivesMatter.gif")}
+									style={styles.bg}
+									imageStyle={{ resizeMode: "stretch" }}
+								></ImageBackground>
+							</View>
 						</View>
-					</View>
-				)}
+					)}
+				</ScrollView>
 			</View>
-			{/* </ScrollView> */}
 		</View>
 	);
 };
@@ -333,6 +343,7 @@ export default connect(mapStateToProps, {
 	profileLoadingTogg,
 	fetchBizs,
 	setUserListings,
+	setUserHearts,
 })(function (props) {
 	const isFocused = useIsFocused();
 

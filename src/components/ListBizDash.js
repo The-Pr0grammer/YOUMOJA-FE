@@ -13,7 +13,11 @@ import { Icon, Badge, ThemeConsumer } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
-import { fetchBizs, setUserInfo } from "../redux/actions/bizAction";
+import {
+	fetchBizs,
+	setUserInfo,
+	fetchUserInfo,
+} from "../redux/actions/bizAction";
 import { connect } from "react-redux";
 import axios from "axios";
 import BadgeShop from "./BadgeShop.js";
@@ -22,23 +26,21 @@ class ListBizDash extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			userHearts: [],
+			// userHearts: [],
 			error: null,
 			shopTogg: false,
 			badgeCounts: [],
 			badgeKeyPressed: null,
+			ubiz: props.ubiz,
+			hearted: props.hearted,
+			hearts: props.ubiz.business.hearts,
+			comments: props.ubiz.business.comments,
+			badgeCounts: props.ubiz.business.badges,
 		};
 	}
 
 	componentDidMount() {
 		// let countArr = this.mapBadges();
-
-		this.setState({
-			ubiz: this.props.ubiz,
-			hearts: this.props.ubiz.business.hearts,
-			comments: this.props.ubiz.business.comments,
-			badgeCounts: this.props.ubiz.business.badges,
-		});
 	}
 
 	componentDidUpdate(prevProps) {
@@ -48,52 +50,116 @@ class ListBizDash extends React.Component {
 				badgeCounts: this.props.ubiz.business.badges,
 			});
 		}
+		if (this.props.hearted !== prevProps.hearted) {
+			this.setState({
+				hearted: this.props.hearted,
+			});
+		}
 	}
 
-	fetchHearts = () => {
-		axios
-			.get(`http://192.168.1.211:3000/users/${currentUserId}`)
-			.then((response) => {
-				this.setState({ userHearts: response.data.user_hearts });
+	// fetchHearts = () => {
+	// 	axios
+	// 		.get(`http://192.168.1.211:3000/users/${this.props.userInfo.id}`)
+	// 		.then((response) => {
+	// 			this.setState({ userHearts: response.data.user_hearts });
+	// 		})
+	// 		.catch((error) => {
+	// 			this.setState({ error: error });
+	// 		});
+	// };
+
+	incHearts = async (fetchBizs, fetchUserInfo) => {
+		const axios = require("axios");
+		let ubiz = this.props.ubiz && this.props.ubiz;
+		let hearts = this.state.hearts && this.state.hearts;
+		let userInfo = this.props.userInfo && this.props.userInfo;
+
+		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
+
+		await axios
+			.post(`http://192.168.1.211:3000/user_hearts`, {
+				user_heart: {
+					user_id: userInfo.id,
+					business_id: ubiz.business.id,
+				}, //NEEDS TO BE REFACTORED TO POST W/ LOGGED IN USER ID NOT A HARDCODED "1"
+			})
+			.then(function (response) {
+				// console.log("RESPONSE FROM UHEART POST", response);
+
+				// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯BIZ HEARTS SUM PATCH⬇
+				axios
+					.patch(
+						`http://192.168.1.211:3000/businesses/${ubiz.business.id}`,
+						{
+							business: {
+								id: ubiz.business.id,
+								hearts: hearts + 1,
+							},
+						},
+						{ headers: { "Content-Type": "application/json" } }
+					)
+					.then(function (response) {
+						fetchBizs(false); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
+						fetchUserInfo(userInfo.id); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
+					})
+					.catch((error) => {
+						console.log("ERROR⚠️", error);
+					});
+				// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯BIZ HEARTS SUM PATCH⬆
 			})
 			.catch((error) => {
-				this.setState({ error: error });
+				console.log("ERROR⚠️", error);
 			});
+
+		console.log("♥️  HEARTS INCED", hearts + 1);
 	};
 
-	incHearts = (fetchBizs) => {
+	deleteHeart = async (fetchBizs, fetchUserInfo) => {
 		const axios = require("axios");
-		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
-		axios
-			.patch(
-				`http://192.168.1.211:3000/businesses/${this.props.ubiz.business.id}`,
-				{
-					business: {
-						id: this.props.ubiz.business.id,
-						hearts: this.state.hearts + 1,
-					},
-				},
-				{ headers: { "Content-Type": "application/json" } }
-			)
-			.then(function (response) {
-				fetchBizs(false); //PASSED AS A FUNCTION TO onPress! Don't change to this.props...
-			})
-			.catch((error) => {
-				console.log(error.response);
-			});
-		axios
-			.post(`http://192.168.1.211:3000/user_hearts`, {
-				user_heart: { user_id: 1, business_id: this.props.ubiz.business.id }, //NEEDS TO BE REFACTORED TO POST W/ LOGGED IN USER ID NOT A HARDCODED "1"
-			})
-			.then(function (response) {
-				let userRsp = axios(
-					`http://192.168.1.211:3000/users/${this.props.userInfo.id}`
-				)
-					.then((resp) => {
-						this.props.setUserInfo(resp.data);
+		let ubiz = this.props.ubiz && this.props.ubiz;
+		let hearts = this.state.hearts && this.state.hearts;
+		let userInfo = this.props.userInfo && this.props.userInfo;
+
+		await userInfo.heart_ids
+			.filter((uh) => uh.business_id === ubiz.id)
+			.map((uh) => {
+				axios
+					.delete(`http://192.168.1.211:3000/user_hearts/${uh.id}`)
+					.then(async (res) => {
+						// console.log(`deleted heart 💔 #: ${uh.id}`);
+						// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯BIZ HEARTS SUM PATCH⬇
+						axios
+							.patch(
+								`http://192.168.1.211:3000/businesses/${ubiz.business.id}`,
+								{
+									business: {
+										id: ubiz.business.id,
+										hearts: hearts - 1,
+									},
+								},
+								{ headers: { "Content-Type": "application/json" } }
+							)
+							.then((response) => {
+								// console.log(response)
+							})
+							.catch((error) => {
+								console.log("ERROR⚠️", error);
+							});
+						// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯BIZ HEARTS SUM PATCH⬆
 					})
-					.catch((error) => console.log(error));
+					.catch((error) =>
+						this.setState({ error: "Something went wrong. Please try again." })
+					);
 			});
+
+		await fetchBizs(false); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
+		await fetchUserInfo(userInfo.id); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
+		this.setState((prevState) => ({ hearts: prevState.hearts - 1 }));
+		console.log(
+			"💔HEARTS DECCED",
+			hearts -
+				userInfo.heart_ids.filter((uh) => uh.business_id === ubiz.id).length
+		);
 	};
 
 	// mapBadges = () => {
@@ -125,7 +191,10 @@ class ListBizDash extends React.Component {
 	};
 
 	render() {
-		// console.log(this.props.ubiz.id);
+		// console.log("U INFO:", this.props.userInfo.heart_ids);
+		// console.log("BIZ ID:",this.props.ubiz.id);
+		// console.log("BUSINESS NAME:", this.state.ubiz.business.name);
+		// console.log("♥️  or 💔:", this.props.hearted ? "♥️ " : "💔");
 
 		// console.log(
 		// 	"BADGE PROPS ",
@@ -167,10 +236,22 @@ class ListBizDash extends React.Component {
 						width: vw(13),
 					}}
 					onPress={() => {
-						this.incHearts(this.props.fetchBizs);
+						// ♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥
+						this.setState({ hearted: !this.state.hearted });
+
+						this.state.hearted
+							? this.deleteHeart(this.props.fetchBizs, this.props.fetchUserInfo)
+							: this.incHearts(this.props.fetchBizs, this.props.fetchUserInfo);
+
+						// this.incHearts(this.props.fetchBizs, this.props.fetchUserInfo);
 					}}
 				>
-					<Icon name="heart" type="feather" color="red" size={37} />
+					<Icon
+						name={this.state.hearted ? "heart" : "hearto"}
+						type="antdesign"
+						color="red"
+						size={37}
+					/>
 				</TouchableOpacity>
 				<Text
 					style={{
@@ -204,6 +285,15 @@ class ListBizDash extends React.Component {
 					}}
 					// disabled={true}
 					onPress={() => {
+						// // 💯💯💯💯💯💯💯💯💯💯💯💯💯💯UINFO/UBIZ LOGS⬇
+						// console.log(
+						// 	"temp userinfo displayer. NTS: change back to bizpage comment navigator",
+						// 	this.props.userInfo
+						// );
+						// console.log(
+						// 	"temp ubiz displayer. NTS: change back to bizpage comment navigator",
+						// 	this.props.ubiz
+						// );
 						this.props.handleNavigation(true);
 					}}
 				>
@@ -315,6 +405,7 @@ class ListBizDash extends React.Component {
 export default connect(mapStateToProps, {
 	fetchBizs,
 	setUserInfo,
+	fetchUserInfo,
 })(ListBizDash);
 
 const styles = StyleSheet.create({

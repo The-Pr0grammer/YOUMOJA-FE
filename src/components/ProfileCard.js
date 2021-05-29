@@ -19,15 +19,14 @@ import { connect } from "react-redux";
 import { setUserInfo, setIsFetching } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import EditProfile from "./EditProfile.js";
+import EditUserCreds from "./EditUserCreds.js";
+
 import ImageView from "react-native-image-viewing";
-
 import ImageViewer from "react-native-image-zoom-viewer";
-
 import ImagePicker from "react-native-image-crop-picker";
 import FastImage from "react-native-fast-image";
 import { Linking } from "react-native";
-import EditProfile from "./EditProfile.js";
-import EditUserCreds from "./EditUserCreds.js";
 import Webview from "./Webview.js";
 
 import GestureRecognizer, {
@@ -62,6 +61,7 @@ const ProfileCard = (props) => {
 	useLayoutEffect(() => {
 		setEditPrompt(false);
 		let array = [1];
+
 		const imgToDisplay = props.userInfo.image
 			? array.map((item, index) => {
 					return (
@@ -167,12 +167,12 @@ const ProfileCard = (props) => {
 
 	const handlePut = async () => {
 		console.log(
-			"IMAGE HASH IS 🖼  ",
+			"IMAGE Array IS 🖼  ",
 			imgView.map((img) => img.file_name)
 		);
 
-		let imageHash = imgView.map((imageData) => {
-			// console.log(image.uri);
+		let imageArray = imgView.map((imageData) => {
+			// console.log(image.uri)
 			return {
 				image: imageData.uri,
 				file_name: imageData.file_name,
@@ -181,7 +181,7 @@ const ProfileCard = (props) => {
 
 		let putData = {
 			user: {
-				image: imageHash,
+				image: imageArray,
 			},
 		};
 
@@ -529,7 +529,7 @@ const ProfileCard = (props) => {
 							// position: "absolute",
 							alignSelf: "flex-end",
 							backgroundColor: "rgba(0, 0, 0, 0.3)",
-							height: vh(7.5),
+							// height: vh(7.5),
 							width: vw(33),
 							top: vh(5),
 						}}
@@ -624,7 +624,8 @@ const ProfileCard = (props) => {
 
 												break;
 											case "twitter":
-												setWebviewUri(props.userInfo.twitter);
+												// setWebviewUri(props.userInfo.twitter);
+												setWebviewUri("Https://www.twitter.com/YoumojaApp");
 												setWebviewTogg(true);
 
 												break;
@@ -675,7 +676,9 @@ const ProfileCard = (props) => {
 							marginHorizontal: vw(1.5),
 						}}
 					>
-						{numFormat(props.userInfo.comment_scores_sum)}
+						{props.userInfo.comment_scores_sum
+							? numFormat(props.userInfo.comment_scores_sum)
+							: 0}
 					</Text>
 					<TouchableWithoutFeedback
 						style={{
