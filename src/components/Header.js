@@ -13,8 +13,16 @@ import {
 	profileLoadingTogg,
 } from "../redux/actions/bizAction";
 
+import { useNavigation } from "@react-navigation/native";
+
+import FastImage from "react-native-fast-image";
+import { TouchableOpacity } from "react-native-gesture-handler";
+
 const Header = (props) => {
-	// console.log(props.lastScreen);
+	const navigation = useNavigation();
+	const activeScreen = props.activeScreen;
+
+	// console.log(props.activeScreen);
 
 	return (
 		<View
@@ -32,77 +40,104 @@ const Header = (props) => {
 					flexDirection: "row",
 				}}
 			>
-				<View
-					style={{
-						position: "relative",
-						height: vh(10),
-						width: vw(16),
-						alignItems: "center",
-						flexDirection: "row-reverse",
-						// paddingLeft: vh(1),
-						// backgroundColor: "salmon",
-					}}
-				>
-					<Button
-						containerStyle={{
-							top: vh(2),
-							width: vw(22),
-							zIndex: 2,
-							paddingLeft: vw(5),
+				{props.purpose == "Home" ? null : (
+					<View
+						style={{
+							position: "relative",
+							height: vh(10),
+							width: vw(16),
+							alignItems: "center",
+							flexDirection: "row-reverse",
+							// paddingLeft: vh(1),
+							// backgroundColor: "salmon",
 						}}
-						icon={<Icon name="angle-left" size={40} color="black" />}
-						type="clear"
-						onPress={() => {
-							if (props.lastScreen == "MyBusinesses") {
-								props.handleAddBusinessTogg();
-							} else if (props.lastScreen == "Home") {
-								props.navigation.reset({
-									index: 0,
-									routes: [{ name: "Home" }],
-								});
-							} else if (props.lastScreen == "Blackboard") {
-								props.navigation.navigate("Blackboard");
-							} else if (props.lastScreen == "Webview") {
-								props.handleWebviewTogg();
-							} else {
-								props.refresh && props.handleRefresh();
-								props.lastScreen == "Profile" &&
-									props.navigation.navigate("Profile");
-								props.profileLoadingTogg(true);
-								props.navigation.goBack();
-								props.setIsFetching(true);
-								props.fetchBizs();
-								// setTimeout(() => {
-								// 	props.setIsFetching(false);
-								// }, 100);
-							}
-						}}
-						titleStyle={{
-							color: "olivedrab",
-							paddingLeft: vw(2),
-							fontFamily: "ArialHebrew-Light",
-							fontSize: 17,
-						}}
-					/>
-				</View>
-
+					>
+						<Button
+							containerStyle={{
+								top: vh(2),
+								width: vw(22),
+								zIndex: 2,
+								paddingLeft: vw(5),
+							}}
+							icon={<Icon name="angle-left" size={40} color="black" />}
+							type="clear"
+							onPress={() => {
+								if (props.lastScreen == "MyBusinesses") {
+									props.handleAddBusinessTogg();
+								} else if (props.lastScreen == "Home") {
+									props.navigation.reset({
+										index: 0,
+										routes: [{ name: "Home" }],
+									});
+								} else if (props.lastScreen == "Blackboard") {
+									props.navigation.navigate("Blackboard");
+								} else if (props.lastScreen == "Webview") {
+									props.handleWebviewTogg();
+								} else {
+									props.refresh && props.handleRefresh();
+									props.lastScreen == "Profile" &&
+										props.navigation.navigate("Profile");
+									props.profileLoadingTogg(true);
+									props.navigation.goBack();
+									props.setIsFetching(true);
+									props.fetchBizs();
+									// setTimeout(() => {
+									// 	props.setIsFetching(false);
+									// }, 100);
+								}
+							}}
+							titleStyle={{
+								color: "olivedrab",
+								paddingLeft: vw(2),
+								fontFamily: "ArialHebrew-Light",
+								fontSize: 17,
+							}}
+						/>
+					</View>
+				)}
 				<View
 					style={{
 						flex: 1,
 						position: "relative",
-						height: vh(10),
-						// width: vw(20),
+						flexDirection: "row",
+						height: vh(9.8),
+						// width: vw(100),
 						// alignItems: "center",
 						// justifyContent:"center",
-						flexDirection: "column-reverse",
 						// backgroundColor: "orange",
 						// paddingRight: vw(15),
 						// right: vw(5),
 					}}
 				>
-					{!props.loading && (
+					{props.purpose == "Home" ? (
+						<Text
+							shouldAnimateTreshold={vw(1)}
+							duration={6400}
+							loop
+							bounce
+							repeatSpacer={32}
+							// marqueeDelay={3200}
+							// bouncePadding={{ right: 25 }}
+							style={{
+								textAlign: "center",
+								// flex: 1,
+								fontWeight: "bold",
+								fontFamily: "Marker Felt",
+								fontSize: 22,
+								color: "olivedrab",
+								// backgroundColor: "navy",
+								paddingVertical: vh(4.5),
+								// marginLeft: vh(16),
+
+								width: vw(100),
+								lineHeight: vh(5),
+							}}
+						>
+							{props.name}
+						</Text>
+					) : (
 						<TextTicker
-							shouldAnimateTreshold={vw(2)}
+							shouldAnimateTreshold={vw(1)}
 							duration={6400}
 							loop
 							bounce
@@ -118,7 +153,7 @@ const Header = (props) => {
 								color: "olivedrab",
 								// backgroundColor: "navy",
 								paddingVertical: vh(4.5),
-								width: vw(50),
+								width: vw(84),
 								lineHeight: vh(5),
 							}}
 						>
@@ -126,32 +161,43 @@ const Header = (props) => {
 						</TextTicker>
 					)}
 				</View>
-
-				{/* <View
-					style={{
-						flex: 1,
-						position: "relative",
-						height: vh(10),
-						alignItems: "center",
-						flexDirection: "column-reverse",
-						paddingHorizontal: vh(1),
-						// backgroundColor: "orange",
-					}}
+				<TouchableOpacity
+					onPress={() =>
+						navigation.navigate("DrawerNav", {
+							screen: "Profile",
+							params: { lastScreen: activeScreen },
+						})
+					}
 				>
-					<Text
+					<View
 						style={{
-							textAlign: "center",
-							fontWeight: "bold",
-							fontFamily: "Marker Felt",
-							fontSize: 26,
-							color: "olivedrab",
-							// backgroundColor: "navy",
-							paddingBottom: vw(2.5),
+							// position: "absolute",
+							alignSelf: "flex-end",
+							height: vh(9.8),
+							width: vw(22),
+
+							// flex: 1,
+							// flexDirection: "row-reverse",
+							// justifyContent:"center",
+							// backgroundColor: "orange",
+							// paddingRight: vw(15),
+							// right: vw(5),
+							// zIndex: 5,
 						}}
 					>
-						{props.name}
-					</Text>
-				</View> */}
+						<FastImage
+							resizeMode={"cover"}
+							source={{
+								uri: props.userInfo.image
+									? `http://192.168.1.211:3000/${props.userInfo.image}`
+									: props.userInfo.img_url,
+							}}
+							style={{
+								...styles.profilePic,
+							}}
+						></FastImage>
+					</View>
+				</TouchableOpacity>
 			</View>
 		</View>
 	);
@@ -187,10 +233,25 @@ const styles = StyleSheet.create({
 		zIndex: 1,
 		// bottom: vh(10),
 	},
+	profilePic: {
+		// position: "absolute",
+		position: "relative",
+		borderRadius: vw(100),
+		width: vw(11),
+		alignSelf: "center",
+		// marginBottom: vh(1.5),
+		// marginRight: vw(4.5),
+		top: vh(4.2),
+		height: undefined,
+		aspectRatio: 85 / 80,
+		zIndex: 2,
+		// aspectRatio: 135 / 128,
+	},
 });
 
 function mapStateToProps(state) {
 	return {
 		isFetching: state.isFetching,
+		userInfo: state.userInfo,
 	};
 }

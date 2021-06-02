@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import {
 	Text,
 	TextInput,
@@ -21,12 +21,34 @@ const Field = ({
 	keyRef,
 	nextRef,
 	lastKey,
+	firstError,
+	submitInc,
 }) => {
 	const [hideToggle, setHideToggle] = useState(
 		field.inputProps.secureTextEntry
 	);
 
 	const pwField = fieldName.toLowerCase().includes("password");
+
+	// useEffect(() => {
+	// 	let keyRef = fieldName;
+	// 	keyRef = createRef();
+
+	// 	console.log("🔑", keyRef);
+	// 	return () => {
+	// 		console.log("I'm a field:", fieldName);
+	// 	};
+	// }, []);
+
+	useEffect(() => {
+		{
+			firstError && keyRef.current && keyRef.current.focus();
+		}
+
+		return () => {
+			// console.log("I'm a field:", fieldName);
+		};
+	}, [submitInc]);
 
 	// const inputRef = useRef(null);
 
@@ -39,6 +61,9 @@ const Field = ({
 	// console.log(nextRef);
 	// console.log("field label is 😁", field.label);
 	// console.log("field name is 🖋", fieldName);
+	// console.log("🔑", keyRef);
+	// console.log("❶:", fieldName, firstError);
+	// console.log("submit Inc", submitInc);
 
 	return (
 		<View style={styles.inputContainer}>
@@ -46,7 +71,7 @@ const Field = ({
 			<TextInput
 				ref={keyRef}
 				multiline={fieldName == "summary" && true}
-				autoFocus={error ? true : false}
+				autoFocus={firstError ? true : false}
 				style={[field.label !== "Summary" ? styles.input : styles.summaryInput]}
 				{...field.inputProps}
 				secureTextEntry={hideToggle}
@@ -56,7 +81,6 @@ const Field = ({
 				returnKeyType={"next"}
 				onSubmitEditing={() => {
 					// field.label !== "Summary" && Keyboard.dismiss();
-				
 
 					if (field.label !== "Summary" && !lastKey) {
 						nextRef.current && nextRef.current.focus();

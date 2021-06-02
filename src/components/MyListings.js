@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import {
 	View,
 	ScrollView,
@@ -36,8 +36,19 @@ const MyListings = (props) => {
 	// 	};
 	// });
 
+	// let ids = props.heartIds
+	// 	? props.heartIds.map((uh) => {
+	// 			return uh.business.id;
+	// 	  })
+	// 	: [];
+
+	let ids = props.heartIds.map((uh) => {
+		return uh.business.id;
+	});
+
 	// console.log("HEARTS IS🤎♥️🧡", props.userHearts[0]);
 	// console.log("My user_bizs are 💼💼💼", props.userListings);
+	// console.log("My user_bizs are 💼💼💼 ♥️", props.listingsHearts);
 	return (
 		<View // START OF BIZLIST
 			style={{
@@ -85,11 +96,31 @@ const MyListings = (props) => {
 				}}
 				data={props.userListings}
 				keyExtractor={(item) => item.id.toString()}
-				renderItem={({ item }) => (
-					<ListBiz ubiz={item} navigation={navigation} lastScreen={"Profile"} />
-				)}
-				extraData={props.userListings}
-				legacyImplementation={true}
+				renderItem={({ item }) => {
+					// console.log("😍mylistings business:::🖤", item.business.hearts);
+					// console.log(
+					// 	"😍mylistings business:::🖤",
+					// 	ids.includes(item.business.id)
+					// );
+					// console.log("😍mylistings business:::🖤", ids);
+					return (
+						<ListBiz
+							ubiz={item}
+							hearts={item.business.hearts}
+							hearted={ids.includes(item.business.id)}
+							navigation={navigation}
+							lastScreen={"Profile"}
+							getHearts={props.getHearts}
+							purpose={"MyListings"}
+						/>
+					);
+				}}
+				// extraData={props}
+				// extraData={props.listingsHearts}
+				// extraData={props.userListings}
+				// extraData={props.heartIds}
+				// extraData={props.userHearts}
+				// legacyImplementation={true}
 			/>
 			{/* {props.loading && (
 				<View style={styles.activityView}>
@@ -144,5 +175,7 @@ function mapStateToProps(state) {
 	return {
 		userListings: state.userListings,
 		userInfo: state.userInfo,
+		heartIds: state.userInfo.heart_ids,
+		listingsHearts: state.userListings.map((ul) => ul.business.hearts),
 	};
 }

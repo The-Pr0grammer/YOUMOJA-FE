@@ -79,9 +79,13 @@ class ListBiz extends React.Component {
 	);
 
 	handleNavigation = (commentTogg = false) => {
+		let id = (this.props.purpose = "ProfileHearts"
+			? this.props.ubiz.business.id
+			: this.props.ubiz.business.id);
+
 		this.props.navigation.navigate("BizPage", {
+			id: id,
 			ubiz: this.props.ubiz,
-			id: this.props.ubiz.id,
 			userInfo: this.props.ubiz.user,
 			lastScreen: this.props.lastScreen,
 			page: this.state.page,
@@ -90,9 +94,9 @@ class ListBiz extends React.Component {
 	};
 
 	render() {
-		// this.props.type == "Profile ID" && console.log(this.props.ubiz.user_id);
+		// this.props.type == "Profile ID" && console.log("profile id", this.props.ubiz.user_id);
 		// this.props.biz.business.images && console.log(this.props.ubiz.business.images[0]);
-		// console.log(this.props.ubiz);
+		// console.log("ubiz is:::👀", this.props.ubiz);
 		return (
 			<View style={styles.container}>
 				<TouchableOpacity
@@ -151,7 +155,11 @@ class ListBiz extends React.Component {
 						<ListBizDash
 							ubiz={this.props.ubiz}
 							hearted={this.props.hearted}
+							hearts={this.props.hearts}
 							handleNavigation={this.handleNavigation}
+							getHearts={this.props.getHearts}
+							getListings={this.props.getListings}
+							purpose={this.props.purpose}
 						/>
 					</Card>
 				</TouchableOpacity>

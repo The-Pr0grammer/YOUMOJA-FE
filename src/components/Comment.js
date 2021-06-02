@@ -9,6 +9,8 @@ import { fetchUserInfo, fetchComments } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
 import axios from "axios";
 import moment from "moment";
+import FastImage from "react-native-fast-image";
+
 import FitImage from "react-native-fit-image";
 
 class Comment extends PureComponent {
@@ -240,7 +242,7 @@ class Comment extends PureComponent {
 							});
 						}}
 					>
-						<Image
+						<FastImage
 							resizeMode={"cover"}
 							source={{
 								uri: this.props.comment.user.image
@@ -248,10 +250,11 @@ class Comment extends PureComponent {
 									: this.props.comment.user.img_url,
 							}}
 							style={styles.profilePic}
-						></Image>
+						></FastImage>
 					</TouchableOpacity>
 					<Text style={styles.username}>
-						{this.props.comment.user.username}
+						{`${this.props.comment.user.username.charAt(0).toUpperCase()}` +
+							`${this.props.comment.user.username.slice(1)}`}
 					</Text>
 					<Text style={styles.moment}> {this.relativeTime} </Text>
 				</View>

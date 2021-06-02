@@ -144,6 +144,7 @@ export const fetchBadgeSums = () => {
 };
 
 export const fetchUserInfo = (id) => {
+	console.log("fetching user 🐶");
 	return async (dispatch) => {
 		dispatch(fetchUserInfoRequest());
 		try {

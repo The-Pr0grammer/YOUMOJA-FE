@@ -53,7 +53,7 @@ const Form = ({
 	useFocusEffect(
 		React.useCallback(() => {
 			setValues("");
-			setValidationErrors("");
+			// setValidationErrors("");
 			setErrorMessage("");
 
 			// type == "EditProfile" && setValues(userInfo);
@@ -71,6 +71,8 @@ const Form = ({
 	const [validationErrors, setValidationErrors] = useState(
 		getInitialState(fieldKeys)
 	);
+	const [submitInc, setSubmitInc] = useState(0);
+	const first = fieldKeys.find((key) => !validationErrors[key] == "");
 	const refs = [];
 
 	const onChangeValue = (key, value) => {
@@ -120,6 +122,7 @@ const Form = ({
 					? obj[prop]
 					: obj[prop].trim();
 		});
+		// console.log("newObj is", newObj);
 		return newObj;
 	};
 
@@ -137,22 +140,25 @@ const Form = ({
 		return present;
 	};
 
-	const handleRefocus = () => {
-		if (!validationErrors == "") {
-			let find = fieldKeys.find((key) =>
-				Object.keys(validationErrors).includes(key)
-			);
+	// const handleRefocus = () => {
+	// 	// console.log("ves:", validationErrors);
+	// 	// console.log("refssssss", refs);
 
-			let index = fieldKeys.findIndex((ele) => ele == find);
+	// 	if (!validationErrors == "") {
+	// 		let find = fieldKeys.find((key) =>
+	// 			Object.keys(validationErrors).includes(key)
+	// 		);
 
-			// console.log("find is", find);
-			// console.log("index is", index);
-			// console.log("refs", refs);
+	// 		let index = fieldKeys.findIndex((ele) => ele == find);
 
-			return refs[index].current && refs[index].current.focus();
-			// return find.current && find.current.focus();
-		}
-	};
+	// 		console.log("find is", find);
+	// 		console.log("index is", index);
+
+	// 		return refs[1].current && refs[1].current.focus();
+	// 		return refs[index].current && refs[index].current.focus();
+	// 		// return find.current && find.current.focus();
+	// 	}
+	// };
 
 	const formatUrls = (obj) => {
 		let newObj = {};
@@ -300,17 +306,27 @@ const Form = ({
 			? (errors = validateFields(newFields, trimValues(values)))
 			: (errors = validateFields(fields, trimValues(values)));
 
+		// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯VALIDATIONS⬇
 		if (hasValidationError(errors)) {
-			console.log(errors);
+			// console.log(errors);
 			// console.log(fields);
 			// console.log(values);
 
-			return setValidationErrors(errors); //VALIDATIONSSSSSSS
-		}
+			if (type == "Signup" && profileImg == "") {
+				console.log("No profile pic 👀📸");
 
-		if (type == "Signup" && profileImg == "") {
-			return setErrorMessage("Please choose a profile picture");
+				setErrorMessage("Please choose a profile picture");
+			}
+
+			return setValidationErrors(errors); //VALIDATIONSSSSSSS
+		} else if (!hasValidationError(errors)) {
+			if (type == "Signup" && profileImg == "") {
+				console.log("No profile pic 👀📸");
+
+				return setErrorMessage("Please choose a profile picture");
+			}
 		}
+		// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯VALIDATIONS⬆
 
 		//SIGN IN FOR CREDENTIAL CHANGES
 		signInRes = {};
@@ -417,11 +433,14 @@ const Form = ({
 				let newObj = {};
 
 				for (let [k, v] of Object.entries(parsedData)) {
-					if (v[0].includes("blank")) {
-						newObj[k] = "can't be blank";
-					} else if (v[0].includes("taken")) {
+					console.log(k);
+					console.log(v);
+
+					if (v.includes("taken")) {
+						newObj[k] = `that ${k} is taken`;
+					} else if (v.includes("associated")) {
 						newObj[k] = `that ${k} is associated with another account`;
-					} else newObj[k] = `invalid entry. try again`;
+					} else newObj[k] = `Invalid entry. Try again`;
 				}
 
 				console.log("newObj is ", newObj);
@@ -459,6 +478,8 @@ const Form = ({
 	// console.log(removeEmptyStrings(userInfo));
 	// console.log("eM:", errorMessage);
 	// console.log("vEs:", validationErrors);
+	// console.log("REFS↩:", refs);
+	// console.log("field keys 🌾", fieldKeys);
 	// console.log("console vals",consoleVals(values));
 
 	return (
@@ -619,6 +640,7 @@ const Form = ({
 						}}
 					>
 						{fieldKeys.map((key, index) => {
+							// console.log(key);
 							let keyRef = key;
 
 							keyRef = createRef();
@@ -628,6 +650,7 @@ const Form = ({
 
 						{fieldKeys.map((key, index) => {
 							// console.log(refs);
+							// console.log(key);
 
 							return (
 								<Field
@@ -640,6 +663,8 @@ const Form = ({
 									keyRef={refs[index]}
 									nextRef={refs[index + 1]}
 									lastKey={fieldKeys.length - 1 == index}
+									firstError={first == key}
+									submitInc={submitInc}
 									// handleChange={props.handleChange}
 								/>
 							);
@@ -679,7 +704,7 @@ const Form = ({
 								titleStyle={{ color: "lightslategray" }}
 								onPress={async () => {
 									await submit();
-									handleRefocus();
+									setSubmitInc(submitInc + 1);
 								}}
 								loading={buttonSpinner}
 								loadingProps={{ color: "green", size: "large" }}
@@ -718,6 +743,8 @@ const Form = ({
 								keyRef={refs[index]}
 								nextRef={refs[index + 1]}
 								lastKey={fieldKeys.length - 1 == index}
+								firstError={first == key}
+								submitInc={submitInc}
 							/>
 						);
 					})}
@@ -738,7 +765,7 @@ const Form = ({
 							titleStyle={{ color: "lightslategray" }}
 							onPress={async () => {
 								await submit();
-								handleRefocus();
+								setSubmitInc(submitInc + 1);
 							}}
 							loading={buttonSpinner}
 							loadingProps={{ color: "green", size: "large" }}
@@ -778,6 +805,8 @@ const Form = ({
 								keyRef={refs[index]}
 								nextRef={refs[index + 1]}
 								lastKey={fieldKeys.length - 1 == index}
+								firstError={first == key}
+								submitInc={submitInc}
 							/>
 						);
 					})}
@@ -800,7 +829,7 @@ const Form = ({
 							titleStyle={{ color: "lightslategray" }}
 							onPress={async () => {
 								await submit();
-								handleRefocus();
+								setSubmitInc(submitInc + 1);
 							}} // loading={buttonSpinner}
 							// loadingProps={{ color: "green", size: "large" }}
 						/>
@@ -839,6 +868,8 @@ const Form = ({
 								keyRef={refs[index]}
 								nextRef={refs[index + 1]}
 								lastKey={fieldKeys.length - 1 == index}
+								firstError={first == key}
+								submitInc={submitInc}
 							/>
 						);
 					})}
@@ -898,7 +929,7 @@ const Form = ({
 							// }}
 							onPress={async () => {
 								Object.keys(values).length > 0 && (await submit());
-								handleRefocus();
+								setSubmitInc(submitInc + 1);
 							}}
 						/>
 
@@ -957,6 +988,8 @@ const Form = ({
 								keyRef={refs[index]}
 								nextRef={refs[index + 1]}
 								lastKey={fieldKeys.length - 1 == index}
+								firstError={first == key}
+								submitInc={submitInc}
 							/>
 						);
 					})}
@@ -984,7 +1017,7 @@ const Form = ({
 							// }}
 							onPress={async () => {
 								checkForChanges(values) && (await submit());
-								handleRefocus();
+								setSubmitInc(submitInc + 1);
 							}}
 						/>
 

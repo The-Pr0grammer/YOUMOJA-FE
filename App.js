@@ -168,7 +168,7 @@ function DrawerNav({ navigation }) {
 					fontSize: 24,
 				},
 			}}
-			// initialRouteName="Home" //THIS BREAKS APP!!! USE "Main"
+			// initialRouteName="Home" //THIS BREAKS APP? USE "Main"
 			initialRouteName="Main"
 			drawerType="slide"
 			drawerContentOptions={{
@@ -273,6 +273,7 @@ function Main({ navigation }) {
 				name="Home"
 				component={Businesses}
 				options={{
+					headerShown: false,
 					headerLeft: null,
 				}}
 			/>
@@ -336,15 +337,15 @@ function AppNav({ navigation }) {
 	return (
 		<Stack.Navigator>
 			<Stack.Screen
-				name="Auth"
-				component={AuthFlow}
+				name="DrawerNav"
+				component={DrawerNav}
 				options={{
 					headerShown: false,
 				}}
 			/>
 			<Stack.Screen
-				name="DrawerNav"
-				component={DrawerNav}
+				name="Auth"
+				component={AuthFlow}
 				options={{
 					headerShown: false,
 				}}

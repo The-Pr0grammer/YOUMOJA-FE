@@ -42,10 +42,6 @@ const BizPage = (props) => {
 	const [page, setPage] = useState(0);
 	const [fixedPage, setFixedPage] = useState(0);
 	const isFocused = useIsFocused();
-	// console.log(props.route.params.lastScreen);
-	// console.log("URLLLLLLLLLLL", props.route.params["ubiz"].business.images);
-	console.log("IMAGES LIVE FROM THE BIZPAGE", images);
-	// console.log("It's Aliiiiiive; ubiz from the BizPage:", ubiz);
 
 	useEffect(() => {
 		fetchData();
@@ -143,6 +139,12 @@ const BizPage = (props) => {
 		</View>
 	);
 
+	// console.log(props.route.params.lastScreen);
+	// console.log("URLLLLLLLLLLL", props.route.params["ubiz"].business.images);
+	// console.log("IMAGES LIVE FROM THE BIZPAGE", images);
+	// console.log("It's Aliiiiiive; ubiz from the BizPage:", ubiz);
+	// console.log("It's Aliiiiiive; ubiz from the BizPage:", ubiz);
+
 	return (
 		<View style={styles.container}>
 			{ubiz ? (
@@ -185,6 +187,7 @@ const BizPage = (props) => {
 							name={ubiz.business.name}
 							navigation={props.navigation}
 							lastScreen={props.route.params.lastScreen}
+							activeScreen={"BizPage"}
 						/>
 					</View>
 					<View style={styles.bizCon}>

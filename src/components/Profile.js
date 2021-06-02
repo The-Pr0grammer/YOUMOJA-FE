@@ -46,7 +46,17 @@ const Profile = (props) => {
 	const isFocused = useIsFocused();
 	const navigation = useNavigation();
 
+	// const lastScreen = "Home";
+
+	// console.log(navigation);
+	// console.log(props.route);
+	// console.log(navigation.dangerouslyGetState());
+
+	// console.log(parent);
+
 	useEffect(() => {
+		// console.log(navigation.dangerouslyGetState().index);
+
 		!addBusinessTogg && props.setIsFetching(true);
 		setTimeout(() => props.setIsFetching(false), 750);
 		apiCalls();
@@ -55,6 +65,39 @@ const Profile = (props) => {
 		// 	apiCalls();
 		// }
 	}, [isFocused]);
+
+	// getHearts = async () => {
+	// 	console.log("♥️ fetching hearts 🦴🦴🦴");
+	// 	let response3 = await axios(
+	// 		`http://192.168.1.211:3000/users/${props.userInfo.id}/hearts`
+	// 	)
+	// 		.then((resp) => {
+	// 			props.setUserHearts(resp.data);
+	// 		})
+	// 		.catch((error) => console.log(error));
+	// };
+
+	getHearts = () => {
+		console.log("♥️ fetching hearts 🦴🦴🦴");
+		let response3 = axios(
+			`http://192.168.1.211:3000/users/${props.userInfo.id}/hearts`
+		)
+			.then((resp) => {
+				props.setUserHearts(resp.data);
+			})
+			.catch((error) => console.log(error));
+	};
+
+	getListings = () => {
+		console.log("♥️ fetching listings 📰 📰 📰");
+		let response2 = axios(
+			`http://192.168.1.211:3000/users/${props.userInfo.id}/listings`
+		)
+			.then((resp) => {
+				props.setUserListings(resp.data);
+			})
+			.catch((error) => console.log(error));
+	};
 
 	apiCalls = () => {
 		let response1 = axios(
@@ -71,6 +114,14 @@ const Profile = (props) => {
 		)
 			.then((resp) => {
 				props.setUserListings(resp.data);
+			})
+			.catch((error) => console.log(error));
+
+		let response3 = axios(
+			`http://192.168.1.211:3000/users/${props.userInfo.id}/hearts`
+		)
+			.then((resp) => {
+				props.setUserHearts(resp.data);
 			})
 			.catch((error) => console.log(error));
 	};
@@ -145,23 +196,43 @@ const Profile = (props) => {
 		setCredsSaved(false);
 	};
 
+	getLastScreen = () => {
+		if (props.route.params) {
+			// console.log(
+			// 	"props.route.params.lastScreen",
+			// 	props.route.params.lastScreen
+			// );
+			return props.route.params.lastScreen;
+		} else {
+			return "Home";
+		}
+	};
+
 	// console.log("userSHOW IS 🐛✋🏾", userShow);
 	// console.log("♻️", loading);
 	// console.log("userinfo:::::", props.userInfo);
 	// console.log("NEW BIZ TOGG IS 🆕:::::", addBusinessTogg);
-	// console.log("listings ARE:::::", props.userListings);
+	// console.log(
+	// 	"listings ARE:::::",
+	// 	props.userListings.length > 0 && props.userListings[0].business.hearts
+	// );
 	// console.log("EMAIL CONFIRMATION IS ON LINE 243");
+	// console.log(
+	// 	"🔙 🔙 🔙LAST SCREEN FROM HEADER PIC TOUCHABLE",
+	// 	props.route.params.lastScreen
+	// );
+	// console.log("🔙 🔙 🔙props.params", props.route);
 
 	return (
 		<View style={styles.container}>
 			{/* {isFocused && addBusinessTogg && setVisibility(true)} */}
-
 			<Header
 				name={props.userInfo.name}
 				navigation={navigation}
 				refresh={true}
+				// lastScreen={"Home"}
+				lastScreen={getLastScreen()}
 				// loading={props.profileLoading}
-				lastScreen={"Home"}
 			/>
 
 			<View
@@ -214,7 +285,7 @@ const Profile = (props) => {
 				<ScrollView
 					indicatorStyle={"white"}
 					scrollIndicatorInsets={{ top: 0, left: vw(10), bottom: 0, right: 0 }}
-					contentContainerStyle={{ paddingBottom: vh(15) }}
+					contentContainerStyle={{ paddingBottom: vh(5) }}
 					style={{
 						flex: 1,
 						backgroundColor: "black",
@@ -229,6 +300,7 @@ const Profile = (props) => {
 									userId={props.userInfo.id}
 									handleAddBusinessTogg={handleAddBusinessTogg}
 									loading={loading}
+									getHearts={getHearts}
 								/>
 							)}
 						</>
@@ -236,8 +308,13 @@ const Profile = (props) => {
 
 					{!props.isFetching && !addBusinessTogg && (
 						<>
-							{props.userListings.length > 0 && (
-								<ProfileHearts userId={props.userInfo.id} loading={loading} />
+							{props.heartIds.length > 0 && (
+								<ProfileHearts
+									userId={props.userInfo.id}
+									loading={loading}
+									getHearts={getHearts}
+									getListings={getListings}
+								/>
 							)}
 						</>
 					)}
@@ -394,10 +471,9 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
 	return {
 		userInfo: state.userInfo,
-		userHeartBizs: state.userHearts.map((uh) => uh.user_biz),
 		profileLoading: state.profileLoading,
 		isFetching: state.isFetching,
 		userListings: state.userListings,
-		userHearts: state.userHearts,
+		heartIds: state.userInfo.heart_ids,
 	};
 }

@@ -38,6 +38,8 @@ const CreateAccount = (props) => {
 	const [spinner, spinnerTogg] = useState(false);
 
 	const apiPost = async (data) => {
+		spinnerTogg(true);
+
 		// console.log("boutta create. data is::::", postData);
 
 		// let inc = "email" in data;
@@ -84,6 +86,8 @@ const CreateAccount = (props) => {
 				// return JSON.stringify(errors);
 				// return JSON.stringify(error.response);
 				// return JSON.stringify(error);
+				spinnerTogg(false);
+
 				return JSON.stringify(error.response.data.errors);
 			});
 	};

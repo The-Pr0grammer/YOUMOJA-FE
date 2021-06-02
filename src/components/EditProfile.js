@@ -37,14 +37,14 @@ const EditProfile = (props) => {
 	const [spinner, spinnerTogg] = useState(false);
 	const [errorMessages, setErrorMessages] = useState(false);
 
-	const handleEdit = (data) => {
+	const handleEdit = async (data) => {
 		// console.log("boutta edit. data is::::", data);
 
 		// let inc = "email" in data;
 
 		// inc ? (data["email_verified"] = false) : null;
 
-		return axios
+		return await axios
 			.patch(`http://192.168.1.211:3000/users/${props.userInfo.id}`, data)
 			.then((res) => {
 				props.setUserInfo(res.data);

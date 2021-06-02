@@ -28,15 +28,30 @@ const ProfileHearts = (props) => {
 	const [loading, setLoading] = useState(true);
 	const isFocused = useIsFocused();
 
-	// useEffect(() => {
-	// 	return () => {
-	// 		// console.log("PROFILE PARAMS ARE🎯", props.route.params.userShowInfo);
+	useEffect(() => {
+		// console.log(
+		// 	"♥️  USERINFO FROM PROFILE HEARTS 🎯",
+		// 	JSON.stringify(props.userInfo)
+		// );
 
-	// 		setUserShow(props.userInfo);
-	// 	};
-	// });
+		return () => {
+			// console.log("phearts use effect sign off 🎚");
+		};
+	}, []);
 
-	// console.log("HEARTS IS🤎♥️🧡", props.userHearts[0]);
+	// let ids = props.heartIds
+	// 	? props.heartIds.map((uh) => {
+	// 			return uh.business.id;
+	// 	  })
+	// 	: [];
+
+	let ids = props.heartIds.map((uh) => {
+		return uh.business.id;
+	});
+
+	// console.log("HEARTS IS🤎♥️🧡", props.heartIds.length);
+	// console.log("U S E R H E A R T S ♥️", props.userHearts.length);
+	// console.log("U S E R H E A R T IDS♥️", props.heartIds.length);
 	return (
 		<View // START OF BIZLIST
 			style={{
@@ -46,11 +61,11 @@ const ProfileHearts = (props) => {
 				// position: "absolute",
 				backgroundColor: "rgba(255,255,255,0.02)", //MAROON
 				zIndex: 1,
-				top: vh(1.5), // POSITION 📈
-				marginTop: vh(2),
+				// top: vh(1.5), // POSITION 📈
+				// marginTop: vh(0.2),
 			}}
 		>
-			<Text style={styles.title}>LIKES({props.userHeartBizs.length})</Text>
+			<Text style={styles.title}>LIKES({props.heartIds.length})</Text>
 
 			<FlatList
 				indicatorStyle="white"
@@ -64,13 +79,28 @@ const ProfileHearts = (props) => {
 
 					// position: "relative",
 				}}
-				data={props.userHeartBizs}
+				data={props.userHearts}
 				keyExtractor={(item) => item.id.toString()}
-				renderItem={({ item }) => (
-					<ListBiz biz={item} navigation={navigation} lastScreen={"Profile"} />
-				)}
-				// extraData={props.userHearts}
-				legacyImplementation={true}
+				renderItem={({ item }) => {
+					// console.log("💕uheart business:::🖤", item.business.id);
+					// console.log("💕uheart business:::🖤", item);
+					// console.log("💕uheart business:::🖤", ids.includes(item.business.id));
+					// console.log("💕uheart business:::🖤", ids);
+					return (
+						<ListBiz
+							ubiz={item}
+							hearted={ids.includes(item.business.id)}
+							navigation={navigation}
+							lastScreen={"Profile"}
+							getHearts={props.getHearts}
+							getListings={props.getListings}
+							purpose={"ProfileHearts"}
+						/>
+					);
+				}}
+				extraData={props.userHearts}
+				// extraData={props.heartIds.length}
+				// legacyImplementation={true}
 			/>
 		</View>
 	);
@@ -106,7 +136,9 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
 	return {
-		userHeartBizs: state.userHearts.map((uh) => uh.user_biz),
 		userInfo: state.userInfo,
+		userHearts: state.userHearts,
+		heartIds: state.userInfo.heart_ids,
+		// userHeartBizs: state.userHearts.map((uh) => uh.user_biz),
 	};
 }

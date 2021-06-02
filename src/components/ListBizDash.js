@@ -17,6 +17,7 @@ import {
 	fetchBizs,
 	setUserInfo,
 	fetchUserInfo,
+	setUserHearts,
 } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
 import axios from "axios";
@@ -34,13 +35,16 @@ class ListBizDash extends React.Component {
 			ubiz: props.ubiz,
 			hearted: props.hearted,
 			hearts: props.ubiz.business.hearts,
+			cooldown: false,
 			comments: props.ubiz.business.comments,
 			badgeCounts: props.ubiz.business.badges,
 		};
 	}
 
 	componentDidMount() {
-		// let countArr = this.mapBadges();
+		// this.setState({
+		// 	hearts: this.props.ubiz.business.hearts,
+		// });
 	}
 
 	componentDidUpdate(prevProps) {
@@ -51,30 +55,28 @@ class ListBizDash extends React.Component {
 			});
 		}
 		if (this.props.hearted !== prevProps.hearted) {
+			// 	console.log("prevProps:::👀", prevProps.ubiz.business.hearts);
+
 			this.setState({
 				hearted: this.props.hearted,
+				hearts: this.props.hearts || this.state.hearts,
 			});
 		}
 	}
 
-	// fetchHearts = () => {
-	// 	axios
-	// 		.get(`http://192.168.1.211:3000/users/${this.props.userInfo.id}`)
-	// 		.then((response) => {
-	// 			this.setState({ userHearts: response.data.user_hearts });
-	// 		})
-	// 		.catch((error) => {
-	// 			this.setState({ error: error });
-	// 		});
-	// };
-
-	incHearts = async (fetchBizs, fetchUserInfo) => {
+	// ❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶
+	incHearts = async (fetchBizs, fetchUserInfo, getHearts) => {
+		console.log("❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶❶");
 		const axios = require("axios");
 		let ubiz = this.props.ubiz && this.props.ubiz;
-		let hearts = this.state.hearts && this.state.hearts;
+		let hearts = ubiz.business.hearts;
 		let userInfo = this.props.userInfo && this.props.userInfo;
 
-		this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
+		console.log("♥️  HEARTS INCED", hearts + 1);
+
+		this.setState({
+			hearts: this.state.hearts + 1,
+		});
 
 		await axios
 			.post(`http://192.168.1.211:3000/user_hearts`, {
@@ -83,11 +85,9 @@ class ListBizDash extends React.Component {
 					business_id: ubiz.business.id,
 				}, //NEEDS TO BE REFACTORED TO POST W/ LOGGED IN USER ID NOT A HARDCODED "1"
 			})
-			.then(function (response) {
-				// console.log("RESPONSE FROM UHEART POST", response);
-
+			.then(async (response) => {
 				// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯BIZ HEARTS SUM PATCH⬇
-				axios
+				await axios
 					.patch(
 						`http://192.168.1.211:3000/businesses/${ubiz.business.id}`,
 						{
@@ -98,35 +98,49 @@ class ListBizDash extends React.Component {
 						},
 						{ headers: { "Content-Type": "application/json" } }
 					)
-					.then(function (response) {
+					.then(async (response) => {
 						fetchBizs(false); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
-						fetchUserInfo(userInfo.id); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
+
+						getListings();
+
+						getHearts();
+
+						await fetchUserInfo(userInfo.id); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
 					})
 					.catch((error) => {
 						console.log("ERROR⚠️", error);
 					});
 				// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯BIZ HEARTS SUM PATCH⬆
+
+				console.log(`created heart ♥️ #: ${response.data.id}`);
 			})
 			.catch((error) => {
 				console.log("ERROR⚠️", error);
 			});
 
-		console.log("♥️  HEARTS INCED", hearts + 1);
+		setTimeout(() => {
+			this.setState({ cooldown: false });
+		}, 125);
 	};
 
-	deleteHeart = async (fetchBizs, fetchUserInfo) => {
+	// ❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷
+	deleteHeart = async (fetchBizs, fetchUserInfo, getHearts) => {
+		console.log("❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷❷");
 		const axios = require("axios");
 		let ubiz = this.props.ubiz && this.props.ubiz;
-		let hearts = this.state.hearts && this.state.hearts;
+		let hearts = ubiz.business.hearts;
 		let userInfo = this.props.userInfo && this.props.userInfo;
 
+		console.log("💔HEARTS DECCED", ubiz.business.hearts - 1);
+
+		getListings();
+
 		await userInfo.heart_ids
-			.filter((uh) => uh.business_id === ubiz.id)
+			.filter((uh) => uh.business.id === ubiz.id)
 			.map((uh) => {
 				axios
 					.delete(`http://192.168.1.211:3000/user_hearts/${uh.id}`)
 					.then(async (res) => {
-						// console.log(`deleted heart 💔 #: ${uh.id}`);
 						// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯BIZ HEARTS SUM PATCH⬇
 						axios
 							.patch(
@@ -139,11 +153,21 @@ class ListBizDash extends React.Component {
 								},
 								{ headers: { "Content-Type": "application/json" } }
 							)
-							.then((response) => {
-								// console.log(response)
+							.then(async (response) => {
+								this.setState({
+									hearts: this.state.hearts - 1,
+								});
+
+								fetchBizs(false); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
+
+								getHearts();
+
+								await fetchUserInfo(userInfo.id); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
+
+								console.log(`deleted heart 💔 #: ${uh.id}`);
 							})
 							.catch((error) => {
-								console.log("ERROR⚠️", error);
+								console.log("ERROR⚠️⚠️⚠️", error);
 							});
 						// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯BIZ HEARTS SUM PATCH⬆
 					})
@@ -152,14 +176,65 @@ class ListBizDash extends React.Component {
 					);
 			});
 
-		await fetchBizs(false); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
-		await fetchUserInfo(userInfo.id); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
-		this.setState((prevState) => ({ hearts: prevState.hearts - 1 }));
-		console.log(
-			"💔HEARTS DECCED",
-			hearts -
-				userInfo.heart_ids.filter((uh) => uh.business_id === ubiz.id).length
-		);
+		setTimeout(() => {
+			this.setState({ cooldown: false });
+		}, 125);
+	};
+
+	// ❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸
+	deletePH = async (fetchBizs, fetchUserInfo, getHearts, getListings) => {
+		console.log("❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸❸");
+
+		const axios = require("axios");
+		let ubiz = this.props.ubiz && this.props.ubiz;
+		let hearts = ubiz.business.hearts;
+		let userInfo = this.props.userInfo && this.props.userInfo;
+
+		console.log("P💔HEARTS DECCED", ubiz.business.hearts - 1);
+
+		getListings();
+
+		this.setState({
+			hearts: this.state.hearts - 1,
+		});
+
+		//NTS: When refactoring or debugging, keep in mind that these IDS (uh.id, ubiz.business.id, uh.business.id and ubiz.id) all point to different keys.
+		await userInfo.heart_ids
+			.filter((uh) => uh.business.id == ubiz.business.id)
+			.map((uh) => {
+				axios
+					.delete(`http://192.168.1.211:3000/user_hearts/${uh.id}`)
+					.then(async (res) => {
+						// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯BIZ HEARTS SUM PATCH⬇
+						axios
+							.patch(
+								`http://192.168.1.211:3000/businesses/${ubiz.business.id}`,
+								{
+									business: {
+										id: ubiz.business.id,
+										hearts: hearts - 1,
+									},
+								},
+								{ headers: { "Content-Type": "application/json" } }
+							)
+							.then(async (response) => {
+								fetchBizs(false); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
+
+								getHearts();
+
+								await fetchUserInfo(userInfo.id); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
+
+								console.log(`deleted heart 💔 #: ${uh.id}`);
+							})
+							.catch((error) => {
+								console.log("ERROR⚠️⚠️⚠️", error);
+							});
+						// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯BIZ HEARTS SUM PATCH⬆
+					})
+					.catch((error) =>
+						this.setState({ error: "Something went wrong. Please try again." })
+					);
+			});
 	};
 
 	// mapBadges = () => {
@@ -191,10 +266,23 @@ class ListBizDash extends React.Component {
 	};
 
 	render() {
+		// console.log("ListBiz PROPS👊🏾:", this.props.getIds);
 		// console.log("U INFO:", this.props.userInfo.heart_ids);
-		// console.log("BIZ ID:",this.props.ubiz.id);
+		// this.props.ubiz.business.id == 1 &&
+		// 	console.log("LBD UBIZ 🐞:", this.props.ubiz.business.hearts);
 		// console.log("BUSINESS NAME:", this.state.ubiz.business.name);
+		// this.props.ubiz.business.id == 1 &&
+		// this.props.purpose !== "ProfileHearts" &&
+		// 	console.log(
+		// 		"LIST BIZ DASH BUSINESS HEARTS ATTR ♥️ :",
+		// 		this.props.ubiz.business.hearts
+		// 	);
+		// this.props.ubiz.business.id == 1 &&
+		// 	this.props.purpose !== "ProfileHearts" &&
+		// 	console.log("LIST BIZ DASH HEART STATE ♥️ :", this.state.hearts);
 		// console.log("♥️  or 💔:", this.props.hearted ? "♥️ " : "💔");
+		// console.log("cooldown 🥶:", this.state.cooldown);
+		// console.log("purpose", this.props.purpose);
 
 		// console.log(
 		// 	"BADGE PROPS ",
@@ -235,15 +323,40 @@ class ListBizDash extends React.Component {
 						height: vh(5),
 						width: vw(13),
 					}}
+					activeOpacity={!this.state.cooldown ? 0.2 : 1}
 					onPress={() => {
-						// ♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥
-						this.setState({ hearted: !this.state.hearted });
+						// ♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥ 🚨
 
-						this.state.hearted
-							? this.deleteHeart(this.props.fetchBizs, this.props.fetchUserInfo)
-							: this.incHearts(this.props.fetchBizs, this.props.fetchUserInfo);
+						if (this.state.cooldown == false) {
+							if (this.props.purpose == "ProfileHearts") {
+								this.deletePH(
+									this.props.fetchBizs,
+									this.props.fetchUserInfo,
+									this.props.getHearts,
+									this.props.getListings
+								);
 
-						// this.incHearts(this.props.fetchBizs, this.props.fetchUserInfo);
+								// this.setState({ cooldown: true });
+							} else {
+								this.setState({ hearted: !this.state.hearted });
+
+								this.state.hearted
+									? this.deleteHeart(
+											this.props.fetchBizs,
+											this.props.fetchUserInfo,
+											this.props.getHearts,
+											this.props.getListings
+									  )
+									: this.incHearts(
+											this.props.fetchBizs,
+											this.props.fetchUserInfo,
+											this.props.getHearts,
+											this.props.getListings
+									  );
+
+								this.setState({ cooldown: true });
+							}
+						}
 					}}
 				>
 					<Icon
@@ -267,12 +380,7 @@ class ListBizDash extends React.Component {
 						// backgroundColor: "blue",
 					}}
 				>
-					{this.props.ubiz.business.hearts > 0 &&
-						numFormat(
-							this.state.hearts > this.props.ubiz.business.hearts
-								? this.state.hearts
-								: this.props.ubiz.business.hearts
-						)}
+					{this.props.ubiz.business.hearts > 0 && numFormat(this.state.hearts)}
 				</Text>
 				{/* COMMENTS ICON */}
 				<TouchableOpacity
@@ -406,6 +514,7 @@ export default connect(mapStateToProps, {
 	fetchBizs,
 	setUserInfo,
 	fetchUserInfo,
+	setUserHearts,
 })(ListBizDash);
 
 const styles = StyleSheet.create({
