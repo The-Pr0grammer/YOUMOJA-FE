@@ -42,9 +42,11 @@ const MyListings = (props) => {
 	// 	  })
 	// 	: [];
 
-	let ids = props.heartIds.map((uh) => {
-		return uh.business.id;
-	});
+	let ids = props.heartIds
+		? props.heartIds.map((uh) => {
+				return uh.business.id;
+		  })
+		: [];
 
 	// console.log("HEARTS IS🤎♥️🧡", props.userHearts[0]);
 	// console.log("My user_bizs are 💼💼💼", props.userListings);
@@ -106,11 +108,12 @@ const MyListings = (props) => {
 					return (
 						<ListBiz
 							ubiz={item}
+							navigation={navigation}
 							hearts={item.business.hearts}
 							hearted={ids.includes(item.business.id)}
-							navigation={navigation}
-							lastScreen={"Profile"}
 							getHearts={props.getHearts}
+							handleShopTogg={props.handleShopTogg}
+							lastScreen={"Profile"}
 							purpose={"MyListings"}
 						/>
 					);

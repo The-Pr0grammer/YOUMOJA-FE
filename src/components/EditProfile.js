@@ -13,7 +13,7 @@ import {
 import { Button, CheckBox } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
-import { setUserInfo } from "../redux/actions/bizAction";
+import { setUserInfo, fetchUserInfo } from "../redux/actions/bizAction";
 import { createAccount } from "../api/authentication";
 import Form from "./forms/Form";
 // import { setToken } from "../api/token";
@@ -47,7 +47,7 @@ const EditProfile = (props) => {
 		return await axios
 			.patch(`http://192.168.1.211:3000/users/${props.userInfo.id}`, data)
 			.then((res) => {
-				props.setUserInfo(res.data);
+				// props.setUserInfo(res.data);
 				// console.log("RES is ", res.data);
 				// console.log("EMAIL CHANGED:", inc);
 				// return { status: "200", email: inc };
@@ -65,6 +65,8 @@ const EditProfile = (props) => {
 		console.log("side effects after edit");
 		console.log("result is", result);
 		// let err = JSON.stringify(result.response.data.errors);
+
+		await props.fetchUserInfo(props.userInfo.id); 
 
 		if (result.status == "200") {
 			props.handleInfoEditTogg();
@@ -182,7 +184,9 @@ const EditProfile = (props) => {
 	);
 };
 
-export default connect(mapStateToProps, { setUserInfo })(EditProfile);
+export default connect(mapStateToProps, { setUserInfo, fetchUserInfo })(
+	EditProfile
+);
 
 const styles = StyleSheet.create({
 	container: {

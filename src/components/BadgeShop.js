@@ -23,11 +23,12 @@ import {
 	fetchBizs,
 } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
-import IAP, {
-	purchaseErrorListener,
-	purchaseUpdatedListener,
-} from "react-native-iap";
+// import RNIap, {
+// 	purchaseErrorListener,
+// 	purchaseUpdatedListener,
+// } from "react-native-iap";
 
+import * as RNIap from "react-native-iap";
 import axios from "axios";
 
 const productIds = Platform.select({
@@ -57,7 +58,7 @@ const productIds = Platform.select({
 
 const BadgeShop = (props) => {
 	const [badges, setBadges] = useState([]);
-	const [colorChosen, setColorChosen] = useState("");
+	const [colorChosen, setColorChosen] = useState(props.colorChosen);
 	const [price, setPrice] = useState(0);
 	const [loading, setLoading] = useState(true);
 	const [purchaseFlow, setPurchaseFlow] = useState(false);
@@ -65,19 +66,21 @@ const BadgeShop = (props) => {
 	let colorItr = -1;
 
 	useEffect(() => {
-		// console.log("Welcome to the badge shop");
+		console.log("Welcome to the badge shop🛍");
+		RNIap.clearTransactionIOS();
+
 		setTimeout(() => {
 			setLoading(false);
 			// console.log("LOADING FLAG BEING SET TO FALSE");
 		}, 5225);
-		IAP.clearTransactionIOS();
-		IAP.initConnection()
+
+		RNIap.initConnection()
 			.catch(() => {
 				console.log("error connecting to store 🅧");
 			})
 			.then(() => {
-				// console.log("coNNeCtInG 📶✅");
-				IAP.getProducts(productIds)
+				console.log("coNNeCtInG 📶✅");
+				RNIap.getProducts(productIds)
 					.catch(() => {
 						console.log("error finding purchases 😬");
 					})
@@ -89,12 +92,12 @@ const BadgeShop = (props) => {
 					});
 			});
 
-		const purchaseUpdateSubscription = IAP.purchaseUpdatedListener(
+		const purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
 			(purchase) => {
 				const receipt = purchase.transactionReceipt;
 
 				if (receipt) {
-					IAP.finishTransaction(purchase);
+					RNIap.finishTransaction(purchase);
 					console.log("hey! here's your receipt🧾", receipt);
 					// console.log("PURCHASE DATA🚀:::", purchase);
 
@@ -110,7 +113,7 @@ const BadgeShop = (props) => {
 			}
 		);
 
-		const purchaseErrorSubscription = IAP.purchaseErrorListener((error) => {
+		const purchaseErrorSubscription = RNIap.purchaseErrorListener((error) => {
 			setPurchaseFlow(false);
 			console.log("PURCHASE LISTENER ERROR:", error);
 		});
@@ -128,7 +131,7 @@ const BadgeShop = (props) => {
 		const data = {
 			color: colorChosen,
 			user_id: props.userInfo.id,
-			business_id: props.biz.business.id,
+			business_id: props.ubiz.business.id,
 			price: price,
 			receipt: receipt,
 		};
@@ -146,6 +149,7 @@ const BadgeShop = (props) => {
 	};
 
 	// console.log("PRODUCTS(BADGES) ARE...", badges);
+	// console.log("BADGE PRESSED 🚀", badges[props.badgeKeyPressed]);
 	// console.log("🏬BIIIZ IS:::", props.biz.business.name);
 	// console.log("Color Chosen🎨:", colorChosen);
 	// console.log("PRICE 💲:", price);
@@ -154,26 +158,27 @@ const BadgeShop = (props) => {
 	return (
 		<Modal>
 			<View style={styles.container}>
-				<View style={styles.backButtonView}>
-					<TouchableOpacity
-						onPress={() => {
-							props.handleShopTogg();
-						}}
-					>
-						<Icon
-							name="closecircle"
-							type="ant-design"
-							color="black"
-							size={45}
-							reverse
-							reverseColor="brown"
-						/>
-					</TouchableOpacity>
-				</View>
+				<TouchableOpacity
+					activeOpacity={purchaseFlow ? 1 : 0.25}
+					style={styles.backButtonView}
+					onPress={() => {
+						!purchaseFlow && props.handleShopTogg();
+					}}
+				>
+					<Icon
+						activeOpacity={0.2}
+						name={purchaseFlow ? "hourglass" : "closecircle"}
+						type="ant-design"
+						color="black"
+						size={45}
+						reverse
+						reverseColor={purchaseFlow ? "green" : "brown"}
+					/>
+				</TouchableOpacity>
 				<View style={styles.headingView}>
 					<Text style={styles.heading}>Boost This</Text>
 					<Text style={styles.heading}>Business</Text>
-					<Text style={styles.bizName}>"{props.biz.business.name}"</Text>
+					<Text style={styles.bizName}>"{props.ubiz.business.name}"</Text>
 				</View>
 				<View style={styles.listView}>
 					{!loading ? (
@@ -184,7 +189,7 @@ const BadgeShop = (props) => {
 									key={key}
 									style={styles.badge}
 									onPress={() => {
-										IAP.requestPurchase(badge.productId);
+										RNIap.requestPurchase(badge.productId);
 
 										setPrice(badge.price);
 
@@ -285,7 +290,7 @@ const styles = StyleSheet.create({
 		position: "relative",
 		height: vh(7.5),
 		width: vw(16),
-		backgroundColor: "brown",
+		backgroundColor: "firebrick",
 		alignItems: "center",
 		marginTop: vh(6),
 		justifyContent: "center",

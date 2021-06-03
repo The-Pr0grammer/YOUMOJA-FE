@@ -45,9 +45,11 @@ const ProfileHearts = (props) => {
 	// 	  })
 	// 	: [];
 
-	let ids = props.heartIds.map((uh) => {
-		return uh.business.id;
-	});
+	let ids = props.heartIds
+		? props.heartIds.map((uh) => {
+				return uh.business.id;
+		  })
+		: [];
 
 	// console.log("HEARTS IS🤎♥️🧡", props.heartIds.length);
 	// console.log("U S E R H E A R T S ♥️", props.userHearts.length);
@@ -89,12 +91,14 @@ const ProfileHearts = (props) => {
 					return (
 						<ListBiz
 							ubiz={item}
-							hearted={ids.includes(item.business.id)}
 							navigation={navigation}
-							lastScreen={"Profile"}
+							hearted={ids.includes(item.business.id)}
 							getHearts={props.getHearts}
 							getListings={props.getListings}
+							handleShopTogg={props.handleShopTogg}
+							lastScreen={"Profile"}
 							purpose={"ProfileHearts"}
+
 						/>
 					);
 				}}

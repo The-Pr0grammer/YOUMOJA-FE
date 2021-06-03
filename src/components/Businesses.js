@@ -33,8 +33,11 @@ import Menu from "./Menu.js";
 import Search from "./Search.js";
 import FocusedSearch from "./FocusedSearch.js";
 import Sorter from "./Sorter.js";
-import axios from "axios";
+import BadgeShop from "./BadgeShop.js";
+
 import * as firebase from "firebase";
+import * as RNIap from "react-native-iap";
+import axios from "axios";
 
 class Businesses extends Component {
 	constructor(props) {
@@ -46,6 +49,9 @@ class Businesses extends Component {
 			catTogg: false,
 			userLoadingErrorMessage: "",
 			userHearts: [],
+			shopTogg: false,
+			badgeKeyPressed: null,
+			shopBiz: null,
 
 			// users: [],
 			// hasLoadedUsers: false,
@@ -58,12 +64,12 @@ class Businesses extends Component {
 
 		// navigateToLogin = () => {
 		// 	return this.props.navigation.navigate("Auth");
-		// };
+		// };]
 
 		// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯ADHOC LOAD USER ⬇
 		loadUser = (id) => {
 			let response = axios(
-				// `http://192.168.1.211:3000/users/${1}`
+				// `http://192.168.1.211:3000/users	1}`
 				`http://192.168.1.211:3000/users/${1}`
 				// `http://192.168.1.211:3000/users/${this.props.userInfo.id}`
 			)
@@ -203,6 +209,21 @@ class Businesses extends Component {
 			.catch((error) => console.log(error));
 	};
 
+	handleShopTogg = (shopBiz, badgeKey) => {
+		// console.log("handleShopTogg shopBiz🛍", shopBiz);
+		// console.log("handleShopTogg badgeKey🛍", badgeKey);
+
+		RNIap.clearTransactionIOS();
+
+		this.props.fetchBizs(false);
+
+		this.setState({
+			shopTogg: !this.state.shopTogg,
+			shopBiz: shopBiz,
+			badgeKeyPressed: badgeKey,
+		});
+	};
+
 	render() {
 		const { isFocused } = this.props;
 		{
@@ -223,6 +244,7 @@ class Businesses extends Component {
 		// );
 		// console.log("isFETCHING", this.props.reduxState.isFetching);
 		// console.log("USERS:", this.state.users[0]);
+		// console.log("shopTogg🛍", this.state.shopTogg);
 		// console.log("USER INFO 👤💯", this.props.userInfo);
 		// console.log("♥️  IDS:", this.props.userHearts);
 		// console.log("USER HEARTS ARE🧡", this.props.reduxState.userHearts[0]);
@@ -338,17 +360,24 @@ class Businesses extends Component {
 							return (
 								<ListBiz
 									ubiz={item}
-									// hearted={this.props.userHearts && ids.includes(item.id)}
-									hearted={ids.includes(item.business.id)}
-									// hearted={true}
 									navigation={this.props.navigation}
-									lastScreen={"Home"}
+									handleShopTogg={this.handleShopTogg}
+									hearted={ids.includes(item.business.id)}
 									getHearts={this.getHearts}
+									lastScreen={"Home"}
+									purpose={"Home"}
 								/>
 							);
 						}}
 						extraData={this.props.heartIds}
 						// legacyImplementation={true}
+					/>
+				)}
+				{this.state.shopTogg && (
+					<BadgeShop
+						ubiz={this.state.shopBiz}
+						handleShopTogg={this.handleShopTogg}
+						badgeKeyPressed={this.state.badgeKeyPressed}
 					/>
 				)}
 			</View>

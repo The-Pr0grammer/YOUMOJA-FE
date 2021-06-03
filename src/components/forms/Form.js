@@ -896,7 +896,7 @@ const Form = ({
 								onChangeValue("allow_emails", !newAllowEmails);
 							}}
 						/>
-						<CheckBox
+						{/* <CheckBox
 							title="Display ♥️s on your profile?"
 							checked={newAllowEmails}
 							containerStyle={{
@@ -911,7 +911,7 @@ const Form = ({
 								setNewAllowEmails(!newAllowEmails);
 								onChangeValue("allow_emails", !newAllowEmails);
 							}}
-						/>
+						/> */}
 
 						<Button
 							title={"Save Changes"}

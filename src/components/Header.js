@@ -23,6 +23,8 @@ const Header = (props) => {
 	const activeScreen = props.activeScreen;
 
 	// console.log(props.activeScreen);
+	// console.log("HEADER NAME", props.name);
+	// console.log("USER NAME", props.userInfo.name);
 
 	return (
 		<View
@@ -69,7 +71,19 @@ const Header = (props) => {
 										index: 0,
 										routes: [{ name: "Home" }],
 									});
+								} else if (props.activeScreen == "Blackboard") {
+									console.log(
+										"props.activeScreen 🖤 🖤 🖤",
+										props.activeScreen
+									);
+
+									props.navigation.goBack();
 								} else if (props.lastScreen == "Blackboard") {
+									console.log("props.lastScreen 📺", props.lastScreen);
+									props.navigation.reset({
+										index: 0,
+										routes: [{ name: "Home" }],
+									});
 									props.navigation.navigate("Blackboard");
 								} else if (props.lastScreen == "Webview") {
 									props.handleWebviewTogg();
@@ -162,6 +176,7 @@ const Header = (props) => {
 					)}
 				</View>
 				<TouchableOpacity
+					activeOpacity={props.name == props.userInfo.name ? 1 : 0.5}
 					onPress={() =>
 						navigation.navigate("DrawerNav", {
 							screen: "Profile",

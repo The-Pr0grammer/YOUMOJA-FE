@@ -29,29 +29,32 @@ import ProfileHearts from "./ProfileHearts.js";
 import MyListings from "./MyListings.js";
 import NewListing from "./NewListing";
 import SuccessModal from "./SuccessModal.js";
+import BadgeShop from "./BadgeShop.js";
 import EmailConfirmation from "./EmailConfirmation.js";
 
+import * as RNIap from "react-native-iap";
 import axios from "axios";
 
 const Profile = (props) => {
 	const [loading, setLoading] = useState(true);
-	const [active, toggleActive] = useState("");
-	const [userShow, setUserShow] = useState("");
 	const [addBusinessTogg, setAddBusinessTogg] = useState(false);
 	const [posted, setPosted] = useState(false);
 	const [imgSaved, setImgSaved] = useState(false);
 	const [infoSaved, setInfoSaved] = useState(false);
 	const [credsSaved, setCredsSaved] = useState(false);
-	const [editTogg, setEditTogg] = useState(false);
+	const [shopTogg, setShopTogg] = useState(false);
+	const [badgeKeyPressed, setBadgeKeyPressed] = useState(null);
+	const [shopBiz, setShopBiz] = useState(null);
 	const isFocused = useIsFocused();
 	const navigation = useNavigation();
-
+	// const [active, toggleActive] = useState("");
+	// const [userShow, setUserShow] = useState("");
+	// const [editTogg, setEditTogg] = useState(false);
 	// const lastScreen = "Home";
 
 	// console.log(navigation);
 	// console.log(props.route);
 	// console.log(navigation.dangerouslyGetState());
-
 	// console.log(parent);
 
 	useEffect(() => {
@@ -208,6 +211,20 @@ const Profile = (props) => {
 		}
 	};
 
+	handleShopTogg = async (shopBiz, badgeKey) => {
+		// console.log("handleShopTogg shopBiz🛍", shopBiz);
+		// console.log("handleShopTogg badgeKey🛍", badgeKey);
+
+		RNIap.clearTransactionIOS();
+		
+		getListings();
+		getHearts();
+
+		setShopTogg(!shopTogg);
+		setShopBiz(shopBiz);
+		setBadgeKeyPressed(badgeKey);
+	};
+
 	// console.log("userSHOW IS 🐛✋🏾", userShow);
 	// console.log("♻️", loading);
 	// console.log("userinfo:::::", props.userInfo);
@@ -230,8 +247,8 @@ const Profile = (props) => {
 				name={props.userInfo.name}
 				navigation={navigation}
 				refresh={true}
-				// lastScreen={"Home"}
 				lastScreen={getLastScreen()}
+				// lastScreen={"Home"}
 				// loading={props.profileLoading}
 			/>
 
@@ -301,6 +318,7 @@ const Profile = (props) => {
 									handleAddBusinessTogg={handleAddBusinessTogg}
 									loading={loading}
 									getHearts={getHearts}
+									handleShopTogg={handleShopTogg}
 								/>
 							)}
 						</>
@@ -314,6 +332,7 @@ const Profile = (props) => {
 									loading={loading}
 									getHearts={getHearts}
 									getListings={getListings}
+									handleShopTogg={handleShopTogg}
 								/>
 							)}
 						</>
@@ -410,6 +429,13 @@ const Profile = (props) => {
 					)}
 				</ScrollView>
 			</View>
+			{shopTogg && (
+				<BadgeShop
+					ubiz={shopBiz}
+					handleShopTogg={handleShopTogg}
+					badgeKeyPressed={badgeKeyPressed}
+				/>
+			)}
 		</View>
 	);
 };

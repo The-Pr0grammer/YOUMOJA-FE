@@ -47,6 +47,7 @@ const Blackboard = (props) => {
 				name={"Blackboard"}
 				navigation={navigation}
 				// lastScreen={"Home"}
+				activeScreen={"Blackboard"}
 				// loading={props.profileLoading}
 			/>
 			<ScrollView scrollIndicatorInsets={{ right: 1 }}>

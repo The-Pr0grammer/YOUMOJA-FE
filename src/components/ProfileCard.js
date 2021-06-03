@@ -396,6 +396,7 @@ const ProfileCard = (props) => {
 					</TouchableOpacity>
 				</View>
 				<TouchableOpacity
+					activeOpacity={0.75}
 					onPress={() => {
 						setIsVisible(true), setEditPrompt(false);
 					}}
@@ -590,6 +591,7 @@ const ProfileCard = (props) => {
 								? Object.values(props.userInfo.badges).reduce((t, n) => t + n)
 								: 0
 						)}
+						
 					</Text>
 					<Text
 						style={{

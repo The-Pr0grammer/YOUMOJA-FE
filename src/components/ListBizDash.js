@@ -22,22 +22,23 @@ import {
 import { connect } from "react-redux";
 import axios from "axios";
 import BadgeShop from "./BadgeShop.js";
+import * as RNIap from "react-native-iap";
 
 class ListBizDash extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			// userHearts: [],
 			error: null,
-			shopTogg: false,
-			badgeCounts: [],
-			badgeKeyPressed: null,
 			ubiz: props.ubiz,
 			hearted: props.hearted,
 			hearts: props.ubiz.business.hearts,
 			cooldown: false,
 			comments: props.ubiz.business.comments,
 			badgeCounts: props.ubiz.business.badges,
+			// userHearts: [],
+			// shopTogg: false,
+			// badgeKeyPressed: null,
+			// badgeCounts: [],
 		};
 	}
 
@@ -74,6 +75,9 @@ class ListBizDash extends React.Component {
 
 		console.log("♥️  HEARTS INCED", hearts + 1);
 
+		this.props.purpose == "MyListings" && getListings();
+		this.props.purpose == "ProfileHearts" && getListings();
+
 		this.setState({
 			hearts: this.state.hearts + 1,
 		});
@@ -101,7 +105,7 @@ class ListBizDash extends React.Component {
 					.then(async (response) => {
 						fetchBizs(false); //PASSED AS A FUNCTION from onPress! Don't change to this.props...
 
-						getListings();
+						// getListings();
 
 						getHearts();
 
@@ -133,7 +137,8 @@ class ListBizDash extends React.Component {
 
 		console.log("💔HEARTS DECCED", ubiz.business.hearts - 1);
 
-		getListings();
+		this.props.purpose == "MyListings" && getListings();
+		this.props.purpose == "ProfileHearts" && getListings();
 
 		await userInfo.heart_ids
 			.filter((uh) => uh.business.id === ubiz.id)
@@ -192,7 +197,8 @@ class ListBizDash extends React.Component {
 
 		console.log("P💔HEARTS DECCED", ubiz.business.hearts - 1);
 
-		getListings();
+		this.props.purpose == "MyListings" && getListings();
+		this.props.purpose == "ProfileHearts" && getListings();
 
 		this.setState({
 			hearts: this.state.hearts - 1,
@@ -260,10 +266,12 @@ class ListBizDash extends React.Component {
 	// 	return countArr;
 	// };
 
-	handleShopTogg = async () => {
-		this.setState({ shopTogg: !this.state.shopTogg });
-		await this.props.fetchBizs();
-	};
+	// handleShopTogg = (bool) => {
+	// 	this.props.fetchBizs();
+	// 	RNIap.clearTransactionIOS();
+	// 	// this.props.purpose == "MyListings" && this.setState({ shopTogg: true });
+	// 	this.setState({ shopTogg: !this.state.shopTogg });
+	// };
 
 	render() {
 		// console.log("ListBiz PROPS👊🏾:", this.props.getIds);
@@ -283,6 +291,7 @@ class ListBizDash extends React.Component {
 		// console.log("♥️  or 💔:", this.props.hearted ? "♥️ " : "💔");
 		// console.log("cooldown 🥶:", this.state.cooldown);
 		// console.log("purpose", this.props.purpose);
+		// console.log("shopTogg🛍", this.state.shopTogg);
 
 		// console.log(
 		// 	"BADGE PROPS ",
@@ -444,7 +453,7 @@ class ListBizDash extends React.Component {
 						paddingLeft: vw(4.5),
 						paddingRight: vw(0.5),
 					}}
-					automaticallyAdjustInsets={false}
+					// automaticallyAdjustInsets={true}
 					horizontal={true}
 					pagingEnabled={true}
 					scrollEnabled={true}
@@ -464,13 +473,14 @@ class ListBizDash extends React.Component {
 						return (
 							<TouchableOpacity
 								key={key}
-								style={styles.badge}
+								style={styles.badge}list
 								onPress={() => {
 									// IAP.requestPurchase(badge.productId);
 									// console.log("color key🔑🚀:", key);
+
 									this.setState({ badgeKeyPressed: key });
 									Vibration.vibrate();
-									this.handleShopTogg();
+									this.props.handleShopTogg(this.props.ubiz, key);
 								}}
 							>
 								<Icon
@@ -498,13 +508,13 @@ class ListBizDash extends React.Component {
 						);
 					})}
 				</ScrollView>
-				{this.state.shopTogg && (
+				{/* {this.state.shopTogg && (
 					<BadgeShop
 						ubiz={this.props.ubiz}
 						handleShopTogg={this.handleShopTogg}
 						badgeKeyPressed={this.state.badgeKeyPressed}
 					/>
-				)}
+				)} */}
 			</View>
 		);
 	}

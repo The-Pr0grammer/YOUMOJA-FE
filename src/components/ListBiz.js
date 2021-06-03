@@ -154,9 +154,10 @@ class ListBiz extends React.Component {
 						</View>
 						<ListBizDash
 							ubiz={this.props.ubiz}
-							hearted={this.props.hearted}
-							hearts={this.props.hearts}
+							handleShopTogg={this.props.handleShopTogg}
 							handleNavigation={this.handleNavigation}
+							hearts={this.props.hearts}
+							hearted={this.props.hearted}
 							getHearts={this.props.getHearts}
 							getListings={this.props.getListings}
 							purpose={this.props.purpose}

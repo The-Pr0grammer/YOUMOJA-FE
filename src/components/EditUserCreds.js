@@ -13,7 +13,7 @@ import {
 import { Button, CheckBox } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
-import { setUserInfo } from "../redux/actions/bizAction";
+import { setUserInfo, fetchUserInfo } from "../redux/actions/bizAction";
 import { createAccount } from "../api/authentication";
 import Form from "./forms/Form";
 // import { setToken } from "../api/token";
@@ -42,7 +42,7 @@ const EditProfile = (props) => {
 	};
 
 	const handleEdit = async (data, user) => {
-		console.log("boutta edit. data is:::::", data, user);
+		// console.log("boutta edit. data is:::::", data, user);
 
 		if (data["email"]) {
 			return await handlePatchAndUpdate(data, user);
@@ -73,11 +73,11 @@ const EditProfile = (props) => {
 			})
 			.then(async (res) => {
 				console.log("RES AFTER PATCH", res.data);
-				props.setUserInfo({
-					...props.userInfo,
-					email_verified: false,
-					time_sent: currentTime,
-				});
+				// props.setUserInfo({
+				// 	...props.userInfo,
+				// 	email_verified: false,
+				// 	time_sent: currentTime,
+				// });
 
 				user
 					.updateEmail(data["email"])
@@ -110,7 +110,7 @@ const EditProfile = (props) => {
 						return error;
 					});
 
-				console.log("USER INFO::::", props.userInfo);
+				// console.log("USER INFO::::", props.userInfo);
 				return { status: "200" };
 			})
 			.catch((error) => {
@@ -204,6 +204,9 @@ const EditProfile = (props) => {
 		// console.log("side effects after edit");
 		// console.log("result is", result);
 		// // let err = JSON.stringify(result.response.data.errors);
+
+		await props.fetchUserInfo(props.userInfo.id); 
+
 		if (result.status == "200") {
 			props.handleCredsEditTogg();
 			props.handleSuccess("creds");
@@ -312,7 +315,9 @@ const EditProfile = (props) => {
 	);
 };
 
-export default connect(mapStateToProps, { setUserInfo })(EditProfile);
+export default connect(mapStateToProps, { setUserInfo, fetchUserInfo })(
+	EditProfile
+);
 
 const styles = StyleSheet.create({
 	container: {

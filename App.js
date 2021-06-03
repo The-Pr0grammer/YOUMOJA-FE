@@ -154,6 +154,9 @@ function AuthFlow({ navigation }) {
 }
 
 function DrawerNav({ navigation }) {
+	{
+		drawerLockMode: "locked-closed";
+	}
 	return (
 		<Drawer.Navigator
 			screenOptions={{
@@ -198,6 +201,9 @@ function DrawerNav({ navigation }) {
 				name="Profile"
 				component={Profile}
 				options={{
+					navigationOptions: () => ({
+						drawerLockMode: "locked-closed",
+					}),
 					headerShown: false,
 					headerLeft: () => (
 						<Button
@@ -295,6 +301,7 @@ function Main({ navigation }) {
 				name="Webview"
 				component={Webview}
 				options={{
+					// drawerLockMode: "locked-closed",
 					headerShown: true,
 					headerLeft: () => (
 						<Button
