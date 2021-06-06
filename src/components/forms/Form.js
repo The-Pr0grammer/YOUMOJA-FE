@@ -45,10 +45,13 @@ const Form = ({
 	action,
 	afterSubmit,
 	handleCancel,
-	type,
+	purpose,
 	buttonSpinner,
 	handleChange,
 	userInfo,
+	handleOffset,
+	scrollRef,
+	propsError,
 }) => {
 	useFocusEffect(
 		React.useCallback(() => {
@@ -56,7 +59,7 @@ const Form = ({
 			// setValidationErrors("");
 			setErrorMessage("");
 
-			// type == "EditProfile" && setValues(userInfo);
+			// purpose == "EditProfile" && setValues(userInfo);
 		}, [])
 	);
 
@@ -81,7 +84,7 @@ const Form = ({
 
 		// console.log("newState is", newState);
 
-		// type == "EditProfile" || type == "EditUserCreds"
+		// purpose == "EditProfile" || purpose == "EditUserCreds"
 		// 	? setValues(removeEmptyStrings(newState))
 		// 	: setValues(newState);
 
@@ -100,9 +103,17 @@ const Form = ({
 	const removeEmptyStrings = (obj) => {
 		let newObj = {};
 		Object.keys(obj).forEach((prop) => {
-			if (obj[prop] !== "") {
+			// if (obj[prop] !== "") {
+			// 	newObj[prop] = obj[prop];
+			// }
+
+			if (!obj[prop].replace(/\s/g, "").length) {
+				console.log("found an empty string");
+			} else {
 				newObj[prop] = obj[prop];
 			}
+
+			// !str.replace(/\s/g, "").length;
 		});
 		newObj.allow_emails == userInfo.allow_emails && delete newObj.allow_emails;
 		return newObj;
@@ -111,7 +122,7 @@ const Form = ({
 	const trimValues = (obj) => {
 		let newObj = {};
 
-		if (type == "Signup" && !Object.keys(obj).includes("allow_emails")) {
+		if (purpose == "Signup" && !Object.keys(obj).includes("allow_emails")) {
 			obj.allow_emails = allowEmails;
 		}
 
@@ -283,7 +294,7 @@ const Form = ({
 
 		let newFields = { ...fields };
 
-		if (type == "EditUserCreds") {
+		if (purpose == "EditUserCreds") {
 			for (var key in newFields) {
 				if (key == "email" && !Object.keys(values).includes(key)) {
 					delete newFields[key];
@@ -292,7 +303,7 @@ const Form = ({
 			// console.log(newFields);
 		}
 
-		if (type == "EditProfile") {
+		if (purpose == "EditProfile") {
 			for (var key in newFields) {
 				if (!Object.keys(values).includes(key)) {
 					delete newFields[key];
@@ -302,7 +313,7 @@ const Form = ({
 		}
 
 		let errors = [];
-		type == "EditProfile" || type == "EditUserCreds"
+		purpose == "EditProfile" || purpose == "EditUserCreds"
 			? (errors = validateFields(newFields, trimValues(values)))
 			: (errors = validateFields(fields, trimValues(values)));
 
@@ -312,7 +323,7 @@ const Form = ({
 			// console.log(fields);
 			// console.log(values);
 
-			if (type == "Signup" && profileImg == "") {
+			if (purpose == "Signup" && profileImg == "") {
 				console.log("No profile pic 👀📸");
 
 				setErrorMessage("Please choose a profile picture");
@@ -320,7 +331,7 @@ const Form = ({
 
 			return setValidationErrors(errors); //VALIDATIONSSSSSSS
 		} else if (!hasValidationError(errors)) {
-			if (type == "Signup" && profileImg == "") {
+			if (purpose == "Signup" && profileImg == "") {
 				console.log("No profile pic 👀📸");
 
 				return setErrorMessage("Please choose a profile picture");
@@ -331,9 +342,9 @@ const Form = ({
 		//SIGN IN FOR CREDENTIAL CHANGES
 		signInRes = {};
 
-		if (type == "EditUserCreds") {
+		if (purpose == "EditUserCreds") {
 			signInRes = await signIn();
-			if (type == "EditUserCreds" && signInRes.status !== "200") {
+			if (purpose == "EditUserCreds" && signInRes.status !== "200") {
 				console.log("Sign in res is", signInRes);
 
 				let newObj = {};
@@ -356,7 +367,7 @@ const Form = ({
 		//SIGN IN FOR CREDENTIAL CHANGES
 
 		try {
-			switch (type) {
+			switch (purpose) {
 				case "EditProfile":
 					result = await action(trimValues(values));
 					break;
@@ -373,13 +384,13 @@ const Form = ({
 				// code block
 			}
 
-			// type == "EditProfile" || type == "EditUserCreds"
+			// purpose == "EditProfile" || purpose == "EditUserCreds"
 			// 	? (result = await action(trimValues(values)))
 			// 	: (result = await action(...getValues()));
 
 			console.log("result is", result);
 
-			if (type == "EditProfile" && result.status !== "200") {
+			if (purpose == "EditProfile" && result.status !== "200") {
 				// console.log("result is", result);
 
 				var parsedData = JSON.parse(result);
@@ -403,7 +414,7 @@ const Form = ({
 				return;
 			}
 
-			if (type == "EditUserCreds" && result.status !== "200") {
+			if (purpose == "EditUserCreds" && result.status !== "200") {
 				console.log("result izzzzz", result);
 
 				var parsedData = JSON.parse(result);
@@ -425,7 +436,7 @@ const Form = ({
 				return;
 			}
 
-			if (type == "Signup" && result.status !== "200") {
+			if (purpose == "Signup" && result.status !== "200") {
 				console.log("signup result status izzzzz", result.status);
 
 				var parsedData = JSON.parse(result);
@@ -474,7 +485,7 @@ const Form = ({
 		return newObj;
 	};
 
-	// console.log("VALUES:", values);
+	console.log("VALUES:", values);
 	// console.log(removeEmptyStrings(userInfo));
 	// console.log("eM:", errorMessage);
 	// console.log("vEs:", validationErrors);
@@ -484,7 +495,7 @@ const Form = ({
 
 	return (
 		<View style={styles.container}>
-			{type == "Signup" && (
+			{purpose == "Signup" && (
 				<View
 					style={{
 						// flex: 1,
@@ -602,7 +613,7 @@ const Form = ({
 							) : (
 								<Icon
 									name="camera"
-									type="feather"
+									purpose="feather"
 									color="olivedrab"
 									// color="gray"
 									size={115}
@@ -611,7 +622,7 @@ const Form = ({
 						</TouchableOpacity>
 
 						<Button
-							type={"clear"}
+							purpose={"clear"}
 							title={values["image"] ? "Change Image" : "Choose Image"}
 							titleStyle={{ color: "lightslategray" }}
 							onPress={() => {
@@ -714,7 +725,7 @@ const Form = ({
 				</View>
 			)}
 
-			{type == "Login" && (
+			{purpose == "Login" && (
 				<View
 					style={{
 						flex: 1,
@@ -749,7 +760,7 @@ const Form = ({
 						);
 					})}
 
-					{type == "Login" && (
+					{purpose == "Login" && (
 						<Text style={styles.loginError}>{errorMessage}</Text>
 					)}
 					<View style={{ bottom: vh(1) }}>
@@ -760,7 +771,7 @@ const Form = ({
 								borderRadius: 18,
 							}}
 							style={[
-								type == "Login" ? styles.loginButton : styles.createButton,
+								purpose == "Login" ? styles.loginButton : styles.createButton,
 							]}
 							titleStyle={{ color: "lightslategray" }}
 							onPress={async () => {
@@ -774,7 +785,7 @@ const Form = ({
 				</View>
 			)}
 
-			{type == "NewListing" && (
+			{purpose == "NewListing" && (
 				<View
 					style={{
 						flex: 1,
@@ -785,6 +796,8 @@ const Form = ({
 						// top: vh(36.75),
 					}}
 				>
+					<Text style={styles.listingError}>{errorMessage || propsError}</Text>
+
 					{fieldKeys.map((key, index) => {
 						let keyRef = key;
 
@@ -807,6 +820,9 @@ const Form = ({
 								lastKey={fieldKeys.length - 1 == index}
 								firstError={first == key}
 								submitInc={submitInc}
+								purpose={purpose}
+								scrollRef={scrollRef}
+								// handleOffset={handleOffset}
 							/>
 						);
 					})}
@@ -814,7 +830,7 @@ const Form = ({
 					<View
 						style={{
 							flex: 1,
-							// marginTop: vh(4),
+							marginTop: vh(2.75),
 							// backgroundColor: "green",
 							// height: vh(10),
 						}}
@@ -837,7 +853,7 @@ const Form = ({
 				</View>
 			)}
 
-			{type == "EditProfile" && (
+			{purpose == "EditProfile" && (
 				<View
 					style={{
 						flex: 1,
@@ -957,7 +973,7 @@ const Form = ({
 				</View>
 			)}
 
-			{type == "EditUserCreds" && (
+			{purpose == "EditUserCreds" && (
 				<View
 					style={{
 						flex: 1,
@@ -1090,6 +1106,15 @@ const styles = StyleSheet.create({
 		color: "red",
 		textAlign: "center",
 		zIndex: -1,
+	},
+	listingError: {
+		height: vh(3),
+		width: vw(85),
+		position: "relative",
+		color: "red",
+		textAlign: "center",
+		zIndex: -1,
+		// backgroundColor: "blue",
 	},
 	profilePic: {
 		borderRadius: 119,

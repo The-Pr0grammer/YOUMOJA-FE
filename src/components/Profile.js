@@ -7,6 +7,7 @@ import {
 	ImageBackground,
 	TouchableOpacity,
 	ActivityIndicator,
+	Modal,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Button, Icon } from "react-native-elements";
@@ -21,6 +22,7 @@ import {
 	fetchBizs,
 	setUserListings,
 	setUserHearts,
+	fetchUserInfo,
 } from "../redux/actions/bizAction";
 import { useNavigation } from "@react-navigation/native";
 import Header from "./Header.js";
@@ -37,6 +39,7 @@ import axios from "axios";
 
 const Profile = (props) => {
 	const [loading, setLoading] = useState(true);
+	const [userShow, setUserShow] = useState("");
 	const [addBusinessTogg, setAddBusinessTogg] = useState(false);
 	const [posted, setPosted] = useState(false);
 	const [imgSaved, setImgSaved] = useState(false);
@@ -45,10 +48,15 @@ const Profile = (props) => {
 	const [shopTogg, setShopTogg] = useState(false);
 	const [badgeKeyPressed, setBadgeKeyPressed] = useState(null);
 	const [shopBiz, setShopBiz] = useState(null);
+	const [opacities, setOpacities] = useState({
+		twitter: {},
+		linkedin: {},
+		email: {},
+	});
+
 	const isFocused = useIsFocused();
 	const navigation = useNavigation();
 	// const [active, toggleActive] = useState("");
-	// const [userShow, setUserShow] = useState("");
 	// const [editTogg, setEditTogg] = useState(false);
 	// const lastScreen = "Home";
 
@@ -102,13 +110,27 @@ const Profile = (props) => {
 			.catch((error) => console.log(error));
 	};
 
-	apiCalls = () => {
-		let response1 = axios(
+	apiCalls = async () => {
+		let response1 = await axios(
 			`http://192.168.1.211:3000/users/${props.userInfo.id}`
 		)
 			.then((resp) => {
-				props.setUserInfo(resp.data);
 				setUserShow(resp.data);
+				props.setUserInfo(resp.data);
+				setOpacities({
+					twitter: {
+						opacity: resp.data.twitter ? 1 : 0.15,
+						activeOpacity: resp.data.twitter ? 0.15 : 1,
+					},
+					linkedin: {
+						opacity: resp.data.linkedin ? 1 : 0.15,
+						activeOpacity: resp.data.linkedin ? 0.15 : 1,
+					},
+					email: {
+						opacity: resp.data.allow_emails ? 1 : 0.15,
+						activeOpacity: resp.data.allow_emails ? 0.15 : 1,
+					},
+				});
 			})
 			.catch((error) => console.log(error));
 
@@ -216,10 +238,11 @@ const Profile = (props) => {
 		// console.log("handleShopTogg badgeKey🛍", badgeKey);
 
 		RNIap.clearTransactionIOS();
-		
+
+		props.fetchUserInfo(props.userInfo.id);
 		getListings();
 		getHearts();
-
+		
 		setShopTogg(!shopTogg);
 		setShopBiz(shopBiz);
 		setBadgeKeyPressed(badgeKey);
@@ -296,6 +319,7 @@ const Profile = (props) => {
 					handleSuccess={handleSuccess}
 					handleClose={handleClose}
 					handleDismiss={handleDismiss}
+					opacities={opacities}
 					//PROFILE CARD 📇
 				/>
 
@@ -338,16 +362,18 @@ const Profile = (props) => {
 						</>
 					)}
 
-					{
-						addBusinessTogg && (
+					{addBusinessTogg && (
+						<Modal visible={addBusinessTogg}>
 							<NewListing
 								handleAddBusinessTogg={handleAddBusinessTogg}
 								handleSuccess={handleSuccess}
 								handleClose={handleClose}
 								handleDismiss={handleDismiss}
+								addBusinessTogg={addBusinessTogg}
 							/>
-						) //NEW BUSINESS
-					}
+						</Modal>
+					)}
+					{/* //NEW BUSINESS */}
 
 					{posted && (
 						<SuccessModal
@@ -447,6 +473,7 @@ export default connect(mapStateToProps, {
 	fetchBizs,
 	setUserListings,
 	setUserHearts,
+	fetchUserInfo,
 })(function (props) {
 	const isFocused = useIsFocused();
 

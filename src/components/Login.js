@@ -237,7 +237,7 @@ const Login = (props) => {
 							afterSubmit={handleResult}
 							buttonText="Login"
 							buttonSpinner={spinner}
-							type="Login"
+							purpose="Login"
 							fields={{
 								email: {
 									label: "Username or Email",

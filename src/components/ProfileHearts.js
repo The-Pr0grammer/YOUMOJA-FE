@@ -39,17 +39,19 @@ const ProfileHearts = (props) => {
 		};
 	}, []);
 
-	// let ids = props.heartIds
-	// 	? props.heartIds.map((uh) => {
-	// 			return uh.business.id;
-	// 	  })
-	// 	: [];
-
 	let ids = props.heartIds
 		? props.heartIds.map((uh) => {
 				return uh.business.id;
 		  })
 		: [];
+
+	const numFormat = (n) => {
+		if (n < 1e3) return n;
+		if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
+		if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
+		if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + "B";
+		if (n >= 1e12) return +(n / 1e12).toFixed(1) + "T";
+	};
 
 	// console.log("HEARTS IS🤎♥️🧡", props.heartIds.length);
 	// console.log("U S E R H E A R T S ♥️", props.userHearts.length);
@@ -98,7 +100,6 @@ const ProfileHearts = (props) => {
 							handleShopTogg={props.handleShopTogg}
 							lastScreen={"Profile"}
 							purpose={"ProfileHearts"}
-
 						/>
 					);
 				}}

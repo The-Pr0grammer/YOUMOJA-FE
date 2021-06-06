@@ -97,7 +97,7 @@ const EditProfile = (props) => {
 							action={handleEdit}
 							afterSubmit={handleResult}
 							handleCancel={props.handleInfoEditTogg}
-							type="EditProfile"
+							purpose="EditProfile"
 							buttonText="Save Changes"
 							buttonSpinner={spinner}
 							userInfo={{

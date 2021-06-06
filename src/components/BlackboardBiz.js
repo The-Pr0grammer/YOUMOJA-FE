@@ -66,7 +66,7 @@ const BlackboardBiz = (props) => {
 					<View>
 						<NumberFormat
 							value={`
-						${props.ubiz.badges_sum}`}
+						${props.ubiz.boost}`}
 							displayType={"text"}
 							thousandSeparator={true}
 							prefix={"$"}

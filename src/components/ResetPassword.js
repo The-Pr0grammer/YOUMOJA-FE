@@ -65,7 +65,7 @@ const ResetPassword = (props) => {
 					afterSubmit={handleResult}
 					buttonText="Confirm"
 					buttonSpinner={spinner}
-					type="Login"
+					purpose="Login"
 					fields={{
 						password: {
 							label: "Email",

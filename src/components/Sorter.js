@@ -9,6 +9,7 @@ import {
 	sortByHeartsTogg,
 	sortByBadgesTogg,
 	sortByLocationTogg,
+	fetchBadgeSums,
 } from "../redux/actions/bizAction";
 
 class Sorter extends React.Component {
@@ -18,6 +19,12 @@ class Sorter extends React.Component {
 			<View style={styles.container}>
 				<TouchableOpacity
 					onPress={() => {
+						if (this.props.sorters.badgesSort) {
+							this.props.sortByBadgesTogg();
+						}
+						if (this.props.sorters.locationSort) {
+							this.props.sortByLocationTogg();
+						}
 						this.props.sortByHeartsTogg();
 					}}
 					style={[
@@ -28,10 +35,16 @@ class Sorter extends React.Component {
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
-						this.props.sortByBadgesTogg();
+						if (this.props.sorters.badgesSort) {
+							this.props.sortByBadgesTogg();
+						}
+						if (this.props.sorters.heartsSort) {
+							this.props.sortByHeartsTogg();
+						}
+						this.props.sortByLocationTogg();
 					}}
 					style={[
-						this.props.sorters.badgesSort ? styles.litBox : styles.sortBox2,
+						this.props.sorters.locationSort ? styles.litBox : styles.sortBox2,
 					]}
 				>
 					<Icon
@@ -43,10 +56,18 @@ class Sorter extends React.Component {
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={() => {
-						this.props.sortByLocationTogg();
+						this.props.fetchBadgeSums();
+
+						if (this.props.sorters.locationSort) {
+							this.props.sortByLocationTogg();
+						}
+						if (this.props.sorters.heartsSort) {
+							this.props.sortByHeartsTogg();
+						}
+						this.props.sortByBadgesTogg();
 					}}
 					style={[
-						this.props.sorters.locationSort ? styles.litBox : styles.sortBox3,
+						this.props.sorters.badgesSort ? styles.litBox : styles.sortBox3,
 					]}
 				>
 					<Icon name="rocket1" type="ant-design" color="darkcyan" size={42} />
@@ -60,6 +81,7 @@ export default connect(mapStateToProps, {
 	sortByHeartsTogg,
 	sortByBadgesTogg,
 	sortByLocationTogg,
+	fetchBadgeSums,
 })(Sorter);
 
 const styles = StyleSheet.create({

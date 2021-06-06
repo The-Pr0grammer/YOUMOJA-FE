@@ -207,7 +207,7 @@ const CreateAccount = (props) => {
 					afterSubmit={handleResult}
 					buttonText="Create Account"
 					buttonSpinner={spinner}
-					type="Signup"
+					purpose="Signup"
 					fields={{
 						name: {
 							label: "Name",

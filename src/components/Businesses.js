@@ -23,6 +23,7 @@ import {
 	profileLoadingTogg,
 	fetchUserInfo,
 	setUserHearts,
+	fetchBadgeSums,
 } from "../redux/actions/bizAction";
 // import { getUsers } from "../api/users.js";
 import PropTypes from "prop-types";
@@ -260,6 +261,11 @@ class Businesses extends Component {
 		// 		},
 		// 	},
 		// ]);
+		// console.log("🚀 s0rTeR", this.props.badgesSort);
+		// console.log(
+		// 	"🚀 ➕ 💲",
+		// 	this.props.badgeSums.map((biz) => biz["boost"])
+		// );
 		return (
 			<View style={styles.container}>
 				{this.props.reduxState.isFetching && (
@@ -392,6 +398,7 @@ export default connect(mapStateToProps, {
 	profileLoadingTogg,
 	fetchUserInfo,
 	setUserHearts,
+	fetchBadgeSums,
 })(function (props) {
 	const isFocused = useIsFocused();
 	return <Businesses {...props} isFocused={isFocused} />;
@@ -496,6 +503,7 @@ function mapStateToProps(state) {
 			badgesSort: state.badgesSort,
 			locationSort: state.locationSort,
 		},
+		badgeSums: state.badgeSums,
 		filtered_ubizs: state.ubizs
 			// .sort((a, b) => b.business.name < a.business.name)
 			.filter((ubiz) => ubiz.business.categories.includes(state.category))
@@ -510,9 +518,18 @@ function mapStateToProps(state) {
 					ubiz.business.city.toUpperCase().includes(state.search.toUpperCase())
 			)
 			.sort((a, b) => {
-				return state.heartsSort
-					? b.business.hearts - a.business.hearts
-					: b.business.id > a.business.id;
+				// return state.heartsSort
+				// 	? b.business.hearts - a.business.hearts
+				// 	: b.business.id > a.business.id;
+
+				if (state.heartsSort) {
+					return b.business.hearts - a.business.hearts;
+				}
+				if (state.badgesSort) {
+					return b.business.boost - a.business.boost;
+				}
+				if (state.location) {
+				}
 			}),
 	};
 }

@@ -15,7 +15,7 @@ import axios from "axios";
 import * as Sharing from "expo-sharing";
 import * as ExpoLinking from "expo-linking";
 
-import { WebView } from 'react-native-webview';
+import { WebView } from "react-native-webview";
 
 const BizPageDash = (props) => {
 	// let redirectUrl = ExpoLinking.makeUrl("BizPage", {
@@ -48,6 +48,7 @@ const BizPageDash = (props) => {
 				console.log(response);
 			});
 	};
+
 	const numFormat = (n) => {
 		if (n < 1e3) return n;
 		if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";

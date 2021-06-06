@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import {
 	View,
 	StyleSheet,
@@ -12,6 +12,7 @@ import {
 	KeyboardAvoidingView,
 	ActivityIndicator,
 	ImageBackground,
+	Keyboard,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Icon, Button } from "react-native-elements";
@@ -23,8 +24,8 @@ import { connect } from "react-redux";
 import { setUserInfo } from "../redux/actions/bizAction";
 import Header from "./Header.js";
 import CommentList from "./CommentList.js";
-import NewBusinessDash from "./NewListingDash.js";
-import NewBusinessSupport from "./NewListingSupport.js";
+import NewListingDash from "./NewListingDash.js";
+import NewListingSupport from "./NewListingSupport.js";
 import Form from "./forms/Form";
 import {
 	validateContent,
@@ -35,9 +36,12 @@ import {
 	passwordCheck,
 	urlCheck,
 	phoneNumberCheck,
+	emailCheck,
 } from "./forms/validation";
 import { useNavigation } from "@react-navigation/native";
 import RNFetchBlob from "rn-fetch-blob";
+import FastImage from "react-native-fast-image";
+
 import axios from "axios";
 // import { DirectUpload } from "activestorage";
 
@@ -48,26 +52,36 @@ const NewListing = (props) => {
 	});
 	const [errorMessage, setErrorMessage] = useState("");
 	const [visibility, setVisibility] = useState(true);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+	const [offset, setOffset] = useState(0);
+	const [scroll, setScroll] = useState(false);
 	const navigation = useNavigation();
-	const business = {
-		id: 1,
-		name: "Black Flag Apparel",
-		city: "Staten Island",
-		state: "NY",
-		summary: "Black Flag: Never Give Up 🏴",
-		categories: "Coaching,Fashion,Non Profit",
-		website: "BFNGU.com",
-		twitter: "https://twitter.com/N_everG_iveU_p",
-		facebook: null,
-		phone: null,
-		email: null,
-		image_url:
-			"https://cdn.dribbble.com/users/908023/screenshots/7195388/media/da178ba79a307d5fb608e6307507c2cc.png",
-		hearts: 1,
-		created_at: "2020-09-04T02:34:57.819Z",
-		updated_at: "2020-09-05T05:02:06.268Z",
-		comments: [],
-	};
+
+	// const business = {
+	// 	id: 1,
+	// 	name: "Black Flag Apparel",
+	// 	city: "Staten Island",
+	// 	state: "NY",
+	// 	summary: "Black Flag: Never Give Up 🏴",
+	// 	categories: "Coaching,Fashion,Non Profit",
+	// 	website: "BFNGU.com",
+	// 	twitter: "https://twitter.com/N_everG_iveU_p",
+	// 	facebook: null,
+	// 	phone: null,
+	// 	email: null,
+	// 	image_url:
+	// 		"https://cdn.dribbble.com/users/908023/screenshots/7195388/media/da178ba79a307d5fb608e6307507c2cc.png",
+	// 	hearts: 1,
+	// 	created_at: "2020-09-04T02:34:57.819Z",
+	// 	updated_at: "2020-09-05T05:02:06.268Z",
+	// 	comments: [],
+	// };
+
+	useEffect(() => {
+		// setScroll(createRef());
+
+		return () => {};
+	}, []);
 
 	const handleChange = (key, value) => {
 		setErrorMessage("");
@@ -157,12 +171,28 @@ const NewListing = (props) => {
 		// navigation.navigate("Profile");
 	};
 
+	// const handleOffset = (offset) => {
+	// 	setOffset(offset);
+	// };
+
 	// console.log("INPUTS.IMAGES [] IS 🖼", inputs.images);
 	// console.log("fetching 🐶:", props.isFetching);
-	console.log("New Business USER INFO:", props.userInfo);
+	// console.log("New Business USER INFO:", props.userInfo);
+	// console.log("offSET:", offset);
 
 	return (
-		<Modal visible={visibility} style={styles.container}>
+		<KeyboardAvoidingView
+			// behavior="position"
+			behavior="padding"
+			style={styles.container}
+			// contentContainerStyle={{ bottom: vh(15) }}
+		>
+			{/* <Modal
+			visible={visibility}
+			 style={styles.container}
+			style={styles.container}
+			> */}
+			{/* <View style={styles.inner}> */}
 			<View
 				style={{
 					// flex: 1,
@@ -178,240 +208,248 @@ const NewListing = (props) => {
 					// loading={spinner}
 					lastScreen={"MyBusinesses"}
 					handleAddBusinessTogg={props.handleAddBusinessTogg}
+					addBusinessTogg={props.addBusinessTogg}
 				/>
 			</View>
 
-			<KeyboardAvoidingView behavior="height">
-				<ScrollView
-					// decelerationRate={0.75}
-					bounces={false}
-					contentContainerStyle={{
-						flexGrow: 1,
-						height: props.isFetching ? vh(100) : vh(170),
-						backgroundColor: "lightslategray",
-						borderWidth: 2.5,
-						borderColor: "black",
-						// top: vh(0.25),
-					}}
-					indicatorStyle={"white"}
-					// style={styles.scrollCon}
-				>
-					<View style={styles.bizCon}>
-						<View style={{ flexDirection: "row", justifyContent: "center" }}>
-							<View
-								style={{
-									backgroundColor: "rgba(40, 40, 40, 0.5)",
-									borderLeftWidth: 2,
-									width: vh(8.5),
-									height: vh(6.8),
-									alignItems: "center",
-									justifyContent: "center",
-								}}
-							>
-								<Image
-									resizeMode={"cover"}
-									source={{
-										// uri: props.userInfo.image
-										// 	? `http://192.168.1.211:3000/${props.userInfo.image}`
-										// 	: props.userInfo.image,
-										uri: props.userInfo.image
-											? `http://192.168.1.211:3000/${props.userInfo.image}`
-											: props.userInfo.img_url,
-									}}
-									style={styles.profilePic}
-								></Image>
-							</View>
-							<TextTicker
-								shouldAnimateTreshold={vw(8)}
-								duration={9600}
-								loop
-								bounce
-								repeatSpacer={25}
-								marqueeDelay={3200}
-								style={styles.bizSumm}
-							>
-								{
-									inputs.summary
-									//BIZ SUMMARY
-								}
-							</TextTicker>
-						</View>
-						<View style={styles.cardView}>
-							<NewListingDash
-								business={business}
-								inputs={inputs}
-								setInputs={setInputs}
-								setVisibility={setVisibility}
-								visibility={visibility}
-								setErrorMessage={setErrorMessage}
-							/>
-						</View>
-						<View style={styles.bizSupport}>
-							<NewListingSupport
-								business={business}
-								purpose={"NewListing"}
-								support={inputs.support}
-								setErrorMessage={setErrorMessage}
-							/>
-						</View>
-					</View>
-					{props.isFetching && (
+			<ScrollView
+				// decelerationRate={0.75}
+				bounces={false}
+				contentContainerStyle={{
+					flexGrow: 1,
+					// height: props.isFetching ? vh(100) : vh(100),
+					// height: !props.isFetching && vh(150),
+					width: "100%",
+					backgroundColor: "lightslategray",
+					borderWidth: 2.5,
+					borderColor: "black",
+					bottom: vh(offset),
+				}}
+				indicatorStyle={"white"}
+				// ref={scroll}
+				ref={(component) => {
+					setScroll(component);
+				}}
+				// style={styles.scrollCon}
+			>
+				<View style={styles.bizCon}>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "center",
+							paddingBottom: vh(0.25),
+						}}
+					>
 						<View
 							style={{
-								// flex: 1,
-								// height: vh(100),
-								width: vw(100),
+								backgroundColor: "rgba(40, 40, 40, 0.5)",
+								// borderLeftWidth: 4,
+								width: vw(16),
+								height: vh(6.8),
+								alignItems: "center",
 								justifyContent: "center",
-								backgroundColor: "rgba(0,5,35,0.8)",
 							}}
 						>
-							<ActivityIndicator
-								size="large"
-								color="lime"
-								hidesWhenStopped={true}
-								style={{
-									top: vh(28),
+							<FastImage
+								resizeMode={"cover"}
+								source={{
+									// uri: props.userInfo.image
+									// 	? `http://192.168.1.211:3000/${props.userInfo.image}`
+									// 	: props.userInfo.image,
+									uri: props.userInfo.image
+										? `http://192.168.1.211:3000/${props.userInfo.image}`
+										: props.userInfo.img_url,
 								}}
-							></ActivityIndicator>
-							<View style={{ position: "relative", height: vh(50) }}>
-								<ImageBackground
-									source={require("../images/blackownedbiz.gif")}
-									style={styles.bg}
-									imageStyle={{ resizeMode: "stretch" }}
-								></ImageBackground>
-							</View>
+								style={styles.profilePic}
+							></FastImage>
 						</View>
-					)}
-					{/* {!props.isFetching && (
-						<View style={styles.commentCon}>
-							<CommentList
-								bizId={0}
-								navigation={navigation}
-								newListing={true}
-								// comments={comments}
-							/>
-						</View>
-					)} */}
-					{!props.isFetching && (
-						<View style={styles.inputDiv}>
-							<View style={styles.inputDash}>
-								<Text style={styles.errorMessage}>{errorMessage}</Text>
-								<Form
-									action={postBusiness}
-									afterSubmit={handleResult}
-									handleChange={handleChange}
-									// buttonText="Create Account"
-									// buttonSpinner={spinner}
-									type="NewListing"
-									fields={{
-										name: {
-											label: "Name",
-											validators: [validateContent],
-											inputProps: {
-												autoCapitalize: "words",
-												placeholder: "What's the name of your business?",
-												placeholderTextColor: "lightslategray",
-												textAlign: "center",
-											},
-										},
-										summary: {
-											label: "Summary",
-											validators: [validateContent],
-											inputProps: {
-												placeholder: "Enter a summary for your business",
-												placeholderTextColor: "lightslategray",
-												textAlign: "center",
-											},
-										},
-										facebook: {
-											label: "Facebook",
-											validators: [urlCheck],
-											inputProps: {
-												autoCapitalize: "none",
-												placeholder: "Business Facebook url",
-												placeholderTextColor: "lightslategray",
-												textAlign: "center",
-											},
-										},
-										instagram: {
-											label: "Instagram",
-											validators: [urlCheck],
-											inputProps: {
-												placeholder: "Business Instagram url",
-												placeholderTextColor: "lightslategray",
-												textAlign: "center",
-											},
-										},
-										twitter: {
-											label: "Twitter",
-											validators: [urlCheck],
-											inputProps: {
-												placeholder: "Business Twitter url",
-												placeholderTextColor: "lightslategray",
-												textAlign: "center",
-											},
-										},
-										website: {
-											label: "Website",
-											validators: [urlCheck],
-											inputProps: {
-												placeholder: "Business website url",
-												placeholderTextColor: "lightslategray",
-												textAlign: "center",
-											},
-										},
-										number: {
-											label: "Contact",
-											validators: [phoneNumberCheck],
-											inputProps: {
-												keyboardType: "phone-pad",
-												placeholder:
-													"Enter a telephone number for this business",
-												placeholderTextColor: "lightslategray",
-												textAlign: "center",
-											},
-										},
-										support: {
-											label: "Support",
-											validators: [urlCheck],
-											inputProps: {
-												placeholder: "Enter a url to support this business",
-												placeholderTextColor: "lightslategray",
-												textAlign: "center",
-											},
-										},
-									}}
-								/>
-								{/* <Button
-							title={"Post Business"}
-							buttonStyle={{
-								backgroundColor: "transparent",
-								borderRadius: 18,
+						<TextTicker
+							shouldAnimateTreshold={vw(8)}
+							duration={9600}
+							loop
+							bounce
+							repeatSpacer={25}
+							marqueeDelay={3200}
+							style={styles.bizSumm}
+						>
+							{
+								inputs.summary
+								//BIZ SUMMARY
+							}
+						</TextTicker>
+					</View>
+					{/* <View style={styles.cardView}> */}
+					<NewListingDash
+						// business={business}
+						inputs={inputs}
+						setInputs={setInputs}
+						setVisibility={setVisibility}
+						visibility={visibility}
+						setErrorMessage={setErrorMessage}
+					/>
+					{/* </View> */}
+					{/* <View style={styles.bizSupport}> */}
+					<NewListingSupport
+						// business={business}
+						purpose={"NewListing"}
+						support={inputs.support}
+						setErrorMessage={setErrorMessage}
+					/>
+					{/* </View> */}
+				</View>
+				{/* {props.isFetching && ( */}
+				{/* <View
+						style={{
+							// flex: 1,
+							// height: vh(100),
+							width: vw(100),
+							justifyContent: "center",
+							// backgroundColor: "rgba(0,5,35,0.8)",
+							position:"absolute",
+							top:"28%"
+						}}
+					>
+						<ActivityIndicator
+							size="large"
+							color="lime"
+							hidesWhenStopped={true}
+							style={{
+								top: vh(18.5),
 							}}
-							style={styles.createButton}
-							titleStyle={{ color: "lightslategray" }}
-							onPress={handleResult}
-							// loading={buttonSpinner}
-							// loadingProps={{ color: "green", size: "large" }}
-						/>
-						<Button
-							title={"Cancel"}
-							buttonStyle={{
-								backgroundColor: "transparent",
-								borderRadius: 18,
-							}}
-							style={styles.createButton}
-							titleStyle={{ color: "lightslategray" }}
-							onPress={handleResult}
-							// loading={buttonSpinner}
-							// loadingProps={{ color: "green", size: "large" }}
-						/> */}
-							</View>
+						></ActivityIndicator>
+						<View style={{ position: "relative", height: vh(50) }}>
+							<ImageBackground
+								source={require("../images/blackownedbiz.gif")}
+								style={styles.bg}
+								imageStyle={{ resizeMode: "stretch" }}
+							></ImageBackground>
 						</View>
-					)}
-				</ScrollView>
-			</KeyboardAvoidingView>
-		</Modal>
+					</View> */}
+				{/* )} */}
+				<View style={styles.inner}>
+					{/* <Text style={styles.errorMessage}>{errorMessage}</Text> */}
+					<Form
+						action={postBusiness}
+						afterSubmit={handleResult}
+						handleChange={handleChange}
+						// handleOffset={handleOffset}
+						// buttonText="Create Account"
+						// buttonSpinner={spinner}
+						purpose="NewListing"
+						// scrollRef={this.myScrollView}
+						scrollRef={scroll}
+						propsError={errorMessage}
+						fields={{
+							name: {
+								label: "Name",
+								validators: [validateContent],
+								inputProps: {
+									autoCapitalize: "words",
+									placeholder: "what's the name of this business?",
+									placeholderTextColor: "lightslategray",
+									textAlign: "center",
+								},
+							},
+							summary: {
+								label: "Summary",
+								validators: [validateContent],
+								inputProps: {
+									placeholder: "provide a summary that describes this business",
+									placeholderTextColor: "lightslategray",
+									textAlign: "center",
+								},
+							},
+							facebook: {
+								label: "Facebook",
+								validators: [urlCheck],
+								inputProps: {
+									autoCapitalize: "none",
+									placeholder: "got a business facebook? (recommended)",
+									placeholderTextColor: "lightslategray",
+									textAlign: "center",
+								},
+							},
+							instagram: {
+								label: "Instagram",
+								validators: [urlCheck],
+								inputProps: {
+									placeholder: "y'all on the gram? (recommended)",
+									placeholderTextColor: "lightslategray",
+									textAlign: "center",
+								},
+							},
+							twitter: {
+								label: "Twitter",
+								validators: [urlCheck],
+								inputProps: {
+									placeholder: "adding your twitter >>> (recommended)",
+									placeholderTextColor: "lightslategray",
+									textAlign: "center",
+								},
+							},
+							website: {
+								label: "Website",
+								validators: [urlCheck],
+								inputProps: {
+									placeholder: "your business have a website?",
+									placeholderTextColor: "lightslategray",
+									textAlign: "center",
+								},
+							},
+							cashapp: {
+								label: "Cashapp",
+								validators: [urlCheck],
+								inputProps: {
+									placeholder: "ayy, what's your Cash App",
+									placeholderTextColor: "lightslategray",
+									textAlign: "center",
+								},
+							},
+							contact: {
+								label: "Contact",
+								validators: [phoneNumberCheck, emailCheck],
+								inputProps: {
+									// keyboardType: "phone-pad",
+									placeholder:
+										"enter a phone number or email for this business",
+									placeholderTextColor: "lightslategray",
+									textAlign: "center",
+								},
+							},
+						}}
+					/>
+				</View>
+			</ScrollView>
+			<View
+				style={{
+					// flex: 1,
+					// height: vh(100),
+					width: vw(100),
+					justifyContent: "center",
+					// backgroundColor: "rgba(0,5,35,0.8)",
+					position: "absolute",
+					top: "52%",
+					zIndex: -1,
+				}}
+			>
+				<ActivityIndicator
+					size="large"
+					color="lime"
+					hidesWhenStopped={true}
+					style={{
+						top: vh(25),
+					}}
+				></ActivityIndicator>
+				{/* <View style={{ position: "relative", height: vh(100) }}>
+					<ImageBackground
+						source={require("../images/blackownedbiz.gif")}
+						style={styles.bg}
+						imageStyle={{ resizeMode: "stretch" }}
+					></ImageBackground>
+				</View> */}
+			</View>
+			{/* </Modal> */}
+		</KeyboardAvoidingView>
 	);
 };
 
@@ -423,8 +461,12 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		height: "100%",
+		// height: vh(150),
 		flexDirection: "column",
 		backgroundColor: "black",
+		// marginTop: vh(0.1),
+		// top: offset,
+		// marginBottom: 100,
 	},
 	bizCon: {
 		position: "relative",
@@ -432,7 +474,7 @@ const styles = StyleSheet.create({
 		// height: vh(7.3),
 		backgroundColor: "black",
 		// bottom: vh(83),
-		borderTopWidth: 2.5,
+		// borderTopWidth: 2.5,
 	},
 	scrollCon: {
 		position: "relative",
@@ -456,7 +498,7 @@ const styles = StyleSheet.create({
 	bizSupport: {
 		position: "relative",
 		// padding: vw(1.25),
-		backgroundColor: "lightslategray",
+		// backgroundColor: "lightslategray",
 	},
 	cardView: {
 		position: "relative",
@@ -488,7 +530,7 @@ const styles = StyleSheet.create({
 		opacity: 0.94,
 		backgroundColor: "black",
 		zIndex: 1,
-		bottom: vh(1),
+		// bottom: vh(1),
 		// paddingTop: vh(5),
 	},
 	inputDash: {
@@ -496,8 +538,8 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		alignItems: "center",
 		width: vw(100),
-		paddingBottom: vh(55),
-		paddingTop: vh(3.5),
+		// paddingBottom: vh(55),
+		// paddingTop: vh(3.5),
 		borderColor: "black",
 		backgroundColor: "rgba(0, 0, 0, 0.95)",
 	},
@@ -509,6 +551,7 @@ const styles = StyleSheet.create({
 		color: "red",
 		textAlign: "center",
 		zIndex: -1,
+		paddingVertical: vh(1),
 		// backgroundColor: "red",
 	},
 	bg: {
@@ -519,6 +562,18 @@ const styles = StyleSheet.create({
 		width: vw(100),
 		height: vh(36),
 		justifyContent: "center",
+	},
+	inner: {
+		// flex: 1,
+		// position: "absolute",
+		paddingBottom: vh(7.5),
+		height: "100%",
+		width: "100%",
+		// alignItems: "center",
+
+		// justifyContent: "space-around",
+		backgroundColor: "rgba(0, 0, 0, 0.94)",
+		// backgroundColor: "red",
 	},
 });
 

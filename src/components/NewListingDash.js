@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import {
 	View,
 	Text,
@@ -9,11 +9,14 @@ import {
 	Share,
 	Image,
 	FlatList,
+	ActivityIndicator,
 } from "react-native";
 import { Modal } from "react-native";
 
 import { Icon } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { urlCheck, phoneNumberCheck } from "./forms/validation";
 import * as WebBrowser from "expo-web-browser";
@@ -45,6 +48,7 @@ const NewListingDash = (props) => {
 	const [page, setPage] = useState(0);
 	const [fixedPage, setFixedPage] = useState(0);
 	const [lastTap, setLastTap] = useState(null);
+	const [imagesLoading, setImagesLoading] = useState(false);
 
 	const handleDoubleTap = () => {
 		const now = Date.now();
@@ -125,7 +129,11 @@ const NewListingDash = (props) => {
 				// console.log("IMAGES PICKED::::", resp);
 				// console.log("IMAGES 📸✨", images);
 			})
-			.catch((e) => console.log(e));
+			.catch((e) => {
+				setImagesLoading(false);
+
+				console.log(e);
+			});
 	};
 
 	const showPickedImages = () => {
@@ -142,33 +150,39 @@ const NewListingDash = (props) => {
 					loop={true}
 					autoplay={true}
 					autoplayInterval={3200}
-					onPage={(p) => setPage(p.current - 1)}
+					onPage={(p) => {
+						imagesLoading && setImagesLoading(false);
+
+						setPage(p.current - 1);
+					}}
 				/>
 			);
 		} else {
+			// ADD PHOTOS TOUCHABLE 📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸
 			return (
 				<TouchableOpacity
-					styles={{
-						flexDirection: "column-reverse",
-						height: vh(30),
-						width: vw(30),
+					onPress={() => {
+						setImagesLoading(true);
+
+						handlePicker();
 					}}
-					onPress={handlePicker}
 				>
-					<Image
-						//IMAGES
-						style={styles.img}
-						source={require("../images/Upload.png")}
-						resizeMode="stretch"
+					<Icon
+						name="camera"
+						type="feather"
+						color="olivedrab"
+						// color="gray"
+						size={120}
 					/>
 					<Text
 						style={{
-							position: "absolute",
+							// position: "absolute",
 							textAlign: "center",
-							width: vw(59),
-							top: vh(26),
+							width: vw(59.1),
+							// top: vh(26),
 							fontFamily: "Marker Felt",
 							fontSize: 18,
+							color: "olivedrab",
 							// backgroundColor: "red",
 							// alignSelf:"flex-end"
 						}}
@@ -182,6 +196,7 @@ const NewListingDash = (props) => {
 
 	const renderItem = (data, index) => (
 		<View key={index} style={styles.imgsView}>
+			{/* IMGS WIDTH ｟｟｟｟｟｟｟｟｟｟｟｟｠｠｠｠｠｠｠｠｠｠｠｠ */}
 			<Image
 				//IMAGES
 				style={styles.imgs}
@@ -194,8 +209,12 @@ const NewListingDash = (props) => {
 		</View>
 	);
 
-	const remove = (array, element) => {
-		return array.filter((imageObj) => imageObj.id !== element);
+	const remove = (array, page) => {
+		// console.log("page in remove function::: 🐞", page);
+		// console.log("IMG OBJ id is ....", array[page].id);
+
+		array.splice(page, 1);
+		return array;
 	};
 
 	// const renderItem = ({ item, index }) => {
@@ -237,8 +256,9 @@ const NewListingDash = (props) => {
 	// 		});
 	// };
 
-	// console.log(props.inputs.twitter);
-	// console.log("PAGE IS 📜", page);
+	console.log(props.inputs);
+	// console.log("P A G E 📖:", page);
+
 	return (
 		<View style={styles.container}>
 			{isVisible && (
@@ -255,55 +275,67 @@ const NewListingDash = (props) => {
 			)}
 			<View
 				style={{
-					flex: 1,
-					position: "absolute",
-					backgroundColor: "lightslategray",
-					width: vw(60),
-					height: vh(30),
-					// zIndex: 3,
+					// backgroundColor: "lightslategray", // ADD IMGs VIEW BACKGROUND
+					// backgroundColor: "lightslategray", // ADD IMGs VIEW BACKGROUND
+					// backgroundColor: "lightslategray", // ADD IMGs VIEW BACKGROUND
+					// backgroundColor: "lightslategray", // ADD IMGs VIEW BACKGROUND
+
 					flexDirection: "column",
-					alignSelf: "flex-start",
-					// justifyContent: "center",
+					justifyContent: "center",
+
+					backgroundColor: "rgba(0, 0, 0, 0.92)",
 				}}
 			>
 				{images.length !== 0 && (
-					<TouchableOpacity
+					<View
 						style={{
-							position: "absolute",
-							alignSelf: "flex-end",
-							width: vw(6.5),
-							// left: vw(31.75),
-							marginTop: vh(0.2),
-							marginRight: vh(0.2),
-							opacity: 0.5,
 							zIndex: 2,
-							backgroundColor: "rgba(40, 40, 40, 0.7)",
-						}}
-						onPress={() => {
-							setFixedPage(page);
-							setIsVisible(true);
 						}}
 					>
-						<Icon
-							name="arrows-expand"
-							type="foundation"
-							color={"white"}
-							size={24}
-						/>
-					</TouchableOpacity>
+						<TouchableOpacity
+							style={{
+								position: "absolute",
+								alignSelf: "flex-end",
+
+								width: vw(6.5),
+								// left: vw(31.75),
+								marginTop: vh(0.2),
+								marginLeft: vh(0.5),
+								opacity: 0.5,
+								zIndex: 2,
+								backgroundColor: "rgba(40, 40, 40, 0.7)",
+								// bottom: "106%",
+								// right: vw(0.5),
+							}}
+							onPress={() => {
+								setFixedPage(page);
+								setIsVisible(true);
+							}}
+						>
+							<Icon
+								name="arrows-expand"
+								type="foundation"
+								color={"white"}
+								size={24}
+							/>
+						</TouchableOpacity>
+					</View>
 				)}
+
+				{/* REFACTOR ⏬⏬⏬⏬⏬⏬⏬⏬⏬⏬⏬⏬⏬⏬⏬⏬⏬⏬⏬ */}
+
 				{images.length !== 0 && (
 					<View
 						style={{
 							position: "absolute",
-							// flex: 1,
+							flex: 1,
 							opacity: 1,
 							backgroundColor: "rgba(40, 40, 40, 0.7)",
 							zIndex: 2,
-							width: vw(60),
+							width: vw(59),
 							flexDirection: "row",
 							top: vh(25),
-							alignSelf: "flex-end",
+							// alignSelf: "flex-end",
 						}}
 					>
 						<View
@@ -333,6 +365,8 @@ const NewListingDash = (props) => {
 											images: filtered,
 										});
 									} else {
+										setImagesLoading(false);
+
 										setImages([]);
 										props.setInputs({
 											...props.inputs,
@@ -377,8 +411,37 @@ const NewListingDash = (props) => {
 					</View>
 				)}
 
-				{showPickedImages()}
 				{/* IMAGES 🌃 🖼 📸 🎠*/}
+				{/* REFACTOR ⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫⏫ */}
+
+				{imagesLoading && (
+					<View
+						style={{
+							position: "absolute",
+							flex: 1,
+							// height: vh(100),
+							width: vw(59),
+							justifyContent: "center",
+							// backgroundColor: "rgba(0,5,35,0.8)",
+							// backgroundColor: "red",
+							bottom: "47%",
+							zIndex: -1,
+						}}
+					>
+						<ActivityIndicator
+							size="large"
+							color="lime"
+							hidesWhenStopped={true}
+							style={
+								{
+									// top: vh(25),
+								}
+							}
+						></ActivityIndicator>
+					</View>
+				)}
+
+				{showPickedImages()}
 			</View>
 			<View style={styles.touchables}>
 				<View
@@ -459,29 +522,41 @@ const NewListingDash = (props) => {
 					style={{
 						position: "absolute",
 						alignSelf: "flex-end",
-						top: vh(21.6),
+						top: vh(21.5),
 						height: vh(5),
 						width: vw(13),
 						marginHorizontal: "2%",
+						// backgroundColor: "green",
 					}}
 					onPress={() => {
 						props.setErrorMessage("");
-						console.log(props.inputs.number);
-						const check = phoneNumberCheck(props.inputs.number);
+						console.log(props.inputs.contact);
+						// const check = phoneNumberCheck(props.inputs.contact);
 						if (check == "clear") {
-							Linking.openURL(`tel:${props.inputs.number}`);
+							Linking.openURL(`tel:${props.inputs.contact}`);
 						} else {
 							props.setErrorMessage(check);
 						}
 					}}
 				>
-					<Icon
-						name="phone-call"
-						type="feather"
-						color="mediumseagreen"
-						size={28}
-						opacity={props.inputs.number ? 1 : 0.2}
-					/>
+					<View
+						style={{
+							// backgroundColor: "green",
+							height: vh(5),
+
+							alignItems: "center",
+							justifyContent: "center",
+						}}
+					>
+						<Entypo
+							name="email"
+							size={28}
+							color="mediumseagreen"
+							style={{
+								opacity: props.inputs.contact ? 1 : 0.2,
+							}}
+						/>
+					</View>
 				</TouchableOpacity>
 
 				<TouchableOpacity
@@ -510,7 +585,7 @@ const NewListingDash = (props) => {
 				>
 					<Icon
 						name="facebook-box"
-						type="ant-design"
+						type="material-community"
 						color="rgb(59,89,152)"
 						size={32}
 						opacity={props.inputs.facebook ? 1 : 0.2}
@@ -558,6 +633,8 @@ const NewListingDash = (props) => {
 						height: vh(5),
 						width: vw(13),
 						marginHorizontal: "2%",
+						// backgroundColor: "green",
+						justifyContent: "center",
 					}}
 					onPress={async () => {
 						WebBrowser.dismissBrowser();
@@ -592,7 +669,7 @@ const NewListingDash = (props) => {
 						width: vw(13),
 						marginHorizontal: "2%",
 						alignItems: "center",
-						opacity: 0.01,
+						opacity: 0.15,
 					}}
 				>
 					<Ionicons name="md-share-alt" size={35} color="lightslategray" />
@@ -609,17 +686,22 @@ const styles = StyleSheet.create({
 		position: "relative",
 		backgroundColor: "black",
 		width: vw(100),
-		height: vh(30),
+		// height: vh(32),
 		alignSelf: "flex-start",
 		opacity: 0.93,
+		flexDirection: "row",
+		backgroundColor: "lightslategray",
+
+		// backgroundColor: "rgba(0, 0, 0, 0.1)",
 	},
 	touchables: {
 		position: "relative",
 		backgroundColor: "black",
-		width: vw(40),
+		width: vw(41),
 		height: vh(30),
-		alignSelf: "flex-end",
-		opacity: 0.99,
+		// alignSelf: "flex-end",
+		opacity: 1,
+		// backgroundColor: "rgba(0, 0, 0, 0, 1.0)",
 	},
 	img: {
 		position: "relative",
@@ -631,21 +713,27 @@ const styles = StyleSheet.create({
 		// borderRightWidth: 5,
 	},
 	imgs: {
-		position: "relative",
-		width: vw(60),
+		// position: "absolute",
+
+		width: vw(59),
 		// height: vh(38),
 		height: undefined,
 		aspectRatio: 1 / 1.15,
+		// aspectRatio: 1 / 2.15,
 		opacity: 1.0,
 		// left: vw(10),
 		backgroundColor: "lightslategray",
 		// borderRightWidth: 5,
+		// zIndex: 2,
 	},
 	imgsView: {
 		position: "relative",
-		width: vw(62),
-		height: vh(38),
+
+		width: vw(59.1),
+		height: vh(30),
 		opacity: 1.0,
 		backgroundColor: "black",
+
+		// zIndex: -2,
 	},
 });

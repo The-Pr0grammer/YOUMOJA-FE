@@ -25,6 +25,7 @@ const Header = (props) => {
 	// console.log(props.activeScreen);
 	// console.log("HEADER NAME", props.name);
 	// console.log("USER NAME", props.userInfo.name);
+	// console.log("BIZ TOGG", props.addBusinessTogg);
 
 	return (
 		<View
@@ -73,7 +74,7 @@ const Header = (props) => {
 									});
 								} else if (props.activeScreen == "Blackboard") {
 									console.log(
-										"props.activeScreen 🖤 🖤 🖤",
+										"props.activeScreen was => \n 🖤💯",
 										props.activeScreen
 									);
 
@@ -177,12 +178,14 @@ const Header = (props) => {
 				</View>
 				<TouchableOpacity
 					activeOpacity={props.name == props.userInfo.name ? 1 : 0.5}
-					onPress={() =>
+					onPress={() => {
+						props.addBusinessTogg && props.handleAddBusinessTogg();
+
 						navigation.navigate("DrawerNav", {
 							screen: "Profile",
 							params: { lastScreen: activeScreen },
-						})
-					}
+						});
+					}}
 				>
 					<View
 						style={{

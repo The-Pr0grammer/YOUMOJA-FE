@@ -24,6 +24,8 @@ import axios from "axios";
 import BadgeShop from "./BadgeShop.js";
 import * as RNIap from "react-native-iap";
 
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 class ListBizDash extends React.Component {
 	constructor(props) {
 		super(props);
@@ -392,52 +394,68 @@ class ListBizDash extends React.Component {
 					{this.props.ubiz.business.hearts > 0 && numFormat(this.state.hearts)}
 				</Text>
 				{/* COMMENTS ICON */}
-				<TouchableOpacity
+				<View
 					style={{
-						position: "absolute",
+						// position: "absolute",
 						alignSelf: "center",
-						top: vh(11),
-						height: vh(5),
-						width: vw(13),
-					}}
-					// disabled={true}
-					onPress={() => {
-						// // 💯💯💯💯💯💯💯💯💯💯💯💯💯💯UINFO/UBIZ LOGS⬇
-						// console.log(
-						// 	"temp userinfo displayer. NTS: change back to bizpage comment navigator",
-						// 	this.props.userInfo
-						// );
-						// console.log(
-						// 	"temp ubiz displayer. NTS: change back to bizpage comment navigator",
-						// 	this.props.ubiz
-						// );
-						this.props.handleNavigation(true);
+						top: vh(10),
+						height: vh(12),
+						// width: vw(13),
+						// backgroundColor: "green",
+						flexDirection: "column",
+						justifyContent: "center",
+						alignItems: "center",
 					}}
 				>
-					<Icon
+					<TouchableOpacity
+						style={{
+							// position: "absolute",
+							alignSelf: "center",
+							// top: vh(11),
+							// height: vh(5),
+							width: vw(13),
+						}}
+						onPress={() => {
+							this.props.handleNavigation(true);
+						}}
+					>
+						{/* <Icon
 						name="chat"
 						type="materialcommunityicons"
 						color="olivedrab"
 						size={37}
-					/>
-				</TouchableOpacity>
+					/> */}
+						<MaterialCommunityIcons
+							name="microphone-variant"
+							size={50}
+							color="olivedrab"
+							// color="orange"
+							style={{
+								left: vw(1),
+							}}
+						/>
+					</TouchableOpacity>
 
-				<Text
-					style={{
-						position: "absolute",
-						textAlign: "center",
-						fontSize: 25,
-						color: "lightslategrey",
-						fontWeight: "bold",
-						top: vh(15),
-						height: vh(5),
-						// width: vw(13),
-						alignSelf: "center",
-					}}
-				>
-					{this.props.ubiz.business.comments > 0 &&
-						numFormat(this.props.ubiz.business.comments)}
-				</Text>
+					<Text
+						style={{
+							// position: "absolute",
+							textAlign: "center",
+							fontSize: 25,
+							color: "lightslategrey",
+							fontWeight: "bold",
+							// top: vh(15),
+							height: vh(5),
+							// width: vw(16),
+							alignSelf: "center",
+							// alignSelf: "flex-start",
+							// backgroundColor: "blue",
+							// zIndex: 2,
+						}}
+					>
+						{this.props.ubiz.business.comments > 0 &&
+							numFormat(this.props.ubiz.business.comments)}
+					</Text>
+				</View>
 
 				<ScrollView
 					style={{
@@ -473,7 +491,8 @@ class ListBizDash extends React.Component {
 						return (
 							<TouchableOpacity
 								key={key}
-								style={styles.badge}list
+								style={styles.badge}
+								list
 								onPress={() => {
 									// IAP.requestPurchase(badge.productId);
 									// console.log("color key🔑🚀:", key);
@@ -498,6 +517,7 @@ class ListBizDash extends React.Component {
 										value={numFormat(
 											this.state.badgeCounts[trueColors[colorItr]]
 										)}
+										
 										status="success"
 										containerStyle={[
 											colorItr == 0 ? styles.greenBadgeInd : styles.badgeInd,

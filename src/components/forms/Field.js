@@ -9,7 +9,9 @@ import {
 } from "react-native";
 import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
-import { useFocusEffect } from "@react-navigation/native";
+import { ThemeProvider, useFocusEffect } from "@react-navigation/native";
+import { addListener } from "expo-updates";
+let offset = 0;
 
 const Field = ({
 	fieldName,
@@ -23,35 +25,48 @@ const Field = ({
 	lastKey,
 	firstError,
 	submitInc,
+	purpose,
+	handleOffset,
+	scrollRef,
 }) => {
 	const [hideToggle, setHideToggle] = useState(
 		field.inputProps.secureTextEntry
 	);
+	const [scroll, setScroll] = useState(true);
+	// const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
 	const pwField = fieldName.toLowerCase().includes("password");
 
-	// useEffect(() => {
-	// 	let keyRef = fieldName;
-	// 	keyRef = createRef();
-
-	// 	console.log("🔑", keyRef);
-	// 	return () => {
-	// 		console.log("I'm a field:", fieldName);
-	// 	};
-	// }, []);
+	// const inputRef = useRef(null);
 
 	useEffect(() => {
 		{
 			firstError && keyRef.current && keyRef.current.focus();
 		}
 
-		return () => {
-			// console.log("I'm a field:", fieldName);
-		};
+		// const keyboardDidHideListener =
+		// 	fieldName == "summary" &&
+		// 	Keyboard.addListener("keyboardDidHide", () => {
+		// 		setScroll(true);
+		// 		console.log("⌨️ CLOSED");
+		// 	});
+
+		// // ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
+		// // Do not remove any code pertaining to scroll or this damn keyboard addListener.
+		// // Without it, scrollRef stops working ⁉️
+		// // ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
+
+		// return () => {
+		// 	fieldName == "summary" && keyboardDidHideListener.remove();
+		// 	// console.log("I'm a field:", fieldName);
+		// };
 	}, [submitInc]);
 
-	// const inputRef = useRef(null);
-
+	// 	console.log("🔑", keyRef);
+	// 	return () => {
+	// 		console.log("I'm a field:", fieldName);
+	// 	};
+	// }, []);
 	// console.log("password field:", fieldName.toLowerCase().includes("password"));
 	// console.log(field.inputProps);
 	// console.log("error status:", fieldName, error ? true : false);
@@ -64,33 +79,62 @@ const Field = ({
 	// console.log("🔑", keyRef);
 	// console.log("❶:", fieldName, firstError);
 	// console.log("submit Inc", submitInc);
+	// console.log("scrooooooll is 📜", scroll);
+	// console.log("scroooooollREF is 📜", scrollRef);
 
 	return (
 		<View style={styles.inputContainer}>
 			<Text style={styles.label}>{field.label}</Text>
 			<TextInput
 				ref={keyRef}
+				{...field.inputProps}
+				value={value && value.replace(/\s/g, "").length ? value : ""}
 				multiline={fieldName == "summary" && true}
+				// scrollEnabled={fieldName == "summary"}
+				numberOfLines={fieldName == "summary" ? 3 : 1}
 				autoFocus={firstError ? true : false}
 				style={[field.label !== "Summary" ? styles.input : styles.summaryInput]}
-				{...field.inputProps}
 				secureTextEntry={hideToggle}
-				value={value}
 				onChangeText={(text) => onChangeText(fieldName, text)}
-				blurOnSubmit={false}
+				blurOnSubmit={true}
 				returnKeyType={"next"}
 				onSubmitEditing={() => {
-					// field.label !== "Summary" && Keyboard.dismiss();
+					// if (!purpose == "NewListing") {
+					// 	if (!lastKey) {
+					// 		nextRef.current && nextRef.current.focus();
+					// 	}
 
-					if (field.label !== "Summary" && !lastKey) {
+					// 	if (lastKey || fieldName == "support") {
+					// 		Keyboard.dismiss();
+					// 	}
+					// }
+
+					if (fieldName == "summary") {
+						// setScroll(true);
+						setTimeout(() => {
+							nextRef.current && nextRef.current.focus();
+						}, 100);
+					}
+
+					// if (scroll) {
+					if (!lastKey) {
 						nextRef.current && nextRef.current.focus();
 					}
 
 					if (lastKey) {
 						Keyboard.dismiss();
 					}
+					// }
 				}}
-				onFocus={clearError}
+				// onFocus={clearError}
+				onFocus={() => {
+					// fieldName == "summary" && setScroll(false);
+					// console.log(scrollRef);
+					fieldName == "summary" &&
+						scrollRef.scrollTo({ x: 0, y: vh(30), animated: true });
+					clearError;
+				}}
+				// onBlur={() => fieldName == "summary" && setScroll(true)}
 			/>
 			{pwField && (
 				<TouchableOpacity
@@ -107,8 +151,6 @@ const Field = ({
 				</TouchableOpacity>
 			)}
 			<Text style={styles.error}>{error}</Text>
-			{/* {error ? inputRef.current.focus() : false} */}
-			{/* {console.log(reference)} */}
 		</View>
 	);
 };
@@ -117,24 +159,29 @@ export default Field;
 
 const styles = StyleSheet.create({
 	input: {
+		flex: 1,
 		height: vh(6.5),
 		width: vw(90),
 		borderRadius: 30,
 		paddingHorizontal: vw(3),
 		backgroundColor: "transparent",
-		// backgroundColor: "green",
 		lineHeight: vh(2.5),
 		borderBottomWidth: 3.5,
 		color: "olivedrab",
 		textAlign: "center",
+		paddingBottom: vh(0),
 	},
 	summaryInput: {
 		height: vh(6.5),
 		width: vw(90),
+		paddingHorizontal: vw(3),
+
 		borderRadius: 30,
-		paddingHorizontal: vw(5),
+		borderBottomWidth: 3.5,
+
 		paddingTop: vw(3.5),
-		backgroundColor: "maroon",
+		backgroundColor: "transparent",
+		color: "olivedrab",
 		lineHeight: vh(2.5),
 	},
 	inputContainer: {
@@ -155,6 +202,7 @@ const styles = StyleSheet.create({
 		paddingLeft: vw(1.1),
 		color: "darkslategray",
 		alignSelf: "flex-start",
+		minHeight: 25,
 	},
 	error: { textAlign: "center", color: "red", width: vw(85) },
 });

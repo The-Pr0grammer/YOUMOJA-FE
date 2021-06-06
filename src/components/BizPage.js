@@ -142,7 +142,7 @@ const BizPage = (props) => {
 	// console.log(props.route.params.lastScreen);
 	// console.log("URLLLLLLLLLLL", props.route.params["ubiz"].business.images);
 	// console.log("IMAGES LIVE FROM THE BIZPAGE", images);
-	// console.log("It's Aliiiiiive; ubiz from the BizPage:", ubiz);
+	// ubiz && console.log("It's Aliiiiiive; ubiz from the BizPage:", ubiz);
 	// console.log("It's Aliiiiiive; ubiz from the BizPage:", ubiz);
 
 	return (
@@ -213,7 +213,7 @@ const BizPage = (props) => {
 										console.log(props.route.params.userInfo);
 										props.navigation.navigate("PeerProfile", {
 											prevScreen: "BizPage",
-											userShowInfo: props.route.params.userInfo,
+											userShowInfo: ubiz.user,
 										});
 									}}
 								>
@@ -221,7 +221,7 @@ const BizPage = (props) => {
 										resizeMode={"cover"}
 										source={{
 											uri: ubiz.user.image
-												? `http://192.168.1.211:3000/${props.userInfo.image}`
+												? `http://192.168.1.211:3000/${ubiz.user.image}`
 												: ubiz.user.img_url,
 										}}
 										style={styles.profilePic}

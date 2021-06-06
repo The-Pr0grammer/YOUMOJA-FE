@@ -135,16 +135,22 @@ const bizReducer = (state = initialState, action) => {
 						search: action.payload,
 				  };
 		case SORT_BY_HEARTS_TOGG:
+			// console.log("hearts sort toggle", state.heartsSort);
+
 			return {
 				...state,
 				heartsSort: !state.heartsSort,
 			};
 		case SORT_BY_BADGES_TOGG:
+			// console.log("badges sort toggle", state.badgesSort);
+
 			return {
 				...state,
 				badgesSort: !state.badgesSort,
 			};
 		case SORT_BY_LOCATION_TOGG:
+			// console.log("location sort toggle", state.locationSort);
+
 			return {
 				...state,
 				locationSort: !state.locationSort,
@@ -171,7 +177,7 @@ const bizReducer = (state = initialState, action) => {
 						scoresSort: !state.scoresSort,
 				  };
 		case PROFILE_LOADING_TOGG:
-			console.log("loading action is", state.profileLoading);
+			// console.log("loading action is", state.profileLoading);
 			return {
 				...state,
 				profileLoading: action.payload,

@@ -50,6 +50,7 @@ const ProfileCard = (props) => {
 	const [credsEditTogg, setCredsEditTogg] = useState(false);
 	const [webviewTogg, setWebviewTogg] = useState(false);
 	const [webviewUri, setWebviewUri] = useState("");
+
 	const colors = ["green", "blue", "firebrick", "slateblue", "gold"];
 	const trueColors = ["green", "blue", "red", "ultraviolet", "gold"];
 	const socials = ["linkedin", "twitter", "email"];
@@ -259,29 +260,11 @@ const ProfileCard = (props) => {
 	// console.log("👤 USER INFO ISSS 👤 ", props.userInfo);
 	// console.log("image is: ", image[0]["url"]);
 	// console.log("badge count::::::", Object.values(props.userInfo.badges).length);
+	// console.log("🐦 🔗 📮", props.opacities);
 
 	return (
 		<View style={styles.wrapper}>
-			{/* <GestureRecognizer
-				onSwipeUp={() => console.log("swiped")}
-				onSwipeDown={() => setIsVisible(false)}
-				config={config}
-				style={
-					{
-						// flex: 1,
-						// backgroundColor: "red",
-						// zIndex: 10,
-					}
-				}
-			> */}
 			{isVisible && (
-				// <ImageView
-				// 	images={imgView}
-				// 	onRequestClose={() => setIsVisible(false)}
-				// 	visible={isVisible}
-				// 	index={0}
-				// 	doubleTapToZoomEnabled={true}
-				// />
 				<Modal
 					visible={isVisible}
 					transparent={true}
@@ -591,7 +574,6 @@ const ProfileCard = (props) => {
 								? Object.values(props.userInfo.badges).reduce((t, n) => t + n)
 								: 0
 						)}
-						
 					</Text>
 					<Text
 						style={{
@@ -606,48 +588,83 @@ const ProfileCard = (props) => {
 					</Text>
 				</View>
 
+				{/* 🐦 🔗 📮 */}
 				<View style={styles.rightView}>
 					<View style={{ marginTop: vh(0) }}>
 						{socials.map((social, key = index) => {
-							// console.log(social);
 							return (
-								<TouchableOpacity
+								<View
 									key={key}
-									// style={styles.badge}
-									style={{ marginVertical: vh(2) }}
-									onPress={() => {
-										switch (social) {
-											case "linkedin":
-												// navigation.navigate("Webview", {
-												// 	uri: props.userInfo.linkedin,
-												// });
-												setWebviewUri(props.userInfo.linkedin);
-												setWebviewTogg(true);
-
-												break;
-											case "twitter":
-												// setWebviewUri(props.userInfo.twitter);
-												setWebviewUri("Https://www.twitter.com/YoumojaApp");
-												setWebviewTogg(true);
-
-												break;
-											case "email":
-												Linking.openURL(
-													`mailto:${props.userInfo.email}?subject=Howdy! I found you on Youmoja. What a great app right?&body=`
-												);
-												break;
-											default:
-											// code block
-										}
+									style={{
+										marginVertical: vh(2),
+										opacity: props.opacities[social].opacity,
+										// opacity: 1,
 									}}
 								>
-									<Icon
-										name={social}
-										type={"entypo"}
-										color={socialColors[key]}
-										size={37.5}
-									/>
-								</TouchableOpacity>
+									<TouchableOpacity
+										key={key}
+										activeOpacity={props.opacities[social].activeOpacity}
+										// style={{
+										// 	marginVertical: vh(2),
+										// 	opacity: props.opacities[social].opacity,
+										// }}
+										onPress={() => {
+											switch (social) {
+												case "linkedin":
+													if (props.userInfo.linkedin) {
+														setWebviewUri(props.userInfo.linkedin);
+														setWebviewTogg(true);
+													}
+													break;
+												case "twitter":
+													if (props.userInfo.twitter) {
+														setWebviewUri("Https://www.twitter.com/YoumojaApp");
+														setWebviewTogg(true);
+													}
+													break;
+												case "email":
+													if (props.userInfo.allow_emails) {
+														Linking.openURL(
+															`mailto:${props.userInfo.email}?subject=Howdy! I found you on Youmoja. What a great app right?&body=`
+														);
+													}
+													break;
+												default:
+											}
+										}}
+										// let opacity = 0.25;
+										// let activeOpacity = 0.25;
+
+										// switch (social) {
+										// 	case "linkedin":
+										// 		if (props.userInfo.linkedin) {
+										// 			opacity = 1;
+										// 			activeOpacity = 0.25;
+										// 		}
+										// 		break;
+										// 	case "twitter":
+										// 		if (props.userInfo.twitter) {
+										// 			opacity = 1;
+										// 			activeOpacity = 0.25;
+										// 		}
+										// 		break;
+										// 	case "email":
+										// 		if (props.userInfo.allow_emails) {
+										// 			opacity = 1;
+										// 			activeOpacity = 0.25;
+										// 		}
+										// 		break;
+										// 	default:
+										// }
+									>
+										<Icon
+											name={social}
+											type={"entypo"}
+											color={socialColors[key]}
+											size={37.5}
+										/>
+									</TouchableOpacity>
+								</View>
 							);
 						})}
 					</View>
@@ -659,7 +676,7 @@ const ProfileCard = (props) => {
 							position: "relative",
 							opacity: 0.85,
 						}}
-						onPress={() => console.log(props.userInfo)}
+						onPress={() => console.log(JSON.stringify(props.userInfo))}
 					>
 						<FontAwesome
 							name="caret-square-o-up"
