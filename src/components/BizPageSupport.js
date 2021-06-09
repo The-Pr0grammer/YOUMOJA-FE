@@ -6,12 +6,38 @@ import {
 	Linking,
 	StyleSheet,
 	ScrollView,
+	Vibration,
+	FlatList,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon, Badge } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import axios from "axios";
 
 const BizPageSupport = (props) => {
+	// const [badgeCounts, setBadgeCounts] = useState(
+	// 	props.ubiz.business.badge_counts
+	// );
+	const [badgeKeyPressed, setBadgeKeyPressed] = useState("");
+	const colors = ["green", "blue", "firebrick", "slateblue", "gold"];
+	const trueColors = ["green", "blue", "red", "ultraviolet", "gold"];
+	let colorItr = -1;
+
+	const numFormat = (n) => {
+		if (n < 1e3) return n;
+		if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
+		if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
+		if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + "B";
+		if (n >= 1e12) return +(n / 1e12).toFixed(1) + "T";
+	};
+
+	console.log(
+		"BIZPAGE SUPPORT UBIZ:",
+		JSON.stringify(props.ubiz.business.badge_counts)
+	);
+
+	// console.log("bps::🚀 ⓵ ② ③", badgeCounts);
+	console.log("ca💲h app:::", props.ubiz.business.cashapp);
+
 	return (
 		<View style={styles.container}>
 			<View style={{ flex: 1 }}>
@@ -33,7 +59,7 @@ const BizPageSupport = (props) => {
 						name="donate"
 						type="font-awesome-5"
 						color="green"
-						size={40}
+						size={30}
 						// reverse
 						// reverseColor="lawngreen"
 					/>
@@ -50,74 +76,72 @@ const BizPageSupport = (props) => {
 					height: vh(8),
 					width: vw(66),
 					borderBottomWidth: 1,
-					opacity: props.purpose == "NewBusiness" ? 0.1 : 1,
+					opacity: props.purpose == "NewListing" ? 0.1 : 1,
 				}}
 				contentContainerStyle={{
 					position: "relative",
 					height: vh(8),
+					paddingTop: vw(1),
+					paddingRight: vw(2),
 					// bottom: vh(0.75),
-					// paddingRight: vw(6.6),
 					// paddingLeft: vw(4),
 				}}
 				automaticallyAdjustInsets={false}
 				horizontal={true}
-				// pagingEnabled={true}
 				scrollEnabled={true}
+				extraData={props.userHearts}
+
+				// pagingEnabled={true}
 				// decelerationRate={2.998}
 				// snapToAlignment={"center"}
 				// snapToIntervreverseCl={33}
 				// scrollEventThrottle={1}
 			>
-				<TouchableOpacity style={styles.badge}>
-					<Icon
-						name="rocket1"
-						type="ant-design"
-						color="green"
-						size={45}
-						// reverse
-						// reverseColor="lawngreen"
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.badge}>
-					<Icon
-						name="rocket1"
-						type="ant-design"
-						color="blue"
-						size={45}
-						// reverse
-						// reverseColor="dodgerblue"
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.badge}>
-					<Icon
-						name="rocket1"
-						type="ant-design"
-						color="firebrick"
-						size={45}
-						// reverse
-						// reverseColor="lightcoral"
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.badge}>
-					<Icon
-						name="rocket1"
-						type="ant-design"
-						color="slateblue"
-						size={45}
-						// reverse
-						// reverseColor="darkmagenta"
-					/>
-				</TouchableOpacity>
-				<TouchableOpacity style={styles.badge}>
-					<Icon
-						name="rocket1"
-						type="ant-design"
-						color="gold"
-						size={45}
-						// reverse
-						// reverseColor="darkorange"
-					/>
-				</TouchableOpacity>
+				{colors.map((color, key = index) => {
+					// let badgeObj = badgeCounts.find(
+					// 	(badgeObj) => badgeObj.color == trueColors[colorItr]
+					// );
+					// console.log("badge counts search",trueColors[colorItr] in badgeCounts);
+					colorItr++;
+
+					return (
+						<TouchableOpacity
+							key={key}
+							style={styles.badge}
+							list
+							onPress={() => {
+								// IAP.requestPurchase(badge.productId);
+								// console.log("color key🔑🚀:", key);
+
+								setBadgeKeyPressed(key);
+								Vibration.vibrate();
+								props.handleShopTogg(props.ubiz, key);
+							}}
+						>
+							<Icon
+								name="rocket1"
+								type="ant-design"
+								color={color}
+								size={45}
+								// reverse
+								// reverseColor="lawngreen"
+								// style={[colorItr == 0 ? { marginRight: vw(1) } : {}]}
+							/>
+
+							{trueColors[colorItr] in props.ubiz.business.badge_counts && (
+								<Badge
+									value={numFormat(
+										props.ubiz.business.badge_counts[trueColors[colorItr]]
+									)}
+									status="success"
+									containerStyle={[
+										colorItr == 0 ? styles.greenBadgeInd : styles.badgeInd,
+									]}
+								/>
+							)}
+						</TouchableOpacity>
+					);
+				})}
 			</ScrollView>
 		</View>
 	);
@@ -135,9 +159,16 @@ const styles = StyleSheet.create({
 	},
 	badge: {
 		height: vh(8),
-		// width: vw(24),
-		paddingHorizontal: vw(4.5),
-		paddingLeft: vw(5.5),
+		width: vw(22),
+		// paddingHorizontal: vw(),
+		// marginRight: vw(1),
+		paddingRight: vw(5),
 		justifyContent: "center",
 	},
+	greenBadgeInd: {
+		position: "absolute",
+		bottom: vh(1),
+		left: vw(11),
+	},
+	badgeInd: { position: "absolute", bottom: vh(1), left: vw(11) },
 });

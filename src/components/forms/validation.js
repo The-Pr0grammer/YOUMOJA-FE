@@ -41,6 +41,20 @@ export const nameCheck = (name) => {
 	}
 };
 
+export const emojiCheck = (name) => {
+	if (
+		!/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(
+			name
+		)
+	) {
+		// console.log("no emojis✅ 🔥");
+
+		return;
+	} else {
+		return "Contains invalid characters";
+	}
+};
+
 export const usernameCheck = (username) => {
 	if (
 		!/(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/.test(
@@ -62,7 +76,7 @@ export const usernameCheck = (username) => {
 	}
 };
 
-export const lengthCap = (text) => {
+export const lengthCap = (text, values, key) => {
 	if (text && text.length > 24) {
 		return "Cannot exceed 24 characters";
 	}
@@ -76,19 +90,62 @@ export const passwordMatch = (conf, values) => {
 	}
 };
 
-export const emailCheck = (email) => {
+export const emailCheck = (email, purpose) => {
 	if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w+)+$/.test(email)) {
-		return;
+		return true;
 	} else {
-		return "Enter a valid email";
+		// return "Enter a valid email";
+		return purpose == "contact" ? "Enter a valid phone number or email address" : "Enter a valid email";
 	}
 };
 
 export const passwordCheck = (password) => {
 	if (/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/.test(password)) {
+		console.log("valid");
 		return;
 	} else {
 		return "must be more than 6 characters, contain at least one numeric digit and a special character";
+	}
+};
+
+export const urlCheck = (url, values, key) => {
+	if (
+		/((ftp|http|https):\/\/)?(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
+			url
+		)
+	) {
+		if (url) {
+			if (key == "website") {
+				return;
+			} else {
+				urlLower = url.toLowerCase();
+				if (urlLower.includes(`${key}.com`)) {
+					return;
+				} else {
+					return `Enter a valid ${key} url ie ${key}.com/username`;
+				}
+			}
+		}
+	} else {
+		key == "website"
+			? `Enter a valid ${key} url ie youmoja.com`
+			: `Enter a valid ${key} url ie ${key}.com/username`;
+	}
+};
+
+export const phoneNumberCheck = (number) => {
+	if (/^\d{10}$/.test(number)) {
+		return;
+	} else {
+		return "Enter a 10 digit telephone number";
+	}
+};
+
+export const contactCheck = (contact) => {
+	if (/^ *[0-9][0-9 ]*$/.test(contact)) {
+		return phoneNumberCheck(contact);
+	} else {
+		return emailCheck(contact, "contact");
 	}
 };
 
@@ -101,51 +158,6 @@ export const validateField = (validators, value, values, key) => {
 		}
 	});
 	return error;
-};
-
-export const urlCheck = (url, values, key) => {
-	// if (
-	// 	/^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(
-	// 		url
-	// 	)
-	// )
-	if (
-		/((ftp|http|https):\/\/)?(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
-			url
-		)
-	) {
-		// let prefix = "https://";
-		// let newUrl = url && url.toLowerCase();
-		// let index = url && newUrl.indexOf("//");
-		// console.log(index, newUrl);
-		// 	if (url.toLowerCase() && url.substring(0, prefix.length) !== prefix) {
-		// 		url = prefix + url;
-		// 		console.log("VALID:", "TRUE ", url);
-		// 	}
-
-		if (url) {
-			url = url.toLowerCase();
-			// let prefix = "https://www.";
-			if (url.includes(`${key}.com`)) {
-				// url = prefix + url.substring(url.indexOf(`${key}.com`));
-				return;
-			} else {
-				return `Enter a valid ${key} url ie www.${key}.com/username`;
-			}
-		}
-	} else {
-		// console.log(test2);
-		// let site = Object.keys(test)[0]
-		return `Enter a valid ${key} url ie www.${key}.com/username`;
-	}
-};
-
-export const phoneNumberCheck = (number) => {
-	if (/^\d{10}$/.test(number)) {
-		return;
-	} else {
-		return "Enter a 10 digit telephone number";
-	}
 };
 
 export const validateFields = (fields, values) => {

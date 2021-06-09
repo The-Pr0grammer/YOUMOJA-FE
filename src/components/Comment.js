@@ -284,9 +284,10 @@ class Comment extends PureComponent {
 						style={{
 							alignSelf: "center",
 							fontFamily: "Marker Felt",
-							fontSize: 19,
-							fontFamily: "Papyrus",
+							fontSize: 16,
+							// fontFamily: "Papyrus",
 							color: "darkslategray",
+							fontWeight: "400",
 							marginHorizontal: vw(1.5),
 							// backgroundColor: "blue",
 						}}

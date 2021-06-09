@@ -16,20 +16,28 @@ import { useIsFocused } from "@react-navigation/native";
 import { Icon } from "react-native-elements";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { connect } from "react-redux";
-import { setUserInfo, setIsFetching } from "../redux/actions/bizAction";
+import {
+	fetchBizs,
+	setUserInfo,
+	setIsFetching,
+	fetchUserInfo,
+} from "../redux/actions/bizAction";
 const DEVICE_WIDTH = Dimensions.get("window").width;
 const DEVICE_HEIGHT = Dimensions.get("window").height;
+import Carousel, { PaginationLight } from "react-native-x2-carousel";
 import TextTicker from "react-native-text-ticker";
+import ImageViewer from "react-native-image-zoom-viewer";
 import Header from "./Header.js";
 import CommentList from "./CommentList.js";
 import BizPageDash from "./BizPageDash.js";
 import BizPageSupport from "./BizPageSupport.js";
 import SuccessModal from "./SuccessModal.js";
+import BadgeShop from "./BadgeShop.js";
+
 import { useNavigation } from "@react-navigation/native";
-import Carousel, { PaginationLight } from "react-native-x2-carousel";
-import ImageViewer from "react-native-image-zoom-viewer";
 import FitImage from "react-native-fit-image";
 
+import * as RNIap from "react-native-iap";
 import axios from "axios";
 
 const BizPage = (props) => {
@@ -41,6 +49,9 @@ const BizPage = (props) => {
 	const navigation = useNavigation();
 	const [page, setPage] = useState(0);
 	const [fixedPage, setFixedPage] = useState(0);
+	const [shopTogg, setShopTogg] = useState(false);
+	const [badgeKeyPressed, setBadgeKeyPressed] = useState(null);
+	const [shopBiz, setShopBiz] = useState(null);
 	const isFocused = useIsFocused();
 
 	useEffect(() => {
@@ -54,6 +65,7 @@ const BizPage = (props) => {
 	}, [isFocused]);
 
 	const fetchData = async () => {
+		console.log("🦴 Ubiz Data")
 		props.setIsFetching(true);
 		await axios(`http://192.168.1.211:3000/user_bizs/${props.route.params.id}`)
 			.then((res) => {
@@ -133,11 +145,29 @@ const BizPage = (props) => {
 				source={{
 					uri: `http://192.168.1.211:3000/${data.uri}`,
 				}}
-				// resizeMode={"stretch"}
-				resizeMode={"cover"}
+				resizeMode={"stretch"}
+				// resizeMode={"cover"}
 			/>
 		</View>
 	);
+
+	handleShopTogg = async (shopBiz, badgeKey) => {
+		// console.log("handleShopTogg shopBiz🛍", shopBiz);
+		// console.log("handleShopTogg badgeKey🛍", badgeKey);
+
+		RNIap.clearTransactionIOS();
+
+		props.fetchUserInfo(props.userInfo.id);
+		// getListings();
+		// getHearts();
+
+		fetchData();
+		props.fetchBizs(false);
+
+		setShopTogg(!shopTogg);
+		setShopBiz(shopBiz);
+		setBadgeKeyPressed(badgeKey);
+	};
 
 	// console.log(props.route.params.lastScreen);
 	// console.log("URLLLLLLLLLLL", props.route.params["ubiz"].business.images);
@@ -230,7 +260,7 @@ const BizPage = (props) => {
 							</View>
 							<TextTicker
 								shouldAnimateTreshold={vw(8)}
-								duration={Math.random * 18000}
+								duration={9500}
 								loop
 								bounce
 								repeatSpacer={25}
@@ -244,7 +274,7 @@ const BizPage = (props) => {
 							<View
 								style={{
 									flex: 1,
-									position: "absolute",
+									// position: "absolute",
 									// backgroundColor: "darkslategray",
 									width: vw(60),
 									height: vh(30),
@@ -286,10 +316,16 @@ const BizPage = (props) => {
 									/>
 								)}
 							</View>
-							<BizPageDash ubiz={ubiz} />
+							<BizPageDash
+								ubiz={ubiz}
+								handleShopTogg={handleShopTogg}
+								hearted={props.route.params.hearted}
+								// getHearts={props.route.params.getHearts}
+								hearts={props.route.params.hearts}
+							/>
 						</View>
 						<View style={styles.bizSupport}>
-							<BizPageSupport ubiz={ubiz} />
+							<BizPageSupport ubiz={ubiz} handleShopTogg={handleShopTogg} />
 						</View>
 					</View>
 					<View style={styles.commentCon}>
@@ -331,13 +367,22 @@ const BizPage = (props) => {
 					></ImageBackground>
 				</View>
 			)}
+			{shopTogg && (
+				<BadgeShop
+					ubiz={shopBiz}
+					handleShopTogg={handleShopTogg}
+					badgeKeyPressed={badgeKeyPressed}
+				/>
+			)}
 		</View>
 	);
 };
 
 export default connect(mapStateToProps, {
+	fetchBizs,
 	setUserInfo,
 	setIsFetching,
+	fetchUserInfo,
 })(function (props) {
 	const isFocused = useIsFocused();
 
@@ -387,6 +432,9 @@ const styles = StyleSheet.create({
 		height: vh(30),
 		opacity: 1.0,
 		alignSelf: "flex-start",
+		resizeMode: "cover",
+		// resizeMode: "stretch",
+		// resizeMode: "contain",
 	},
 	commentCon: {
 		position: "relative",

@@ -22,10 +22,10 @@ const Header = (props) => {
 	const navigation = useNavigation();
 	const activeScreen = props.activeScreen;
 
-	// console.log(props.activeScreen);
 	// console.log("HEADER NAME", props.name);
 	// console.log("USER NAME", props.userInfo.name);
 	// console.log("BIZ TOGG", props.addBusinessTogg);
+	// console.log("active screen", props.activeScreen);
 
 	return (
 		<View
@@ -180,6 +180,11 @@ const Header = (props) => {
 					activeOpacity={props.name == props.userInfo.name ? 1 : 0.5}
 					onPress={() => {
 						props.addBusinessTogg && props.handleAddBusinessTogg();
+
+						// props.navigation.reset({
+						// 	index: 1,
+						// 	routes: [{ name: props.lastScreen }],
+						// });
 
 						navigation.navigate("DrawerNav", {
 							screen: "Profile",

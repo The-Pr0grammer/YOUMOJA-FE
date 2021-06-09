@@ -12,11 +12,10 @@ import {
 	ActivityIndicator,
 } from "react-native";
 import { Modal } from "react-native";
-
 import { Icon } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { vw, vh, vmin, vmax } from "react-native-expo-viewport-units";
 import { urlCheck, phoneNumberCheck } from "./forms/validation";
 import * as WebBrowser from "expo-web-browser";
@@ -65,6 +64,8 @@ const NewListingDash = (props) => {
 	};
 
 	const handlePicker = () => {
+		setImagesLoading(true);
+
 		ImagePicker.openPicker({
 			// multiple: true,
 			// waitAnimationEnd: false,
@@ -87,6 +88,10 @@ const NewListingDash = (props) => {
 					const blob = b.toBlob(item.data);
 
 					console.log("BLOB 🧴", blob._data.blobId); // true
+
+					setTimeout(() => {
+						setImagesLoading(false);
+					}, 1500);
 
 					return (
 						{
@@ -151,7 +156,10 @@ const NewListingDash = (props) => {
 					autoplay={true}
 					autoplayInterval={3200}
 					onPage={(p) => {
-						imagesLoading && setImagesLoading(false);
+						// setTimeout(() => {
+						// 	imagesLoading && setImagesLoading(false);
+
+						// }, 5000);
 
 						setPage(p.current - 1);
 					}}
@@ -203,8 +211,9 @@ const NewListingDash = (props) => {
 				source={{
 					uri: data.data,
 				}}
-				// resizeMode={"stretch"}
-				resizeMode={"cover"}
+				resizeMode={"stretch"}
+				// resizeMode={"cover"}
+				// resizeMode={"center"}
 			/>
 		</View>
 	);
@@ -217,46 +226,20 @@ const NewListingDash = (props) => {
 		return array;
 	};
 
-	// const renderItem = ({ item, index }) => {
-	// 	return (
-	// 		<View style={styles.imgsView}>
-	// 			<Image
-	// 				source={{
-	// 					uri: item.data,
-	// 				}}
-	// 				style={styles.imgs}
-	// 			/>
-	// 		</View>
-	// 	);
-	// };
+	const defContactType = (contact) => {
+		// isnum = /^\d+$/.test(val);
+		// nums & spaces = /^ *[0-9][0-9 ]*$/
 
-	// const incHearts = () => {
-	// 	this.setState((prevState) => ({ hearts: prevState.hearts + 1 }));
-	// 	axios
-	// 		.patch(
-	// 			`http://192.168.1.211:3000/businesses/${props.business.id}`,
-	// 			{
-	// 				hearts: hearts + 1,
-	// 			},
-	// 			{ headers: { "Content-Type": "application/json" } }
-	// 		)
-	// 		.then(function (response) {
-	// 			// console.log(response);
-	// 		})
-	// 		.catch((error) => {
-	// 			console.log(error.response);
-	// 		});
-	// 	axios
-	// 		.post(`http://192.168.1.211:3000/user_hearts`, {
-	// 			user_id: props.userInfo.id,
-	// 			business_id: props.business.id,
-	// 		})
-	// 		.then(function (response) {
-	// 			console.log(response);
-	// 		});
-	// };
+		if (!contact) {
+			return false;
+		} else if (/^ *[0-9][0-9 ]*$/.test(contact)) {
+			return "numString";
+		} else {
+			return "email";
+		}
+	};
 
-	console.log(props.inputs);
+	// console.log(props.inputs);
 	// console.log("P A G E 📖:", page);
 
 	return (
@@ -296,16 +279,12 @@ const NewListingDash = (props) => {
 							style={{
 								position: "absolute",
 								alignSelf: "flex-end",
-
 								width: vw(6.5),
-								// left: vw(31.75),
+								// right: vw(1.5),
 								marginTop: vh(0.2),
-								marginLeft: vh(0.5),
 								opacity: 0.5,
 								zIndex: 2,
-								backgroundColor: "rgba(40, 40, 40, 0.7)",
-								// bottom: "106%",
-								// right: vw(0.5),
+								// backgroundColor: "red",
 							}}
 							onPress={() => {
 								setFixedPage(page);
@@ -425,7 +404,7 @@ const NewListingDash = (props) => {
 							// backgroundColor: "rgba(0,5,35,0.8)",
 							// backgroundColor: "red",
 							bottom: "47%",
-							zIndex: -1,
+							zIndex: 1,
 						}}
 					>
 						<ActivityIndicator
@@ -443,14 +422,139 @@ const NewListingDash = (props) => {
 
 				{showPickedImages()}
 			</View>
-			<View style={styles.touchables}>
+
+			{/* 🐦 📸 📘 📬 📞 💻 ♥️ 🐦 📸 📘 📬 📞 💻 ♥️ 🐦 📸 📘 📬 📞 💻 ♥️ 🐦 📸 📘 📬 📞 💻 ♥️ 🐦 📸 📘 📬 📞 💻 ♥️ */}
+
+			<View
+				style={{
+					position: "relative",
+					flexDirection: "column",
+					height: vh(30),
+					width: vw(41),
+					justifyContent: "center",
+					paddingTop: vh(3),
+					opacity: 1,
+					backgroundColor: "black",
+					// backgroundColor: "green",
+				}}
+			>
+				{/* <View style={styles.touchables}>  PUT BACK WHEN DONE WITH TOUCHABLES  */}
+
 				<View
 					style={{
-						position: "absolute",
-						alignSelf: "center",
-						top: vh(11),
-						height: 37,
-						width: 45,
+						flex: 1,
+						flexDirection: "row",
+						height: vh(10),
+						width: vw(41),
+						alignItems: "center",
+						// backgroundColor: "red",
+					}}
+				>
+					{/* 📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘 */}
+					<TouchableOpacity
+						style={{
+							flex: 1,
+							height: vh(5),
+							// backgroundColor: "magenta",
+						}}
+						onPress={async () => {
+							WebBrowser.dismissBrowser();
+							props.setErrorMessage("");
+
+							const check = urlCheck(props.inputs.facebook);
+							console.log("CHECK IS", check);
+							if (check == "clear") {
+								setBrowserResult(
+									WebBrowser.openBrowserAsync(props.inputs.facebook)
+								);
+								console.log(browserResult);
+							} else {
+								props.setErrorMessage(check);
+							}
+						}}
+					>
+						<Icon
+							name="facebook-box"
+							type="material-community"
+							color="rgb(59,89,152)"
+							size={32}
+							opacity={props.inputs.facebook ? 1 : 0.2}
+						/>
+					</TouchableOpacity>
+					{/* 📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘📘 */}
+					{/* 📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸 */}
+					<TouchableOpacity
+						style={{
+							flex: 1,
+							height: vh(5),
+							bottom: vh(1),
+							// backgroundColor: "magenta",
+						}}
+						onPress={async () => {
+							WebBrowser.dismissBrowser();
+							props.setErrorMessage("");
+
+							const check = urlCheck(props.inputs.instagram);
+							console.log("CHECK IS", check);
+							if (check == "clear") {
+								setBrowserResult(
+									WebBrowser.openBrowserAsync(props.inputs.instagram)
+								);
+								console.log(browserResult);
+							} else {
+								props.setErrorMessage(check);
+							}
+						}}
+					>
+						<Icon
+							name="instagram"
+							type="ant-design"
+							color="rgb(195, 42, 163)"
+							size={32}
+							opacity={props.inputs.instagram ? 1 : 0.2}
+						/>
+					</TouchableOpacity>
+					{/* 📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸📸 */}
+					{/* 🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦*/}
+					<TouchableOpacity
+						style={{
+							flex: 1,
+							height: vh(5),
+							// backgroundColor: "magenta",
+						}}
+						onPress={async () => {
+							WebBrowser.dismissBrowser();
+							props.setErrorMessage("");
+							const check = urlCheck(props.inputs.twitter);
+							console.log("CHECK IS", check);
+							if (check == "clear") {
+								setBrowserResult(
+									WebBrowser.openBrowserAsync(props.inputs.twitter)
+								);
+								console.log(browserResult);
+							} else {
+								props.setErrorMessage(check);
+							}
+						}}
+					>
+						<Icon
+							name="twitter"
+							type="feather"
+							color="rgb(0,172,238)"
+							size={30}
+							opacity={props.inputs.twitter ? 1 : 0.2}
+						/>
+					</TouchableOpacity>
+					{/* 🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦🐦*/}
+				</View>
+
+				{/* ♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️ */}
+				<View
+					style={{
+						flex: 1,
+						height: vh(10),
+						width: vw(41),
+						// backgroundColor: "blue",
 					}}
 					// onPress={() => {
 					// 	incHearts();
@@ -461,220 +565,132 @@ const NewListingDash = (props) => {
 						type="feather"
 						color="red"
 						size={35}
-						opacity={0.01}
+						opacity={0.15}
 					/>
-				</View>
-				<Text
-					style={{
-						position: "absolute",
-						textAlign: "center",
-						fontSize: 25,
-						color: "lightslategray",
-						fontWeight: "bold",
-						top: vh(16),
-						height: vh(10),
-						width: vw(10),
-						alignSelf: "center",
-						opacity: 0.01,
-					}}
-				>
-					{0}
-				</Text>
-
-				<TouchableOpacity
-					style={{
-						position: "absolute",
-						alignSelf: "flex-end",
-						height: vh(5),
-						width: vw(13),
-						marginHorizontal: "2%",
-						marginVertical: "16%",
-						zIndex: 1,
-					}}
-					onPress={async () => {
-						WebBrowser.dismissBrowser();
-						props.setErrorMessage("");
-
-						// props.setVisibility(!props.visibility);
-						// props.setVisibility(false);
-						const check = urlCheck(props.inputs.twitter);
-						console.log("CHECK IS", check);
-						if (check == "clear") {
-							await setBrowserResult(
-								WebBrowser.openBrowserAsync(props.inputs.twitter)
-							);
-							console.log(browserResult);
-						} else {
-							props.setErrorMessage(check);
-						}
-					}}
-				>
-					<Icon
-						name="twitter"
-						type="feather"
-						color="rgb(0,172,238)"
-						size={30}
-						opacity={props.inputs.twitter ? 1 : 0.2}
-					/>
-				</TouchableOpacity>
-
-				<TouchableOpacity
-					style={{
-						position: "absolute",
-						alignSelf: "flex-end",
-						top: vh(21.5),
-						height: vh(5),
-						width: vw(13),
-						marginHorizontal: "2%",
-						// backgroundColor: "green",
-					}}
-					onPress={() => {
-						props.setErrorMessage("");
-						console.log(props.inputs.contact);
-						// const check = phoneNumberCheck(props.inputs.contact);
-						if (check == "clear") {
-							Linking.openURL(`tel:${props.inputs.contact}`);
-						} else {
-							props.setErrorMessage(check);
-						}
-					}}
-				>
-					<View
+					<Text
 						style={{
-							// backgroundColor: "green",
-							height: vh(5),
-
-							alignItems: "center",
-							justifyContent: "center",
+							textAlign: "center",
+							height: vh(4),
+							width: vw(41),
+							color: "lightslategray",
+							fontWeight: "bold",
+							fontSize: 25,
+							opacity: 0.1,
+							// backgroundColor:"purple"
 						}}
 					>
-						<Entypo
-							name="email"
-							size={28}
-							color="mediumseagreen"
-							style={{
-								opacity: props.inputs.contact ? 1 : 0.2,
-							}}
-						/>
-					</View>
-				</TouchableOpacity>
-
-				<TouchableOpacity
-					style={{
-						position: "absolute",
-						alignSelf: "flex-start",
-						height: vh(5),
-						width: vw(13),
-						marginVertical: "15%",
-					}}
-					onPress={async () => {
-						WebBrowser.dismissBrowser();
-						props.setErrorMessage("");
-
-						const check = urlCheck(props.inputs.facebook);
-						console.log("CHECK IS", check);
-						if (check == "clear") {
-							await setBrowserResult(
-								WebBrowser.openBrowserAsync(props.inputs.facebook)
-							);
-							console.log(browserResult);
-						} else {
-							props.setErrorMessage(check);
-						}
-					}}
-				>
-					<Icon
-						name="facebook-box"
-						type="material-community"
-						color="rgb(59,89,152)"
-						size={32}
-						opacity={props.inputs.facebook ? 1 : 0.2}
-					/>
-				</TouchableOpacity>
-
-				<TouchableOpacity
-					style={{
-						position: "absolute",
-						alignSelf: "center",
-						height: vh(5),
-						width: vw(13),
-						marginVertical: "12%",
-					}}
-					onPress={async () => {
-						WebBrowser.dismissBrowser();
-						props.setErrorMessage("");
-
-						const check = urlCheck(props.inputs.instagram);
-						console.log("CHECK IS", check);
-						if (check == "clear") {
-							await setBrowserResult(
-								WebBrowser.openBrowserAsync(props.inputs.instagram)
-							);
-							console.log(browserResult);
-						} else {
-							props.setErrorMessage(check);
-						}
-					}}
-				>
-					<Icon
-						name="instagram"
-						type="ant-design"
-						color="rgb(195, 42, 163)"
-						size={32}
-						opacity={props.inputs.instagram ? 1 : 0.2}
-					/>
-				</TouchableOpacity>
-
-				<TouchableOpacity
-					style={{
-						position: "absolute",
-						alignSelf: "flex-start",
-						top: vh(21.5),
-						height: vh(5),
-						width: vw(13),
-						marginHorizontal: "2%",
-						// backgroundColor: "green",
-						justifyContent: "center",
-					}}
-					onPress={async () => {
-						WebBrowser.dismissBrowser();
-						props.setErrorMessage("");
-
-						const check = urlCheck(props.inputs.website);
-						console.log("CHECK IS", check);
-						if (check == "clear") {
-							await setBrowserResult(
-								WebBrowser.openBrowserAsync(props.inputs.website)
-							);
-							console.log(browserResult);
-						} else {
-							props.setErrorMessage(check);
-						}
-					}}
-				>
-					<Icon
-						name="laptop"
-						type="entypo"
-						color="whitesmoke"
-						size={30}
-						opacity={props.inputs.website ? 1 : 0.2}
-					/>
-				</TouchableOpacity>
+						{""}
+					</Text>
+				</View>
+				{/* ♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️♥️ */}
 				<View
 					style={{
-						position: "absolute",
-						alignSelf: "center",
-						top: vh(22.25),
-						height: vh(5),
-						width: vw(13),
-						marginHorizontal: "2%",
-						alignItems: "center",
-						opacity: 0.15,
+						flex: 1,
+						flexDirection: "row",
+						height: vh(10),
+						width: vw(41),
+						// backgroundColor: "gold",
 					}}
 				>
-					<Ionicons name="md-share-alt" size={35} color="lightslategray" />
+					{/* 💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻 */}
+					<TouchableOpacity
+						style={{
+							flex: 1,
+							height: vh(5),
+							// backgroundColor: "magenta",
+						}}
+						onPress={async () => {
+							WebBrowser.dismissBrowser();
+							props.setErrorMessage("");
+							const check = urlCheck(props.inputs.website);
+							console.log("CHECK IS", check);
+							if (check == "clear") {
+								setBrowserResult(
+									WebBrowser.openBrowserAsync(props.inputs.website)
+								);
+								console.log(browserResult);
+							} else {
+								props.setErrorMessage(check);
+							}
+						}}
+					>
+						<Icon
+							name="laptop"
+							type="entypo"
+							color="whitesmoke"
+							size={30}
+							opacity={props.inputs.website ? 1 : 0.2}
+						/>
+					</TouchableOpacity>
+					{/* 💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻💻 */}
+					{/* ↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️ */}
+					<View
+						style={{
+							flex: 1,
+							height: vh(5),
+							top: vh(1),
+							alignItems: "center",
+							opacity: 0.15,
+							// backgroundColor: "magenta",
+						}}
+					>
+						<Ionicons name="md-share-alt" size={35} color="lightslategray" />
+					</View>
+					{/* ↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️↪️ */}
+					{/* 💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬 */}
+					<TouchableOpacity
+						style={{
+							flex: 1,
+							height: vh(5),
+							// backgroundColor: "magenta",
+						}}
+						onPress={() => {
+							props.setErrorMessage("");
+						}}
+					>
+						<View
+							style={{
+								height: vh(5),
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							{defContactType(props.inputs.contact) == "" && (
+								<Entypo
+									name="chat"
+									size={30}
+									color="mediumseagreen"
+									style={{
+										opacity: props.inputs.contact ? 1 : 0.2,
+									}}
+								/>
+							)}
+							{defContactType(props.inputs.contact) == "numString" && (
+								<Feather
+									name="phone-call"
+									size={28}
+									color="mediumseagreen"
+									style={{
+										opacity: props.inputs.contact ? 1 : 0.2,
+									}}
+								/>
+							)}
+							{defContactType(props.inputs.contact) == "email" && (
+								<Entypo
+									name="email"
+									size={28}
+									color="mediumseagreen"
+									style={{
+										opacity: props.inputs.contact ? 1 : 0.2,
+									}}
+								/>
+							)}
+						</View>
+					</TouchableOpacity>
+					{/* 💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬💬 */}
 				</View>
 			</View>
+			{/* 🐦 📸 📘 📬 📞 💻 ♥️ 🐦 📸 📘 📬 📞 💻 ♥️ 🐦 📸 📘 📬 📞 💻 ♥️ 🐦 📸 📘 📬 📞 💻 ♥️ 🐦 📸 📘 📬 📞 💻 ♥️ */}
 		</View>
 	);
 };

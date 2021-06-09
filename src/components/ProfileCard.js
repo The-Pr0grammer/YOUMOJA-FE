@@ -259,7 +259,7 @@ const ProfileCard = (props) => {
 	};
 	// console.log("👤 USER INFO ISSS 👤 ", props.userInfo);
 	// console.log("image is: ", image[0]["url"]);
-	// console.log("badge count::::::", Object.values(props.userInfo.badges).length);
+	// console.log("badge count::::::", Object.values(props.userInfo.badge_counts))
 	// console.log("🐦 🔗 📮", props.opacities);
 
 	return (
@@ -538,10 +538,10 @@ const ProfileCard = (props) => {
 										style={[colorItr == 0 ? { marginRight: vw(10) } : {}]}
 									/>
 
-									{trueColors[colorItr] in props.userInfo.badges && (
+									{trueColors[colorItr] in props.userInfo.badge_counts && (
 										<Badge
 											value={numFormat(
-												props.userInfo.badges[trueColors[colorItr]]
+												props.userInfo.badge_counts[trueColors[colorItr]]
 											)}
 											status="success"
 											containerStyle={[
@@ -570,8 +570,10 @@ const ProfileCard = (props) => {
 						}}
 					>
 						{numFormat(
-							Object.values(props.userInfo.badges).length > 0
-								? Object.values(props.userInfo.badges).reduce((t, n) => t + n)
+							Object.values(props.userInfo.badge_counts).length > 0
+								? Object.values(props.userInfo.badge_counts).reduce(
+										(t, n) => t + n
+								  )
 								: 0
 						)}
 					</Text>
@@ -618,7 +620,8 @@ const ProfileCard = (props) => {
 													break;
 												case "twitter":
 													if (props.userInfo.twitter) {
-														setWebviewUri("Https://www.twitter.com/YoumojaApp");
+														setWebviewUri(props.userInfo.twitter);
+														// setWebviewUri("https://twitter.com/YoumojaApp");
 														setWebviewTogg(true);
 													}
 													break;

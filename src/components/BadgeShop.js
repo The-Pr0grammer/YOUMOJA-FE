@@ -161,7 +161,7 @@ const BadgeShop = (props) => {
 				<TouchableOpacity
 					activeOpacity={purchaseFlow ? 1 : 0.25}
 					style={styles.backButtonView}
-					onPress={() => {
+				onPress={() => {
 						!purchaseFlow && props.handleShopTogg();
 					}}
 				>

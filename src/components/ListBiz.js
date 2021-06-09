@@ -87,9 +87,13 @@ class ListBiz extends React.Component {
 			id: id,
 			ubiz: this.props.ubiz,
 			userInfo: this.props.ubiz.user,
-			lastScreen: this.props.lastScreen,
 			page: this.state.page,
 			commentTogg: commentTogg,
+			// handleShopTogg: this.props.handleShopTogg,
+			hearted: this.props.hearted,
+			// getHearts: this.props.getHearts,
+			// hearts: this.props.hearts,
+			lastScreen: this.props.lastScreen,
 		});
 	};
 
@@ -148,7 +152,6 @@ class ListBiz extends React.Component {
 								<Image
 									style={styles.img}
 									source={{ uri: this.props.ubiz.business.img_url }}
-									resizeMode={"cover"}
 								/>
 							)}
 						</View>
@@ -189,6 +192,8 @@ const styles = StyleSheet.create({
 		opacity: 1.0,
 		borderRadius: 2,
 		resizeMode: "cover",
+		// resizeMode: "stretch",
+		// resizeMode: "contain",
 	},
 	bizName: {
 		position: "relative",

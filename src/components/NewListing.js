@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from "react";
+import React, { useState, useEffect, createRef, useLayoutEffect } from "react";
 import {
 	View,
 	StyleSheet,
@@ -29,14 +29,9 @@ import NewListingSupport from "./NewListingSupport.js";
 import Form from "./forms/Form";
 import {
 	validateContent,
-	validateLength,
-	passwordMatch,
-	lengthCap,
-	nameCheck,
-	passwordCheck,
 	urlCheck,
-	phoneNumberCheck,
-	emailCheck,
+	emojiCheck,
+	contactCheck,
 } from "./forms/validation";
 import { useNavigation } from "@react-navigation/native";
 import RNFetchBlob from "rn-fetch-blob";
@@ -46,42 +41,41 @@ import axios from "axios";
 // import { DirectUpload } from "activestorage";
 
 const NewListing = (props) => {
-	const [inputs, setInputs] = useState({
-		name: "Business Name",
-		summary: "Business Summary",
-	});
+	const [inputs, setInputs] = useState({});
 	const [errorMessage, setErrorMessage] = useState("");
 	const [visibility, setVisibility] = useState(true);
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-	const [offset, setOffset] = useState(0);
+	const [offset, setOffset] = useState(null);
 	const [scroll, setScroll] = useState(false);
 	const navigation = useNavigation();
 
-	// const business = {
-	// 	id: 1,
-	// 	name: "Black Flag Apparel",
-	// 	city: "Staten Island",
-	// 	state: "NY",
-	// 	summary: "Black Flag: Never Give Up 🏴",
-	// 	categories: "Coaching,Fashion,Non Profit",
-	// 	website: "BFNGU.com",
-	// 	twitter: "https://twitter.com/N_everG_iveU_p",
-	// 	facebook: null,
-	// 	phone: null,
-	// 	email: null,
-	// 	image_url:
-	// 		"https://cdn.dribbble.com/users/908023/screenshots/7195388/media/da178ba79a307d5fb608e6307507c2cc.png",
-	// 	hearts: 1,
-	// 	created_at: "2020-09-04T02:34:57.819Z",
-	// 	updated_at: "2020-09-05T05:02:06.268Z",
-	// 	comments: [],
-	// };
+	// useEffect(() => {
+	// 	// setScroll(createRef());
 
-	useEffect(() => {
-		// setScroll(createRef());
+	// 	const keyboardDidShowListener = Keyboard.addListener(
+	// 		"keyboardDidShow",
+	// 		() => {
+	// 			// setKeyboardVisible(true); // or some other action
+	// 			// setOffset(0);
+	// 		}
+	// 	);
 
-		return () => {};
-	}, []);
+	// 	const keyboardDidHideListener = Keyboard.addListener(
+	// 		"keyboardDidHide",
+	// 		() => {
+	// 			// setTimeout(() => {
+	// 			// 	// setOffset(null);
+	// 			// }, 100);
+
+	// 			// console.log("⌨️ CLOSED");
+	// 		}
+	// 	);
+
+	// 	return () => {
+	// 		keyboardDidShowListener.remove();
+	// 		keyboardDidHideListener.remove();
+	// 	};
+	// }, []);
 
 	const handleChange = (key, value) => {
 		setErrorMessage("");
@@ -95,7 +89,7 @@ const NewListing = (props) => {
 		// 	inputs.images.map((img) => img.file_name)
 		// );
 		if (!inputs.images || inputs.images.length < 1) {
-			setErrorMessage("You can upload 10 images. At least 1 is required.");
+			setErrorMessage("At least one image is required.");
 			return;
 		}
 
@@ -171,8 +165,20 @@ const NewListing = (props) => {
 		// navigation.navigate("Profile");
 	};
 
-	// const handleOffset = (offset) => {
-	// 	setOffset(offset);
+	// const trackFocusAndBlur = (event) => {
+	// 	console.log("👓 / 🕶", event);
+
+	// 	event == "focus" &&
+	// 		setTimeout(() => {
+	// 			console.log("XXX");
+	// 			// setOffset(0);
+	// 		}, 200);
+
+	// 	// event == "blur" &&
+	// 	// 	setTimeout(() => {
+	// 	// 		console.log("XXX");
+	// 	// 		setOffset(0);
+	// 	// 	}, 0);
 	// };
 
 	// console.log("INPUTS.IMAGES [] IS 🖼", inputs.images);
@@ -185,14 +191,9 @@ const NewListing = (props) => {
 			// behavior="position"
 			behavior="padding"
 			style={styles.container}
+			// keyboardVerticalOffset={25}
 			// contentContainerStyle={{ bottom: vh(15) }}
 		>
-			{/* <Modal
-			visible={visibility}
-			 style={styles.container}
-			style={styles.container}
-			> */}
-			{/* <View style={styles.inner}> */}
 			<View
 				style={{
 					// flex: 1,
@@ -202,7 +203,7 @@ const NewListing = (props) => {
 				}}
 			>
 				<Header
-					name={inputs.name}
+					name={inputs.name ? inputs.name : "Business Name"}
 					navigation={navigation}
 					refresh={true}
 					// loading={spinner}
@@ -211,7 +212,51 @@ const NewListing = (props) => {
 					addBusinessTogg={props.addBusinessTogg}
 				/>
 			</View>
-
+			<View
+				style={{
+					flexDirection: "row",
+					justifyContent: "center",
+					paddingBottom: vh(0.25),
+				}}
+			>
+				<View
+					style={{
+						backgroundColor: "rgba(40, 40, 40, 0.5)",
+						// borderLeftWidth: 4,
+						width: vw(16),
+						height: vh(6.8),
+						alignItems: "center",
+						justifyContent: "center",
+					}}
+				>
+					<FastImage
+						resizeMode={"cover"}
+						source={{
+							// uri: props.userInfo.image
+							// 	? `http://192.168.1.211:3000/${props.userInfo.image}`
+							// 	: props.userInfo.image,
+							uri: props.userInfo.image
+								? `http://192.168.1.211:3000/${props.userInfo.image}`
+								: props.userInfo.img_url,
+						}}
+						style={styles.profilePic}
+					></FastImage>
+				</View>
+				<TextTicker
+					shouldAnimateTreshold={vw(8)}
+					duration={9500}
+					loop
+					bounce
+					repeatSpacer={25}
+					marqueeDelay={3200}
+					style={styles.bizSumm}
+				>
+					{
+						inputs.summary ? inputs.summary : "Business Summary"
+						//BIZ SUMMARY
+					}
+				</TextTicker>
+			</View>
 			<ScrollView
 				// decelerationRate={0.75}
 				bounces={false}
@@ -223,7 +268,6 @@ const NewListing = (props) => {
 					backgroundColor: "lightslategray",
 					borderWidth: 2.5,
 					borderColor: "black",
-					bottom: vh(offset),
 				}}
 				indicatorStyle={"white"}
 				// ref={scroll}
@@ -232,52 +276,8 @@ const NewListing = (props) => {
 				}}
 				// style={styles.scrollCon}
 			>
+				{/* 💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼 */}
 				<View style={styles.bizCon}>
-					<View
-						style={{
-							flexDirection: "row",
-							justifyContent: "center",
-							paddingBottom: vh(0.25),
-						}}
-					>
-						<View
-							style={{
-								backgroundColor: "rgba(40, 40, 40, 0.5)",
-								// borderLeftWidth: 4,
-								width: vw(16),
-								height: vh(6.8),
-								alignItems: "center",
-								justifyContent: "center",
-							}}
-						>
-							<FastImage
-								resizeMode={"cover"}
-								source={{
-									// uri: props.userInfo.image
-									// 	? `http://192.168.1.211:3000/${props.userInfo.image}`
-									// 	: props.userInfo.image,
-									uri: props.userInfo.image
-										? `http://192.168.1.211:3000/${props.userInfo.image}`
-										: props.userInfo.img_url,
-								}}
-								style={styles.profilePic}
-							></FastImage>
-						</View>
-						<TextTicker
-							shouldAnimateTreshold={vw(8)}
-							duration={9600}
-							loop
-							bounce
-							repeatSpacer={25}
-							marqueeDelay={3200}
-							style={styles.bizSumm}
-						>
-							{
-								inputs.summary
-								//BIZ SUMMARY
-							}
-						</TextTicker>
-					</View>
 					{/* <View style={styles.cardView}> */}
 					<NewListingDash
 						// business={business}
@@ -292,40 +292,16 @@ const NewListing = (props) => {
 					<NewListingSupport
 						// business={business}
 						purpose={"NewListing"}
-						support={inputs.support}
+						support={inputs.cashapp}
 						setErrorMessage={setErrorMessage}
 					/>
 					{/* </View> */}
 				</View>
-				{/* {props.isFetching && ( */}
-				{/* <View
-						style={{
-							// flex: 1,
-							// height: vh(100),
-							width: vw(100),
-							justifyContent: "center",
-							// backgroundColor: "rgba(0,5,35,0.8)",
-							position:"absolute",
-							top:"28%"
-						}}
-					>
-						<ActivityIndicator
-							size="large"
-							color="lime"
-							hidesWhenStopped={true}
-							style={{
-								top: vh(18.5),
-							}}
-						></ActivityIndicator>
-						<View style={{ position: "relative", height: vh(50) }}>
-							<ImageBackground
-								source={require("../images/blackownedbiz.gif")}
-								style={styles.bg}
-								imageStyle={{ resizeMode: "stretch" }}
-							></ImageBackground>
-						</View>
-					</View> */}
-				{/* )} */}
+				{/* 💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼💼 */}
+
+				{/* ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ */}
+				{/* ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ */}
+				{/* ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ */}
 				<View style={styles.inner}>
 					{/* <Text style={styles.errorMessage}>{errorMessage}</Text> */}
 					<Form
@@ -342,10 +318,10 @@ const NewListing = (props) => {
 						fields={{
 							name: {
 								label: "Name",
-								validators: [validateContent],
+								validators: [validateContent, emojiCheck],
 								inputProps: {
-									autoCapitalize: "words",
-									placeholder: "what's the name of this business?",
+									autoCapitalize: "none",
+									placeholder: "business name",
 									placeholderTextColor: "lightslategray",
 									textAlign: "center",
 								},
@@ -354,7 +330,7 @@ const NewListing = (props) => {
 								label: "Summary",
 								validators: [validateContent],
 								inputProps: {
-									placeholder: "provide a summary that describes this business",
+									placeholder: "business summary",
 									placeholderTextColor: "lightslategray",
 									textAlign: "center",
 								},
@@ -364,7 +340,7 @@ const NewListing = (props) => {
 								validators: [urlCheck],
 								inputProps: {
 									autoCapitalize: "none",
-									placeholder: "got a business facebook? (recommended)",
+									placeholder: "business facebook url (recommended)",
 									placeholderTextColor: "lightslategray",
 									textAlign: "center",
 								},
@@ -373,7 +349,8 @@ const NewListing = (props) => {
 								label: "Instagram",
 								validators: [urlCheck],
 								inputProps: {
-									placeholder: "y'all on the gram? (recommended)",
+									autoCapitalize: "none",
+									placeholder: "business instagram url (recommended)",
 									placeholderTextColor: "lightslategray",
 									textAlign: "center",
 								},
@@ -382,7 +359,8 @@ const NewListing = (props) => {
 								label: "Twitter",
 								validators: [urlCheck],
 								inputProps: {
-									placeholder: "adding your twitter >>> (recommended)",
+									autoCapitalize: "none",
+									placeholder: "business twitter url (recommended)",
 									placeholderTextColor: "lightslategray",
 									textAlign: "center",
 								},
@@ -391,34 +369,39 @@ const NewListing = (props) => {
 								label: "Website",
 								validators: [urlCheck],
 								inputProps: {
-									placeholder: "your business have a website?",
+									autoCapitalize: "none",
+									placeholder: "business website url",
 									placeholderTextColor: "lightslategray",
 									textAlign: "center",
 								},
 							},
 							cashapp: {
 								label: "Cashapp",
-								validators: [urlCheck],
+								validators: [],
 								inputProps: {
-									placeholder: "ayy, what's your Cash App",
+									autoCapitalize: "none",
+									placeholder: "$cashtag for donations",
 									placeholderTextColor: "lightslategray",
 									textAlign: "center",
 								},
 							},
 							contact: {
 								label: "Contact",
-								validators: [phoneNumberCheck, emailCheck],
+								validators: [contactCheck],
 								inputProps: {
-									// keyboardType: "phone-pad",
-									placeholder:
-										"enter a phone number or email for this business",
+									autoCapitalize: "none",
+									placeholder: "business 10 digit phone number or email",
 									placeholderTextColor: "lightslategray",
 									textAlign: "center",
+									// keyboardType: "phone-pad",
 								},
 							},
 						}}
 					/>
 				</View>
+				{/* ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ */}
+				{/* ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ */}
+				{/* ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ ↕️ */}
 			</ScrollView>
 			<View
 				style={{
@@ -448,7 +431,6 @@ const NewListing = (props) => {
 					></ImageBackground>
 				</View> */}
 			</View>
-			{/* </Modal> */}
 		</KeyboardAvoidingView>
 	);
 };
@@ -472,6 +454,7 @@ const styles = StyleSheet.create({
 		position: "relative",
 		width: vw(100),
 		// height: vh(7.3),
+		// height: vh(0),
 		backgroundColor: "black",
 		// bottom: vh(83),
 		// borderTopWidth: 2.5,
@@ -564,15 +547,15 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	inner: {
-		// flex: 1,
-		// position: "absolute",
 		paddingBottom: vh(7.5),
 		height: "100%",
 		width: "100%",
-		// alignItems: "center",
-
-		// justifyContent: "space-around",
 		backgroundColor: "rgba(0, 0, 0, 0.94)",
+
+		// flex: 1,
+		// position: "absolute",
+		// alignItems: "center",
+		// justifyContent: "space-around",
 		// backgroundColor: "red",
 	},
 });

@@ -1,4 +1,4 @@
-import React, { useState, createRef } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import {
 	Text,
 	TextInput,
@@ -28,6 +28,8 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import ImagePicker from "react-native-image-crop-picker";
 import FastImage from "react-native-fast-image";
 
+const Grapheme = require("grapheme-splitter");
+
 // i apologize in advance to anyone who is tasked with refactoring the code in this file, especially if that person is me.
 
 const getInitialState = (fieldKeys) => {
@@ -53,16 +55,6 @@ const Form = ({
 	scrollRef,
 	propsError,
 }) => {
-	useFocusEffect(
-		React.useCallback(() => {
-			setValues("");
-			// setValidationErrors("");
-			setErrorMessage("");
-
-			// purpose == "EditProfile" && setValues(userInfo);
-		}, [])
-	);
-
 	const fieldKeys = Object.keys(fields);
 	const [values, setValues] = useState(getInitialState(fieldKeys));
 	const [errorMessage, setErrorMessage] = useState("");
@@ -71,16 +63,49 @@ const Form = ({
 	const [allowEmails, setAllowEmails] = useState(false);
 	const [profileImg, setProfileImg] = useState("");
 	const [isVisible, setIsVisible] = useState(false);
+	const [submitInc, setSubmitInc] = useState(0);
+	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
 	const [validationErrors, setValidationErrors] = useState(
 		getInitialState(fieldKeys)
 	);
-	const [submitInc, setSubmitInc] = useState(0);
 	const first = fieldKeys.find((key) => !validationErrors[key] == "");
+
 	const refs = [];
 
+	useFocusEffect(
+		React.useCallback(() => {
+			setValues("");
+			// setValidationErrors("");
+			setErrorMessage("");
+			switch (purpose) {
+				case "Signup":
+					console.log("SIGNUP 🆕 🆕 🆕 🆕 🆕 🆕 🆕 FORM");
+					break;
+				case "Login":
+					console.log("LOGIN 🔑 🔑 🔑 🔑 🔑 🔑 🔑 FORM");
+					break;
+				case "NewListing":
+					console.log("NEW LISTING 💼 💼 💼 💼 💼 💼 💼 FORM");
+					break;
+				case "EditProfile":
+					console.log("EDIT PROFILE 👤 👤 👤 👤 👤 👤 👤 FORM");
+					break;
+				case "EditUserCreds":
+					console.log("EDIT CREDS 🔏 🔏 🔏 🔏 🔏 🔏 🔏 FORM");
+					break;
+				default:
+					break;
+			}
+			// purpose == "EditProfile" && setValues(userInfo);
+		}, [])
+	);
+
+	// ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙
 	const onChangeValue = (key, value) => {
 		handleChange && handleChange(key, value);
 		const newState = { ...values, [key]: value };
+		const oldValue = values[key];
 
 		// console.log("newState is", newState);
 
@@ -90,7 +115,142 @@ const Form = ({
 
 		setValues(removeEmptyStrings(newState));
 
-		if (validationErrors[key]) {
+		// console.log("on C H A N G E 🔑::", key);
+
+		if (key == "contact") {
+			// console.log(`${key} ::: ${value}`);
+
+			if (/^ *[0-9][0-9 ]*$/.test(value)) {
+				// console.log(value.replace(/\D/g, "") == "" ? true : false); // replace all non digits
+				// console.log(value.replace(/\D/g, ""));
+				strippedNumber = value.replace(/\D/g, "");
+
+				if (strippedNumber.length > 10) {
+					newErrors = {
+						...validationErrors,
+						["contact"]: "Enter a 10 digit telephone number",
+					};
+					setValidationErrors(newErrors);
+
+					let oldNumberStripped = oldValue.replace(/\D/g, "");
+
+					console.log(`10 digitsss🔊 ‼️`);
+
+					// console.log("cut ✂️  & joined ➕", splitStr);
+
+					newObj = {
+						...values,
+						["contact"]: oldNumberStripped,
+					};
+
+					setValues(newObj);
+					return;
+				}
+
+				newObj = {
+					...values,
+					["contact"]: strippedNumber,
+				};
+				setValues(newObj);
+			} else {
+				newObj = {
+					...values,
+					["contact"]: value,
+				};
+
+				setValues(newObj);
+
+				newErrors = {
+					...validationErrors,
+					["contact"]: "",
+				};
+				setValidationErrors(newErrors);
+				return;
+			}
+		} else if (key == "summary") {
+			const splitter = new Grapheme();
+			const splitCount = splitter.splitGraphemes(value).length;
+
+			console.log("↔️", splitter.splitGraphemes(value).length);
+			// console.log("↔️ 🧵", splitter.splitGraphemes(value).join(""));
+
+			if (splitCount < 64) {
+				newErrors = {
+					...validationErrors,
+					["summary"]: "",
+				};
+				setValidationErrors(newErrors);
+				return;
+			} else if (splitCount >= 64 && splitCount <= 128) {
+				newErrors = {
+					...validationErrors,
+					["summary"]: `characters remaining: ${128 - splitCount}`,
+				};
+				setValidationErrors(newErrors);
+			} else if (splitCount > 128) {
+				newErrors = {
+					...validationErrors,
+					["summary"]: `You'​ve reached the maximum number of characters`,
+				};
+
+				setValidationErrors(newErrors);
+
+				console.log(`exceeded maximum number of characters‼️`);
+
+				let splitStr = splitter.splitGraphemes(oldValue);
+				splitStr.length = 128;
+				splitStr = splitStr.join("");
+
+				// console.log("cut ✂️  & joined ➕", splitStr);
+
+				newObj = {
+					...values,
+					["summary"]: splitStr,
+				};
+				setValues(newObj);
+			}
+		} else if (purpose == "NewListing" && key == "name") {
+			const splitter = new Grapheme();
+			const splitCount = splitter.splitGraphemes(value).length;
+
+			// console.log("↔️", splitter.splitGraphemes(value).length);
+
+			if (splitCount < 16) {
+				newErrors = {
+					...validationErrors,
+					["name"]: "",
+				};
+				setValidationErrors(newErrors);
+				return;
+			} else if (splitCount >= 16 && splitCount <= 32) {
+				newErrors = {
+					...validationErrors,
+					["name"]: `characters remaining: ${32 - splitCount}`,
+				};
+				setValidationErrors(newErrors);
+			} else if (splitCount > 32) {
+				newErrors = {
+					...validationErrors,
+					["name"]: `You'​ve reached the maximum number of characters`,
+				};
+
+				setValidationErrors(newErrors);
+
+				console.log(`exceeded maximum number of characters‼️`);
+
+				let splitStr = splitter.splitGraphemes(oldValue);
+				splitStr.length = 32;
+				splitStr = splitStr.join("");
+
+				console.log("cut ✂️  & joined ➕", splitStr);
+
+				newObj = {
+					...values,
+					["name"]: splitStr,
+				};
+				setValues(newObj);
+			}
+		} else if (validationErrors[key]) {
 			const newErrors = { ...validationErrors, [key]: "" };
 			setValidationErrors(newErrors);
 		}
@@ -108,7 +268,10 @@ const Form = ({
 			// }
 
 			if (!obj[prop].replace(/\s/g, "").length) {
-				console.log("found an empty string");
+				console.log("found an empty string‼️");
+
+				// const newErrors = { ...validationErrors, [prop]: "" };
+				// prop == "summary" && setValidationErrors(newErrors);
 			} else {
 				newObj[prop] = obj[prop];
 			}
@@ -151,51 +314,91 @@ const Form = ({
 		return present;
 	};
 
-	// const handleRefocus = () => {
-	// 	// console.log("ves:", validationErrors);
-	// 	// console.log("refssssss", refs);
-
-	// 	if (!validationErrors == "") {
-	// 		let find = fieldKeys.find((key) =>
-	// 			Object.keys(validationErrors).includes(key)
-	// 		);
-
-	// 		let index = fieldKeys.findIndex((ele) => ele == find);
-
-	// 		console.log("find is", find);
-	// 		console.log("index is", index);
-
-	// 		return refs[1].current && refs[1].current.focus();
-	// 		return refs[index].current && refs[index].current.focus();
-	// 		// return find.current && find.current.focus();
-	// 	}
-	// };
-
-	const formatUrls = (obj) => {
+	const formatVals = (obj) => {
 		let newObj = {};
-		let prefix = "https://www.";
+		let prefix = "https://";
+
+		formatPhoneNumber = (phoneNumberString) => {
+			let cleaned = ("" + phoneNumberString).replace(/\D/g, "");
+			let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+			if (match) {
+				return match[1] + " " + match[2] + " " + match[3];
+			}
+
+			// console.log("can't format");
+			return phoneNumberString;
+		};
 
 		Object.keys(obj).forEach((prop) => {
-			if (
-				prop !== "twitter" &&
-				prop !== "linkedin" &&
-				prop !== "facebook" &&
-				prop !== "instagram"
+			if (prop == "website") {
+				let url = obj[prop];
+				const Url = require("url-parse");
+				const parsedUrl = new Url(url);
+
+				if (parsedUrl.protocol == "") {
+					url = prefix + url;
+					newObj[prop] = url;
+				} else {
+					newObj[prop] = url;
+				}
+			} else if (
+				prop == "twitter" ||
+				prop == "linkedin" ||
+				prop == "facebook" ||
+				prop == "instagram"
 			) {
-				newObj[prop] = obj[prop];
-			} else {
-				url = obj[prop];
-				urlLower = obj[prop].toLowerCase();
+				// console.log("<<<U R L>>>")
+				let url = obj[prop];
+				let urlLower = obj[prop].toLowerCase();
 				if (urlLower.includes(`${prop}.com`)) {
 					url = prefix + url.substring(urlLower.indexOf(`${prop}.com`));
 					newObj[prop] = url;
 				} else {
 					newObj[prop] = url;
 				}
+			} else if (prop == "cashapp") {
+				let cashtag = obj[prop];
+				cashtag = "$" + cashtag.substring(cashtag.indexOf("$") + 1);
+				newObj[prop] = cashtag;
+			} else if (prop == "contact") {
+				contact = obj[prop];
+
+				if (/^ *[0-9][0-9 ]*$/.test(contact)) {
+					contact = formatPhoneNumber(contact);
+					newObj[prop] = contact;
+				} else {
+					newObj[prop] = contact;
+				}
+			} else {
+				newObj[prop] = obj[prop];
 			}
 		});
 
 		return newObj;
+	};
+
+	const trackFocusAndBlur = (event, fieldName) => {
+		console.log("👓 / 🕶", event, fieldName);
+
+		event == "focus" &&
+			setTimeout(() => {
+				console.log("XXX");
+				// setOffset(0);
+			}, 200);
+
+		if (event == "blur") {
+			if (fieldName == "summary") {
+				setValidationErrors({ ...validationErrors, ["summary"]: "" });
+			}
+
+			if (purpose == "NewListing" && fieldName == "name") {
+				setValidationErrors({ ...validationErrors, ["name"]: "" });
+			}
+		}
+
+		// setTimeout(() => {
+		// 	console.log("XXX");
+		// }, 0);
 	};
 
 	const signIn = async () => {
@@ -281,16 +484,19 @@ const Form = ({
 				// console.log("IMAGES 📸✨", images);
 			})
 			.catch((e) => {
-				console.log(e);
+				console.log("eroor izzz", e);
 				// setErrorMessage(e);
 			});
 	};
+	// ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙ ⚙
 
+	// ⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️
 	const submit = async () => {
+		console.log("F O R M ⭐️ ⭐️ ⭐️ ⭐️ ⭐️ ⭐️ ⭐️ S U B M I T");
 		Keyboard.dismiss();
 		setErrorMessage("");
 		setValidationErrors(getInitialState(fieldKeys));
-		setValues(formatUrls(values));
+		setValues(formatVals(values));
 
 		let newFields = { ...fields };
 
@@ -300,7 +506,7 @@ const Form = ({
 					delete newFields[key];
 				}
 			}
-			// console.log(newFields);
+			// console.log("nfs",newFields);
 		}
 
 		if (purpose == "EditProfile") {
@@ -309,7 +515,7 @@ const Form = ({
 					delete newFields[key];
 				}
 			}
-			// console.log(newFields);
+			// console.log("nfs",newFields);
 		}
 
 		let errors = [];
@@ -319,9 +525,9 @@ const Form = ({
 
 		// 💯💯💯💯💯💯💯💯💯💯💯💯💯💯VALIDATIONS⬇
 		if (hasValidationError(errors)) {
-			// console.log(errors);
-			// console.log(fields);
-			// console.log(values);
+			// console.log("es",errors);
+			// console.log("fs",fields);
+			// console.log("vs",values);
 
 			if (purpose == "Signup" && profileImg == "") {
 				console.log("No profile pic 👀📸");
@@ -472,6 +678,7 @@ const Form = ({
 			setErrorMessage("Something went wrong. Please try again.");
 		}
 	};
+	// ⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️
 
 	const consoleVals = (obj) => {
 		newObj = {};
@@ -485,7 +692,7 @@ const Form = ({
 		return newObj;
 	};
 
-	console.log("VALUES:", values);
+	// console.log("V A L U E S:", JSON.stringify(values));
 	// console.log(removeEmptyStrings(userInfo));
 	// console.log("eM:", errorMessage);
 	// console.log("vEs:", validationErrors);
@@ -494,6 +701,7 @@ const Form = ({
 	// console.log("console vals",consoleVals(values));
 
 	return (
+		// 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕 🆕
 		<View style={styles.container}>
 			{purpose == "Signup" && (
 				<View
@@ -724,7 +932,7 @@ const Form = ({
 					</ScrollView>
 				</View>
 			)}
-
+			{/* 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑 🔑   */}
 			{purpose == "Login" && (
 				<View
 					style={{
@@ -784,7 +992,7 @@ const Form = ({
 					</View>
 				</View>
 			)}
-
+			{/* 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼 💼   */}
 			{purpose == "NewListing" && (
 				<View
 					style={{
@@ -823,6 +1031,7 @@ const Form = ({
 								purpose={purpose}
 								scrollRef={scrollRef}
 								// handleOffset={handleOffset}
+								trackFocusAndBlur={trackFocusAndBlur}
 							/>
 						);
 					})}
@@ -852,7 +1061,7 @@ const Form = ({
 					</View>
 				</View>
 			)}
-
+			{/* 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 👤 */}
 			{purpose == "EditProfile" && (
 				<View
 					style={{
@@ -972,7 +1181,7 @@ const Form = ({
 					</View>
 				</View>
 			)}
-
+			{/* 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏 🔏  */}
 			{purpose == "EditUserCreds" && (
 				<View
 					style={{

@@ -208,7 +208,7 @@ const bizReducer = (state = initialState, action) => {
 					allow_emails: action.payload.allow_emails,
 					email_verified: action.payload.email_verified,
 					time_sent: action.payload.time_sent,
-					badges: action.payload.badges,
+					badge_counts: action.payload.badge_counts,
 					heart_ids: action.payload.heart_ids,
 					comment_scores_sum: action.payload.comment_scores_sum,
 					opaque: action.payload.opaque,

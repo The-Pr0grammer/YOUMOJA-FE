@@ -15,7 +15,6 @@ import * as WebBrowser from "expo-web-browser";
 
 const NewListingSupport = (props) => {
 	const [browserResult, setBrowserResult] = useState(0);
-	// console.log(props.support);
 	return (
 		<View style={styles.container}>
 			<View style={{ flex: 1, zIndex: 5 }}>
@@ -49,7 +48,7 @@ const NewListingSupport = (props) => {
 						name="donate"
 						type="font-awesome-5"
 						color="green"
-						size={40}
+						size={30}
 						opacity={props.support ? 1 : 0.2}
 
 						// reverse
@@ -68,7 +67,7 @@ const NewListingSupport = (props) => {
 					height: vh(8),
 					width: vw(66),
 					borderBottomWidth: 1,
-					opacity: props.purpose == "NewListing" ? 0.01 : 1,
+					opacity: props.purpose == "NewListing" ? 0.2 : 1,
 				}}
 				contentContainerStyle={{
 					position: "relative",
@@ -86,7 +85,7 @@ const NewListingSupport = (props) => {
 				// snapToIntervreverseCl={33}
 				// scrollEventThrottle={1}
 			>
-				<TouchableOpacity style={styles.badge}>
+				<TouchableOpacity disabled={true} style={styles.badge}>
 					<Icon
 						name="rocket1"
 						type="ant-design"
@@ -96,7 +95,7 @@ const NewListingSupport = (props) => {
 						// reverseColor="lawngreen"
 					/>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.badge}>
+				<TouchableOpacity disabled={true} style={styles.badge}>
 					<Icon
 						name="rocket1"
 						type="ant-design"
@@ -106,7 +105,7 @@ const NewListingSupport = (props) => {
 						// reverseColor="dodgerblue"
 					/>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.badge}>
+				<TouchableOpacity disabled={true} style={styles.badge}>
 					<Icon
 						name="rocket1"
 						type="ant-design"
@@ -116,7 +115,7 @@ const NewListingSupport = (props) => {
 						// reverseColor="lightcoral"
 					/>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.badge}>
+				<TouchableOpacity disabled={true} style={styles.badge}>
 					<Icon
 						name="rocket1"
 						type="ant-design"
@@ -126,7 +125,7 @@ const NewListingSupport = (props) => {
 						// reverseColor="darkmagenta"
 					/>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.badge}>
+				<TouchableOpacity disabled={true} style={styles.badge}>
 					<Icon
 						name="rocket1"
 						type="ant-design"

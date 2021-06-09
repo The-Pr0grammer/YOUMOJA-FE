@@ -23,39 +23,44 @@ import Category from "./Category.js";
 class CategoriesList extends React.Component {
 	constructor(props) {
 		super(props);
-		this.loaded = [];
 		this.state = {
 			loadedState: false,
 			categories: [
 				{
-					cat: "Travel",
+					cat: "All Categories",
+					id: 34,
+					bg: require(`../images/categories/spinner.gif`),
+				},
+				{
+					cat: "Other",
 					id: 33,
-					bg: require(`../images/categories/Travel.jpg`),
+					bg: require(`../images/categories/spinner.gif`),
+				},
+				{
+					cat: "Writing",
+					id: 32,
+					bg: require(`../images/categories/Writing.jpeg`),
+				},
+				{
+					cat: "Travel",
+					id: 31,
+					bg: require(`../images/categories/Travel.jpeg`),
 				},
 				{
 					cat: "Transportation",
-					id: 32,
+					id: 30,
 					bg: require(`../images/categories/Transportation.jpg`),
 				},
 				{
 					cat: "Technology",
-					id: 31,
+					id: 29,
 					bg: require(`../images/categories/Technology.png`),
 				},
+
 				{
 					cat: "Safety & Security",
-					id: 30,
-					bg: require(`../images/categories/SafetySecurity.jpg`),
-				},
-				{
-					cat: "Sports & Fitness",
-					id: 29,
-					bg: require(`../images/categories/SportsFitness.jpg`),
-				},
-				{
-					cat: "Spirituality",
 					id: 28,
-					bg: require(`../images/categories/Spirituality.jpg`),
+					bg: require(`../images/categories/SafetySecurity.jpeg`),
 				},
 				{
 					cat: "Repair",
@@ -63,49 +68,50 @@ class CategoriesList extends React.Component {
 					bg: require(`../images/categories/Repair.jpg`),
 				},
 				{
-					cat: "Recreation",
-					id: 26,
-					bg: require(`../images/categories/Recreation.png`),
-				},
-				{
 					cat: "Real Estate",
-					id: 25,
+					id: 26,
 					bg: require(`../images/categories/RealEstate.jpeg`),
 				},
-				{
-					cat: "Print & Media",
-					id: 24,
-					bg: require(`../images/categories/PrintMedia.jpg`),
-				},
+
 				{
 					cat: "Non Profit",
-					id: 23,
+					id: 25,
 					bg: require(`../images/categories/NonProfit.jpg`),
 				},
 				{
 					cat: "Nightlife",
-					id: 22,
+					id: 24,
 					bg: require(`../images/categories/Nightlife.jpg`),
 				},
 				{
 					cat: "Music",
-					id: 21,
+					id: 23,
 					bg: require(`../images/categories/Music.jpg`),
 				},
 				{
 					cat: "Legal",
-					id: 20,
+					id: 22,
 					bg: require(`../images/categories/Legal.jpeg`),
 				},
 				{
+					cat: "Interior Design",
+					id: 21,
+					bg: require(`../images/categories/InteriorDesign.jpeg`),
+				},
+				{
 					cat: "Home & Outdoor",
-					id: 19,
+					id: 20,
 					bg: require(`../images/categories/HomeOutdoor.jpeg`),
 				},
 				{
 					cat: "Health",
-					id: 18,
+					id: 19,
 					bg: require(`../images/categories/Health.jpg`),
+				},
+				{
+					cat: "Hair & Beauty",
+					id: 18,
+					bg: require(`../images/categories/HairBeauty.jpeg`),
 				},
 				{
 					cat: "Food",
@@ -113,44 +119,44 @@ class CategoriesList extends React.Component {
 					bg: require(`../images/categories/Food.jpeg`),
 				},
 				{
-					cat: "Financial",
+					cat: "Fitness",
 					id: 16,
+					bg: require(`../images/categories/Fitness.jpg`),
+				},
+				{
+					cat: "Financial",
+					id: 15,
 					bg: require(`../images/categories/Financial.jpeg`),
 				},
 				{
 					cat: "Film & Photography",
-					id: 15,
+					id: 14,
 					bg: require(`../images/categories/FilmPhotography.jpg`),
 				},
 				{
 					cat: "Fashion",
-					id: 14,
-					bg: require(`../images/categories/Fashion.jpg`),
+					id: 13,
+					bg: require(`../images/categories/Fashion.jpeg`),
+				},
+				{
+					cat: "Family",
+					id: 12,
+					bg: require(`../images/categories/Family.jpeg`),
 				},
 				{
 					cat: "Event Planning",
-					id: 13,
+					id: 11,
 					bg: require(`../images/categories/EventPlanning.jpeg`),
 				},
 				{
 					cat: "Education",
-					id: 12,
-					bg: require(`../images/categories/Education.jpg`),
-				},
-				{
-					cat: "Decor",
-					id: 11,
-					bg: require(`../images/categories/Decor.jpg`),
+					id: 10,
+					bg: require(`../images/categories/Education.jpeg`),
 				},
 				{
 					cat: "Construction",
-					id: 10,
-					bg: require(`../images/categories/Construction.jpg`),
-				},
-				{
-					cat: "Comfort",
 					id: 9,
-					bg: require(`../images/categories/Comfort.jpg`),
+					bg: require(`../images/categories/Construction.jpg`),
 				},
 				{
 					cat: "Coaching",
@@ -160,7 +166,7 @@ class CategoriesList extends React.Component {
 				{
 					cat: "Cleaning",
 					id: 7,
-					bg: require(`../images/categories/Cleaning.jpg`),
+					bg: require(`../images/categories/Cleaning.jpeg`),
 				},
 				{
 					cat: "Children",
@@ -168,27 +174,37 @@ class CategoriesList extends React.Component {
 					bg: require(`../images/categories/Children.jpg`),
 				},
 				{
-					cat: "Beauty & Hair",
+					cat: "Broadcast Media",
 					id: 5,
-					bg: require(`../images/categories/BeautyHair.jpg`),
+					bg: require(`../images/categories/BroadcastMedia.jpeg`),
 				},
-				{ cat: "B2B", id: 4, bg: require(`../images/categories/B2B.jpg`) },
+				{
+					cat: "B2B",
+					id: 4,
+					bg: require(`../images/categories/B2B.jpg`),
+				},
 				{ cat: "Auto", id: 3, bg: require(`../images/categories/Auto.jpeg`) },
 				{
 					cat: "Art & Design",
 					id: 2,
-					bg: require(`../images/categories/ArtDesign.jpg`),
+					bg: require(`../images/categories/ArtDesign.jpeg`),
 				},
 				{
 					cat: "Animal",
 					id: 1,
-					bg: require(`../images/categories/Animal.jpg`),
+					bg: require(`../images/categories/Animal.jpeg`),
 				},
-				{
-					cat: "All Categories",
-					id: 34,
-					bg: require(`../images/categories/Any.jpg`),
-				},
+				// {
+				// 	cat: "emptyBox",
+				// 	id: 0,
+				// 	bg: require(`../images/categories/Logo.png`),
+				// },
+
+				// {
+				// 	cat: "emptyBox",
+				// 	id: 0,
+				// 	bg: require(`../images/categories/Logo.png`),
+				// },
 			],
 		};
 	}
@@ -200,18 +216,16 @@ class CategoriesList extends React.Component {
 			this.loaded.length = 0;
 		}
 		this.loaded.push(cat);
-		// console.log(this.loaded.length);
+		console.log(this.loaded.length);
 	};
 
 	render() {
-		// console.log("loading");
-		const { isFocused } = this.props;
-		{
-			if (isFocused) {
-				// this.loaded = [];
-				// console.log("LOADED ARRAY IS", this.loaded);
-			}
-		}
+		// const { isFocused } = this.props;
+		// {
+		// 	if (isFocused) {
+		// 		console.log("FOCUSED");
+		// 	}
+		// }
 		return (
 			<Modal
 				animationType="fade"
@@ -249,38 +263,24 @@ class CategoriesList extends React.Component {
 						paddingBottom: vh(17.3),
 					}}
 				>
-					{/* <View style={{ position: "absolute" }}>
-						<ImageBackground
-							source={require("../images/MoneyFalling.gif")}
-							style={styles.bg}
-						></ImageBackground>
-					</View> //LIL WAYNE INTRO*/}
-
 					<TouchableOpacity
 						style={{
 							backgroundColor: "transparent",
 							height: vh(83.3),
 						}}
-						onPress={() => this.props.handleCatsTogg()}
+						disabled={true}
+						// onPress={() => this.props.handleCatsTogg()}
 					>
-						{!this.state.loadedState && (
-							<View style={styles.activityView}>
-								<ActivityIndicator
-									size="large"
-									color="#00ff00"
-									hidesWhenStopped={true}
-								/>
-							</View>
-						)}
 						<FlatList
 							contentContainerStyle={{
 								flexGrow: 1,
-								flexDirection: "column-reverse",
+								flexDirection: "column",
 								justifyContent: "center",
 								alignItems: "center",
+								paddingBottom: vh(2.5),
 								// height: vh(70),
 							}}
-							data={this.state.categories}
+							data={this.state.categories.sort((a, b) => a.id - b.id)}
 							renderItem={({ item }) => (
 								<Category
 									catObj={item}

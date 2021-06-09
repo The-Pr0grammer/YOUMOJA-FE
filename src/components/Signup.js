@@ -246,6 +246,7 @@ const CreateAccount = (props) => {
 							label: "Linkedin",
 							validators: [urlCheck],
 							inputProps: {
+								autoCapitalize: "none",
 								placeholder: `enter your LinkedIn page url (recommended)`,
 								placeholderTextColor: "lightslategray",
 								textAlign: "center",
@@ -255,6 +256,7 @@ const CreateAccount = (props) => {
 							label: "Twitter",
 							validators: [urlCheck],
 							inputProps: {
+								autoCapitalize: "none",
 								placeholder: `enter your Twitter page url (recommended)`,
 								placeholderTextColor: "lightslategray",
 								textAlign: "center",

@@ -21,7 +21,6 @@ import {
 } from "../redux/actions/bizAction";
 import { connect } from "react-redux";
 import axios from "axios";
-import BadgeShop from "./BadgeShop.js";
 import * as RNIap from "react-native-iap";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -36,7 +35,7 @@ class ListBizDash extends React.Component {
 			hearts: props.ubiz.business.hearts,
 			cooldown: false,
 			comments: props.ubiz.business.comments,
-			badgeCounts: props.ubiz.business.badges,
+			badgeCounts: props.ubiz.business.badge_counts,
 			// userHearts: [],
 			// shopTogg: false,
 			// badgeKeyPressed: null,
@@ -52,9 +51,12 @@ class ListBizDash extends React.Component {
 
 	componentDidUpdate(prevProps) {
 		// Typical usage (don't forget to compare props):
-		if (this.props.ubiz.business.badges !== prevProps.ubiz.business.badges) {
+		if (
+			this.props.ubiz.business.badge_counts !==
+			prevProps.ubiz.business.badge_counts
+		) {
 			this.setState({
-				badgeCounts: this.props.ubiz.business.badges,
+				badgeCounts: this.props.ubiz.business.badge_counts,
 			});
 		}
 		if (this.props.hearted !== prevProps.hearted) {
@@ -279,7 +281,7 @@ class ListBizDash extends React.Component {
 		// console.log("ListBiz PROPS👊🏾:", this.props.getIds);
 		// console.log("U INFO:", this.props.userInfo.heart_ids);
 		// this.props.ubiz.business.id == 1 &&
-		// 	console.log("LBD UBIZ 🐞:", this.props.ubiz.business.hearts);
+		// console.log("LBD UBIZ 🐞:", this.props.ubiz.business.badge_counts);
 		// console.log("BUSINESS NAME:", this.state.ubiz.business.name);
 		// this.props.ubiz.business.id == 1 &&
 		// this.props.purpose !== "ProfileHearts" &&
@@ -486,7 +488,7 @@ class ListBizDash extends React.Component {
 						// 	(badgeObj) => badgeObj.color == trueColors[colorItr]
 						// );
 
-						// trueColors[colorItr] in this.state.badgeCounts
+						// console.log(trueColors[colorItr] in this.state.badgeCounts);
 
 						return (
 							<TouchableOpacity
@@ -517,7 +519,6 @@ class ListBizDash extends React.Component {
 										value={numFormat(
 											this.state.badgeCounts[trueColors[colorItr]]
 										)}
-										
 										status="success"
 										containerStyle={[
 											colorItr == 0 ? styles.greenBadgeInd : styles.badgeInd,
@@ -528,13 +529,7 @@ class ListBizDash extends React.Component {
 						);
 					})}
 				</ScrollView>
-				{/* {this.state.shopTogg && (
-					<BadgeShop
-						ubiz={this.props.ubiz}
-						handleShopTogg={this.handleShopTogg}
-						badgeKeyPressed={this.state.badgeKeyPressed}
-					/>
-				)} */}
+				
 			</View>
 		);
 	}

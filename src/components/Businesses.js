@@ -91,6 +91,7 @@ class Businesses extends Component {
 
 		this.props.filtered_ubizs.length < 1 && this.props.fetchBizs();
 
+		// 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
 		firebase.auth().onAuthStateChanged(async function (user) {
 			if (user) {
 				console.log("FIREBASE ACCESS GRANTED✅✅✅\n", JSON.stringify(user));
@@ -110,7 +111,7 @@ class Businesses extends Component {
 						loadUser(res.data.id);
 					})
 					.catch((error) => {
-						console.log(error);
+						console.log("FIREBASE AUTH FUNC ERROR",error);
 						return error;
 					});
 			} else {
@@ -118,6 +119,7 @@ class Businesses extends Component {
 				navigateToLogin();
 			}
 		});
+		// 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
 
 		// this.props.setUserInfo({
 		// 	email: "anthonyh202x@gmail.com",

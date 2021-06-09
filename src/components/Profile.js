@@ -242,7 +242,7 @@ const Profile = (props) => {
 		props.fetchUserInfo(props.userInfo.id);
 		getListings();
 		getHearts();
-		
+
 		setShopTogg(!shopTogg);
 		setShopBiz(shopBiz);
 		setBadgeKeyPressed(badgeKey);
@@ -271,7 +271,8 @@ const Profile = (props) => {
 				navigation={navigation}
 				refresh={true}
 				lastScreen={getLastScreen()}
-				// lastScreen={"Home"}
+				activeScreen={"Profile"}
+				lastScreen={"Profile "} //ENABLES NAV FROM BB100 BACK HERE THEN HOME 
 				// loading={props.profileLoading}
 			/>
 

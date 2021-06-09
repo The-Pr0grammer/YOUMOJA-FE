@@ -66,7 +66,7 @@ const EditProfile = (props) => {
 		console.log("result is", result);
 		// let err = JSON.stringify(result.response.data.errors);
 
-		await props.fetchUserInfo(props.userInfo.id); 
+		await props.fetchUserInfo(props.userInfo.id);
 
 		if (result.status == "200") {
 			props.handleInfoEditTogg();
@@ -134,6 +134,7 @@ const EditProfile = (props) => {
 									label: "Linkedin",
 									validators: [urlCheck],
 									inputProps: {
+										autoCapitalize: "none",
 										placeholder: `${props.userInfo.linkedin}`,
 										placeholderTextColor: "lightslategray",
 										textAlign: "center",
@@ -143,6 +144,7 @@ const EditProfile = (props) => {
 									label: "Twitter",
 									validators: [urlCheck],
 									inputProps: {
+										autoCapitalize: "none",
 										placeholder: `${props.userInfo.twitter}`,
 										placeholderTextColor: "lightslategray",
 										textAlign: "center",

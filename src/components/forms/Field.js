@@ -28,6 +28,7 @@ const Field = ({
 	purpose,
 	handleOffset,
 	scrollRef,
+	trackFocusAndBlur,
 }) => {
 	const [hideToggle, setHideToggle] = useState(
 		field.inputProps.secureTextEntry
@@ -44,6 +45,13 @@ const Field = ({
 			firstError && keyRef.current && keyRef.current.focus();
 		}
 
+		// const keyboardDidShowListener = Keyboard.addListener(
+		// 	'keyboardDidShow',
+		// 	() => {
+		// 	  setKeyboardVisible(true); // or some other action
+		// 	}
+		//   );
+
 		// const keyboardDidHideListener =
 		// 	fieldName == "summary" &&
 		// 	Keyboard.addListener("keyboardDidHide", () => {
@@ -51,28 +59,23 @@ const Field = ({
 		// 		console.log("⌨️ CLOSED");
 		// 	});
 
-		// // ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
+		// // ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
 		// // Do not remove any code pertaining to scroll or this damn keyboard addListener.
-		// // Without it, scrollRef stops working ⁉️
-		// // ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
+		// // Without it, scrollRef stops working ⁉️ update: newlisting needs a rerender to pass ref
+		// // ❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️❗️
 
-		// return () => {
-		// 	fieldName == "summary" && keyboardDidHideListener.remove();
-		// 	// console.log("I'm a field:", fieldName);
-		// };
+		return () => {
+			// keyboardDidShowListener.remove();
+			// keyboardDidHideListener.remove();
+			// 	fieldName == "summary" && keyboardDidHideListener.remove();
+			// console.log("I'm a field:", fieldName);
+		};
 	}, [submitInc]);
 
 	// 	console.log("🔑", keyRef);
-	// 	return () => {
-	// 		console.log("I'm a field:", fieldName);
-	// 	};
-	// }, []);
 	// console.log("password field:", fieldName.toLowerCase().includes("password"));
 	// console.log(field.inputProps);
 	// console.log("error status:", fieldName, error ? true : false);
-
-	// const reference = fieldName.toLowerCase();
-
 	// console.log(nextRef);
 	// console.log("field label is 😁", field.label);
 	// console.log("field name is 🖋", fieldName);
@@ -99,16 +102,7 @@ const Field = ({
 				blurOnSubmit={true}
 				returnKeyType={"next"}
 				onSubmitEditing={() => {
-					// if (!purpose == "NewListing") {
-					// 	if (!lastKey) {
-					// 		nextRef.current && nextRef.current.focus();
-					// 	}
-
-					// 	if (lastKey || fieldName == "support") {
-					// 		Keyboard.dismiss();
-					// 	}
-					// }
-
+					// 🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗
 					if (fieldName == "summary") {
 						// setScroll(true);
 						setTimeout(() => {
@@ -125,16 +119,31 @@ const Field = ({
 						Keyboard.dismiss();
 					}
 					// }
+					// 🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗🆗
 				}}
 				// onFocus={clearError}
 				onFocus={() => {
 					// fieldName == "summary" && setScroll(false);
-					// console.log(scrollRef);
+					// trackFocusAndBlur("focus", fieldName);
+
 					fieldName == "summary" &&
 						scrollRef.scrollTo({ x: 0, y: vh(30), animated: true });
+
+					fieldName == "name" &&
+						purpose == "NewListing" &&
+						scrollRef.scrollTo({ x: 0, y: vh(30), animated: true });
+
 					clearError;
 				}}
-				// onBlur={() => fieldName == "summary" && setScroll(true)}
+				onBlur={() => {
+					// fieldName == "summary" && setScroll(true);
+					fieldName == "summary" &&
+						!value == "" &&
+						trackFocusAndBlur("blur", fieldName);
+					fieldName == "name" &&
+						!value == "" &&
+						trackFocusAndBlur("blur", fieldName);
+				}}
 			/>
 			{pwField && (
 				<TouchableOpacity
@@ -150,7 +159,9 @@ const Field = ({
 					/>
 				</TouchableOpacity>
 			)}
-			<Text style={styles.error}>{error}</Text>
+			<Text style={fieldName == "summary" ? styles.summError : styles.error}>
+				{error}
+			</Text>
 		</View>
 	);
 };
@@ -159,7 +170,7 @@ export default Field;
 
 const styles = StyleSheet.create({
 	input: {
-		flex: 1,
+		// flex: 1,
 		height: vh(6.5),
 		width: vw(90),
 		borderRadius: 30,
@@ -205,4 +216,11 @@ const styles = StyleSheet.create({
 		minHeight: 25,
 	},
 	error: { textAlign: "center", color: "red", width: vw(85) },
+	summError: {
+		textAlign: "center",
+		color: "red",
+		width: vw(85),
+		height: vh(2),
+		// backgroundColor: "green",
+	},
 });
